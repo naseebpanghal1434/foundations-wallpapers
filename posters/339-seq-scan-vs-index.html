@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PLATE 339 — Seq scan is n pages. Index is log n then heap.</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@800;900&family=Fraunces:ital,opsz,wght@1,9..144,400;1,9..144,500&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/poster.css">
+</head>
+<body>
+  <article class="poster" data-track="database">
+    <span class="mark mark--tl"></span><span class="mark mark--tr"></span><span class="mark mark--bl"></span><span class="mark mark--br"></span>
+    <p class="spine">Foundations series — software engineering mental models</p>
+    <div class="rule"></div><div class="ghost">339</div><div class="vignette"></div>
+    <svg class="grain" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="4" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(#n)"></rect></svg>
+    <header class="mast">
+      <p class="kicker"><span>Database</span><span class="dot"></span><span class="whisper">cost · random_page_cost</span></p>
+      <h1 class="title">Seq scan is n pages. <span class="title-accent">Index is log n then heap.</span></h1>
+      <p class="lede">Seq scan: read every heap page, cheap sequential I/O. Index scan: B+ lookup (height 3–4) plus one heap fetch per row — random. Planner cost ≈ pages × <code>random_page_cost</code> (4 on HDD, ~1.1 on SSD). Selecting 30% of the table? Seq often wins.</p>
+    </header>
+    <section class="stage">
+      <div class="stage-inner">
+        <div class="compare">
+          <div class="compare-pane">
+            <p class="pane-label">1e7 rows · 1e5 pages</p>
+            <h2 class="pane-title">Seq Scan</h2>
+            <div class="codeblock">read page 1
+read page 2
+…
+read page 1e5
+
+seq_page_cost = 1.0
+filter after the read</div>
+            <p class="caption">One sequential pass. Fine when you need most of the heap anyway.</p>
+          </div>
+          <div class="compare-vs">vs</div>
+          <div class="compare-pane compare-pane--hit">
+            <p class="pane-label">50 rows from an index</p>
+            <h2 class="pane-title">Index Scan</h2>
+            <div class="codeblock ok">3 index pages  (height)
++ 50 heap pages (random)
+
+random_page_cost
+  4.0  HDD default
+  1.1  SSD hint</div>
+            <p class="caption">Bitmap index scan batches those heap fetches (plate 340). ANALYZE feeds the guess (plate 98).</p>
+          </div>
+        </div>
+        <div class="deck">
+          <div class="deck-row"><span class="deck-k">What</span><p>The cheaper plan is selectivity × I/O randomness, not “index always.” Covering indexes skip the heap (plate 349).</p></div>
+          <div class="deck-row"><span class="deck-k">Why</span><p>Why an index sits unused. Why <code>random_page_cost</code> still at 4 on NVMe makes indexes look expensive.</p></div>
+          <div class="deck-row deck-row--trap"><span class="deck-k">Trap</span><p>Index on a boolean 50/50. <code>SELECT *</code> so the index is not covering and you heap-fetch anyway. Stale stats: estimated 5e5, actual 12.</p></div>
+        </div>
+      </div>
+    </section>
+    <footer class="foot"><p class="one-liner"></p><p class="plate-id">Plate 339 / 375</p></footer>
+  </article>
+</body>
+</html>

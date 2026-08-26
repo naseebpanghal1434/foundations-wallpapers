@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PLATE 313 — Little-endian stores the low byte first.</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@800;900&family=Fraunces:ital,opsz,wght@1,9..144,400;1,9..144,500&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/poster.css">
+</head>
+<body>
+  <article class="poster" data-track="arch">
+    <span class="mark mark--tl"></span><span class="mark mark--tr"></span><span class="mark mark--bl"></span><span class="mark mark--br"></span>
+    <p class="spine">Foundations series — software engineering mental models</p>
+    <div class="rule"></div><div class="ghost">313</div><div class="vignette"></div>
+    <svg class="grain" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="4" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(#n)"></rect></svg>
+    <header class="mast">
+      <p class="kicker"><span>Arch</span><span class="dot"></span><span class="whisper">x86 · network big-endian</span></p>
+      <h1 class="title">Little-endian stores <span class="title-accent">the low byte first.</span></h1>
+      <p class="lede">uint32 0x01020304 in memory on x86: 04 03 02 01. Network protocols (TCP/IP) use big-endian (<code>htonl</code>/<code>ntohl</code>). File formats specify one; mixing without conversion is a portability bug, not a style.</p>
+    </header>
+    <section class="stage">
+      <div class="stage-inner">
+        <div class="compare">
+          <div class="compare-pane compare-pane--hit">
+            <p class="pane-label">x86 / ARM (usual)</p>
+            <h2 class="pane-title">Little</h2>
+            <div class="codeblock">0x01020304
+addr+0  04
+addr+1  03
+addr+2  02
+addr+3  01</div>
+            <p class="caption">Low byte at the low address. One-byte values are immune.</p>
+          </div>
+          <div class="compare-vs">vs</div>
+          <div class="compare-pane">
+            <p class="pane-label">TCP/IP · many files</p>
+            <h2 class="pane-title">Big</h2>
+            <div class="codeblock">0x01020304
+addr+0  01
+addr+1  02
+addr+2  03
+addr+3  04</div>
+            <p class="caption">Java <code>DataOutputStream</code> is BE. Protobuf has its own encoding. UTF-8 is byte-oriented; UTF-16 needs a BOM or a spec.</p>
+          </div>
+        </div>
+        <div class="deck">
+          <div class="deck-row"><span class="deck-k">What</span><p>Byte order of multi-byte integers. ASCII/UTF-8 has no endian.</p></div>
+          <div class="deck-row"><span class="deck-k">Why</span><p>Packet parsing, binary files, mmap’d structs between machines.</p></div>
+          <div class="deck-row deck-row--trap"><span class="deck-k">Trap</span><p>Casting a packet buffer to <code>uint32_t*</code> on LE and comparing to a BE spec constant. Assuming ARM is BE — phones and servers are almost always LE.</p></div>
+        </div>
+      </div>
+    </section>
+    <footer class="foot"><p class="one-liner"></p><p class="plate-id">Plate 313 / 375</p></footer>
+  </article>
+</body>
+</html>

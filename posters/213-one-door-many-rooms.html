@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PLATE 213 — One door. Many rooms.</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@800;900&family=Fraunces:ital,opsz,wght@1,9..144,400;1,9..144,500&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/poster.css">
+</head>
+<body>
+  <article class="poster" data-track="system">
+    <span class="mark mark--tl"></span><span class="mark mark--tr"></span><span class="mark mark--bl"></span><span class="mark mark--br"></span>
+    <p class="spine">Foundations series — software engineering mental models</p>
+    <div class="rule"></div><div class="ghost">213</div><div class="vignette"></div>
+    <svg class="grain" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="4" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(#n)"></rect></svg>
+    <header class="mast">
+      <p class="kicker"><span>System</span><span class="dot"></span><span class="whisper">API gateway · BFF</span></p>
+      <h1 class="title">One door. <span class="title-accent">Many rooms.</span></h1>
+      <p class="lede">An API gateway is the shared edge: TLS (plate 78), JWT, rate limit (plate 201) with Redis <code>INCR</code>+TTL, route <code>/v1/users</code> → users, <code>X-Request-Id</code>. A BFF is a per-client gateway (mobile JSON ≠ web). AuthN here; authZ in the service that owns the row (plate 14).</p>
+    </header>
+    <section class="stage">
+      <div class="stage-inner">
+        <div class="compare">
+          <div class="compare-pane">
+            <p class="pane-label">Edge in every box</p>
+            <h2 class="pane-title">Drift</h2>
+            <div class="codeblock bad">users:  JWT, CORS, 429
+pay:    JWT, CORS, 429
+chat:   JWT… different clock
+
+no shared request id
+timeouts? maybe
+limiter in RAM</div>
+            <p class="caption">Forty copies of CORS. One service forgets the limiter. AuthZ copy-paste is still wrong.</p>
+          </div>
+          <div class="compare-vs">vs</div>
+          <div class="compare-pane compare-pane--hit">
+            <p class="pane-label">Cross-cutting at the edge</p>
+            <h2 class="pane-title">Gateway</h2>
+            <div class="codeblock ok">Client → gateway
+  TLS, JWT, 429
+  Retry-After
+  /v1/users → users
+  /v1/pay  → payments
+BFF = per-client shape
+timeouts, breakers</div>
+            <p class="caption">The gateway is not the monolith and does not own SQL. GraphQL can be a BFF. Breakers: plates 19, 39. Default timeout 1–3 s.</p>
+          </div>
+        </div>
+        <div class="deck">
+          <div class="deck-row"><span class="deck-k">What</span><p>TLS, authN, 429, routing, request-id at the edge. AuthZ stays in the service that owns the data. One id through the logs (plate 84).</p></div>
+          <div class="deck-row"><span class="deck-k">Why</span><p>Microservices design. They want one shared edge, not 40 copies of CORS. Contrast: the gateway does not own SQL.</p></div>
+          <div class="deck-row deck-row--trap"><span class="deck-k">Trap</span><p>Business rules in the gateway until it is the monolith. Gateway as the only authZ. No timeout so a sick payment service holds every mobile request.</p></div>
+        </div>
+      </div>
+    </section>
+    <footer class="foot"><p class="one-liner"></p><p class="plate-id">Plate 213 / 375</p></footer>
+  </article>
+</body>
+</html>

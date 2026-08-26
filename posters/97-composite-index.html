@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PLATE 97 — INDEX(a, b) is not INDEX(b).</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@800;900&family=Fraunces:ital,opsz,wght@1,9..144,400;1,9..144,500&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/poster.css">
+</head>
+<body>
+  <article class="poster" data-track="database">
+    <span class="mark mark--tl"></span><span class="mark mark--tr"></span><span class="mark mark--bl"></span><span class="mark mark--br"></span>
+    <p class="spine">Foundations series — software engineering mental models</p>
+    <div class="rule"></div><div class="ghost">97</div><div class="vignette"></div>
+    <svg class="grain" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="4" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(#n)"></rect></svg>
+    <header class="mast">
+      <p class="kicker"><span>Database</span><span class="dot"></span><span class="whisper">Leftmost prefix</span></p>
+      <h1 class="title">INDEX(a, b) is not <span class="title-accent">INDEX(b).</span></h1>
+      <p class="lede">A B-tree on <code>(a, b)</code> is sorted by a, then b. It can jump on a, or on a then b. It cannot start in the middle. <code>WHERE b = 1</code> does not use that index (classic rule). Put equality columns left, range columns next. If the index holds every column the query needs, you can skip the heap — a covering index.</p>
+    </header>
+    <section class="stage">
+      <div class="stage-inner">
+        <div class="compare">
+          <div class="compare-pane compare-pane--hit">
+            <p class="pane-label">INDEX (user_id, created_at)</p>
+            <h2 class="pane-title">Prefix hits</h2>
+            <div class="codeblock ok">WHERE user_id = 7
+WHERE user_id = 7
+  AND created_at &gt; $t
+ORDER BY user_id, created_at
+
+covering:
+SELECT created_at
+WHERE user_id = 7
+-- heap not required</div>
+            <p class="caption">Leftmost prefix. Equality on the left, range on the next. INCLUDE extra columns in Postgres to cover without changing sort.</p>
+          </div>
+          <div class="compare-vs">vs</div>
+          <div class="compare-pane">
+            <p class="pane-label">Same index, wrong query</p>
+            <h2 class="pane-title">No prefix</h2>
+            <div class="codeblock bad">WHERE created_at &gt; $t
+WHERE status = 'open'
+-- leading column unused
+
+WHERE user_id &gt; 7
+  AND created_at = $t
+-- range on a: b is a filter,
+-- not a seek</div>
+            <p class="caption">You wanted <code>INDEX(created_at)</code> or <code>(status, created_at)</code>. Extra storage (plate 02) that the planner is allowed to ignore.</p>
+          </div>
+        </div>
+        <div class="deck">
+          <div class="deck-row"><span class="deck-k">What</span><p><code>(a,b,c)</code> serves a / a+b / a+b+c. Covering = index-only scan (visibility map in Postgres, plate 96). Match <code>ORDER BY</code> to the index to skip a sort. <code>LIKE 'foo%'</code> can use a btree; <code>LIKE '%foo'</code> cannot.</p></div>
+          <div class="deck-row"><span class="deck-k">Why</span><p>Most real <code>WHERE</code> clauses are two columns. One composite beats two single-column indexes for that query. Interviews: write the index in column order, then say what it cannot do.</p></div>
+          <div class="deck-row deck-row--trap"><span class="deck-k">Trap</span><p><code>INDEX(a,b)</code> for <code>WHERE b = 1</code>. Boolean or low-selectivity leading column. A covering index you never <code>SELECT</code> from. Three overlapping composites that all slow every write.</p></div>
+        </div>
+      </div>
+    </section>
+    <footer class="foot"><p class="one-liner"></p><p class="plate-id">Plate 97 / 100</p></footer>
+  </article>
+</body>
+</html>

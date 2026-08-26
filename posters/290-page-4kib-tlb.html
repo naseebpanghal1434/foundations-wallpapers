@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PLATE 290 — A page is 4 KiB. The TLB caches translations.</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@800;900&family=Fraunces:ital,opsz,wght@1,9..144,400;1,9..144,500&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/poster.css">
+</head>
+<body>
+  <article class="poster" data-track="os">
+    <span class="mark mark--tl"></span><span class="mark mark--tr"></span><span class="mark mark--bl"></span><span class="mark mark--br"></span>
+    <p class="spine">Foundations series — software engineering mental models</p>
+    <div class="rule"></div><div class="ghost">290</div><div class="vignette"></div>
+    <svg class="grain" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="4" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(#n)"></rect></svg>
+    <header class="mast">
+      <p class="kicker"><span>OS</span><span class="dot"></span><span class="whisper">PTE · TLB · huge pages</span></p>
+      <h1 class="title">A page is 4 KiB. <span class="title-accent">The TLB caches translations.</span></h1>
+      <p class="lede">Virtual address = VPN + offset. Offset is 12 bits → 4096-byte pages (x86). The page table (4 levels on 48-bit x86-64) maps VPN → PFN + flags (R/W, U/S, NX, dirty). The TLB caches PTEs; a miss walks memory (plate 79).</p>
+    </header>
+    <section class="stage stage--wide">
+      <div class="stage-inner">
+        <div class="facts facts-5">
+          <div class="fact fact--hit"><p class="fact-k">Page</p><p class="fact-n">4 KiB</p><p class="fact-c">12-bit offset. Default granularity.</p></div>
+          <div class="fact"><p class="fact-k">Huge pages</p><p class="fact-n">2 MiB</p><p class="fact-c">Also 1 GiB. 512× fewer PTEs per 2 MiB.</p></div>
+          <div class="fact"><p class="fact-k">Canonical VA</p><p class="fact-n">48-bit</p><p class="fact-c">4-level walk. 5-level is 57-bit opt-in.</p></div>
+          <div class="fact"><p class="fact-k">Walk</p><p class="fact-n">~4 refs</p><p class="fact-c">One cache line per level on a miss.</p></div>
+          <div class="fact"><p class="fact-k">L1 DTLB</p><p class="fact-n">~64</p><p class="fact-c">Entries. Miss → walk. munmap shoots down (INVLPG / IPI).</p></div>
+        </div>
+        <p class="caption">THP/hugetlbfs opt into 2 MiB/1 GiB. Internal fragmentation ≤ 4 KiB−1 per mapping. Sparse VAs are cheap until you touch them (plate 291).</p>
+        <div class="deck">
+          <div class="deck-row"><span class="deck-k">What</span><p>Paging granularity is 4 KiB unless you opt into huge pages. The TLB is the cache of that map.</p></div>
+          <div class="deck-row"><span class="deck-k">Why</span><p>Why malloc of 1 byte still costs a page the first time (plus metadata). Why a 64 GiB scan with 4 KiB pages is 16M PTEs and a TLB thrash.</p></div>
+          <div class="deck-row deck-row--trap"><span class="deck-k">Trap</span><p>Assuming stack/heap grow by bytes. Walking tens of GiB on 4 KiB pages — use huge pages, or don’t. mmap/munmap without expecting TLB shootdowns.</p></div>
+        </div>
+      </div>
+    </section>
+    <footer class="foot"><p class="one-liner"></p><p class="plate-id">Plate 290 / 375</p></footer>
+  </article>
+</body>
+</html>

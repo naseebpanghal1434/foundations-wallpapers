@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PLATE 83 — Don't break /v1 in place.</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@800;900&family=Fraunces:ital,opsz,wght@1,9..144,400;1,9..144,500&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/poster.css">
+</head>
+<body>
+  <article class="poster" data-track="backend">
+    <span class="mark mark--tl"></span><span class="mark mark--tr"></span><span class="mark mark--bl"></span><span class="mark mark--br"></span>
+    <p class="spine">Foundations series — software engineering mental models</p>
+    <div class="rule"></div><div class="ghost">83</div><div class="vignette"></div>
+    <svg class="grain" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="4" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(#n)"></rect></svg>
+    <header class="mast">
+      <p class="kicker"><span>Backend</span><span class="dot"></span><span class="whisper">Additive JSON · /v2 for breaks</span></p>
+      <h1 class="title">Don't break /v1 <span class="title-accent">in place.</span></h1>
+      <p class="lede">Clients you do not ship keep calling <code>GET /v1/users/1</code>. Adding an optional field is additive — old parsers ignore unknown keys. Rename, remove, or change <code>price: 30</code> (cents int) to <code>"30.00"</code> is breaking. Put the break on <code>/v2</code> (or <code>Accept: application/vnd.shop.v2+json</code>, or a Stripe-style date) and freeze <code>/v1</code>.</p>
+    </header>
+    <section class="stage stage--wide">
+      <div class="stage-inner">
+        <div class="trio">
+          <div class="box box--pool">
+            <p class="col-label">Same URL</p>
+            <h2 class="box-title">Additive</h2>
+            <div class="codeblock ok">GET /v1/users/1
+{ "name": "Ada",
+  "email": "a@x" }</div>
+            <p class="caption">New optional field. New endpoint. Old clients ignore unknown keys. Not a new version.</p>
+          </div>
+          <div class="box">
+            <p class="col-label">Old client is wrong</p>
+            <h2 class="box-title">Breaking</h2>
+            <div class="codeblock bad">name → fullName
+price: 30 → "30.00"
+remove email
+email now required</div>
+            <p class="caption">Rename, remove, change type, new required field, new meaning, new error shape.</p>
+          </div>
+          <div class="box">
+            <p class="col-label">Put the break here</p>
+            <h2 class="box-title">/v2</h2>
+            <div class="codeblock">GET /v1/users/1  frozen
+GET /v2/users/1  new shape
+Sunset: 2027-01-01</div>
+            <p class="caption">URI /v1, or Accept, or date. /v1 keeps working until sunset. One version until you must.</p>
+          </div>
+        </div>
+        <div class="deck">
+          <div class="deck-row"><span class="deck-k">What</span><p>Version in the path, a header, or a date. Additive = optional fields, new routes, new codes the old client can ignore (plate 34). Breaking = the old binary is wrong without a change.</p></div>
+          <div class="deck-row"><span class="deck-k">Why</span><p>Mobile apps, other teams, and scripts do not ship on your Friday. A public JSON field is a contract. Interviews: one additive example, one breaking, and what you do with <code>/v1</code>.</p></div>
+          <div class="deck-row deck-row--trap"><span class="deck-k">Trap</span><p>Breaking fields in place: <code>price</code> was cents-int, now a string. Deprecating with no sunset date. Versioning on day one — stay on one until a real break.</p></div>
+        </div>
+      </div>
+    </section>
+    <footer class="foot"><p class="one-liner"></p><p class="plate-id">Plate 83 / 375</p></footer>
+  </article>
+</body>
+</html>

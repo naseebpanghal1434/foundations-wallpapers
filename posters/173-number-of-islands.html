@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PLATE 173 — DFS a 1. Mark it 0. That's an island.</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@800;900&family=Fraunces:ital,opsz,wght@1,9..144,400;1,9..144,500&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/poster.css">
+</head>
+<body>
+  <article class="poster" data-track="dsa">
+    <span class="mark mark--tl"></span><span class="mark mark--tr"></span><span class="mark mark--bl"></span><span class="mark mark--br"></span>
+    <p class="spine">Foundations series — software engineering mental models</p>
+    <div class="rule"></div><div class="ghost">173</div><div class="vignette"></div>
+    <svg class="grain" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="4" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(#n)"></rect></svg>
+    <header class="mast">
+      <p class="kicker"><span>DSA</span><span class="dot"></span><span class="whisper">Grid flood · count</span></p>
+      <h1 class="title">DFS a 1. Mark it 0. <span class="title-accent">That's an island.</span></h1>
+      <p class="lede">Number of islands: a 1 is land, 4-dir connected. Scan every cell. When you see a 1, increment, then flood-fill (DFS / BFS / union-find) that component to water so you don’t count it again. Time O(rows×cols). Union-find: union land with its land neighbors, count roots.</p>
+    </header>
+    <section class="stage">
+      <div class="stage-inner">
+        <div class="steps">
+          <div class="step"><span class="step-n">1</span><p class="step-copy">Scan for a 1<span>Grid <code>[[1,1,0],[1,1,0],[0,0,1]]</code> — two blobs. Skip water. First land at (0,0). Count becomes 1 <em>before</em> you flood, not per cell.</span></p><span class="step-meta">two blobs</span></div>
+          <div class="step step--hit"><span class="step-n">2</span><p class="step-copy">Flood the component<span>DFS/BFS 4-dir: up down left right. Mark 1 → 0 (or a visited matrix). The 2×2 of 1s dies in one flood. Later (2,2) is still 1 → count=2.</span></p><span class="step-meta">mark · 4-dir</span></div>
+          <div class="step"><span class="step-n">3</span><p class="step-copy">Same bones<span>Max area of island: flood returns a size. Huge blob: BFS queue, not a 1000×1000 recursion. Surrounded regions (174) starts from the border instead.</span></p><span class="step-meta">plate 118 · 174</span></div>
+        </div>
+        <p class="caption">Mutate in place or a visited matrix. Each cell visited once. Connected components on a grid graph (plate 118).</p>
+        <div class="deck">
+          <div class="deck-row"><span class="deck-k">What</span><p>One flood per island. 4-dir is the default unless they say 8. The scan finds components; the flood paints them. Union-find is the same count of roots after uniting adjacent land.</p></div>
+          <div class="deck-row"><span class="deck-k">Why</span><p>LeetCode 200. The grid DFS template. Everything that “paints a region” (area, surrounded, pacific-atlantic) is this plus a different start set. Interviews: increment once per flood, not once per 1.</p></div>
+          <div class="deck-row deck-row--trap"><span class="deck-k">Trap</span><p>8-direction when the spec is 4. Recursion on 1000×1000. Counting every 1, not every component. Visiting water. Off-by-one bounds. Forgetting to mark, so you infinite-loop the same land.</p></div>
+        </div>
+      </div>
+    </section>
+    <footer class="foot"><p class="one-liner"></p><p class="plate-id">Plate 173 / 200</p></footer>
+  </article>
+</body>
+</html>

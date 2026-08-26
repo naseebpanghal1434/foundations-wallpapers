@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PLATE 130 — Sort. Then two pointers for three.</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@800;900&family=Fraunces:ital,opsz,wght@1,9..144,400;1,9..144,500&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/poster.css">
+</head>
+<body>
+  <article class="poster" data-track="dsa">
+    <span class="mark mark--tl"></span><span class="mark mark--tr"></span><span class="mark mark--bl"></span><span class="mark mark--br"></span>
+    <p class="spine">Foundations series — software engineering mental models</p>
+    <div class="rule"></div><div class="ghost">130</div><div class="vignette"></div>
+    <svg class="grain" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="4" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(#n)"></rect></svg>
+    <header class="mast">
+      <p class="kicker"><span>DSA</span><span class="dot"></span><span class="whisper">Skip duplicates</span></p>
+      <h1 class="title">Sort. Then two <span class="title-accent">pointers for three.</span></h1>
+      <p class="lede">3Sum: unique triples a+b+c=0. Sort first. Fix i, then two-pointers on i+1..n−1 for the pair that sums to −a[i]. Skip duplicate a[i] and duplicate lo/hi values so each triple is unique. O(n²) time, O(1) extra besides sort.</p>
+    </header>
+    <section class="stage">
+      <div class="stage-inner">
+        <div class="compare">
+          <div class="compare-pane compare-pane--hit">
+            <p class="pane-label">Fix i · lo/hi on the rest</p>
+            <h2 class="pane-title">Sort + 2P</h2>
+            <div class="codeblock ok">[-1,0,1,2,-1,-4]
+sort [-4,-1,-1,0,1,2]
+
+i at first -1:
+[-1,-1,2] and [-1,0,1]
+skip the second -1 as a fix
+
+lo starts at i+1, never 0</div>
+            <p class="caption">On a hit: record, skip equal <code>a[lo]</code>/<code>a[hi]</code>, then <code>lo++</code> <code>hi--</code>. Wrong sum: move one side.</p>
+          </div>
+          <div class="compare-vs">vs</div>
+          <div class="compare-pane">
+            <p class="pane-label">Hashset of pairs per i</p>
+            <h2 class="pane-title">Messy unique</h2>
+            <div class="codeblock">no sort, no skip:
+[-1,0,1] twice
+from each -1 as i
+
+lo = 0:
+a[i] pairs with the left
+same index, or a used twice
+
+set of tuples: extra hash,
+slower to write</div>
+            <p class="caption">It can work. The expected write is sort, two pointers, skip-dups — uniqueness is the skip, not a set.</p>
+          </div>
+        </div>
+        <div class="deck">
+          <div class="deck-row"><span class="deck-k">What</span><p>k-sum generalizes: sort, recurse k−1, two-pointers at k=2. Skip dups at every level. 4Sum is this with one more loop, still O(n³). Unsorted 3Sum with a hash is possible; uniqueness and the write are worse.</p></div>
+          <div class="deck-row"><span class="deck-k">Why</span><p>LeetCode 15 / 16 / 18. The pattern is “reduce to 2Sum on a sorted array” (plates 54, 129). Say uniqueness is skip-dups, not an extra set of tuples.</p></div>
+          <div class="deck-row deck-row--trap"><span class="deck-k">Trap</span><p>Not sorting. Not skipping dups — floods the answer with repeats. Moving both lo and hi, or neither, when the sum is wrong. Starting lo at 0 so <code>a[i]</code> can pair with itself on the left.</p></div>
+        </div>
+      </div>
+    </section>
+    <footer class="foot"><p class="one-liner"></p><p class="plate-id">Plate 130 / 200</p></footer>
+  </article>
+</body>
+</html>

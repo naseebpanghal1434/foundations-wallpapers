@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PLATE 365 — The index is the next commit.</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@800;900&family=Fraunces:ital,opsz,wght@1,9..144,400;1,9..144,500&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/poster.css">
+</head>
+<body>
+  <article class="poster" data-track="tools">
+    <span class="mark mark--tl"></span><span class="mark mark--tr"></span><span class="mark mark--bl"></span><span class="mark mark--br"></span>
+    <p class="spine">Foundations series — software engineering mental models</p>
+    <div class="rule"></div><div class="ghost">365</div><div class="vignette"></div>
+    <svg class="grain" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="4" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(#n)"></rect></svg>
+    <header class="mast">
+      <p class="kicker"><span>Tools</span><span class="dot"></span><span class="whisper">git add · staging</span></p>
+      <h1 class="title">The index is <span class="title-accent">the next commit.</span></h1>
+      <p class="lede">Three trees: HEAD (last commit), the index/staging (what commit will write), and the working directory. <code>git add</code> copies worktree → index; <code>git commit</code> writes a tree from the index and a commit whose parent is HEAD. <code>git reset</code> moves those pointers; the flags decide how far.</p>
+    </header>
+    <section class="stage">
+      <div class="stage-inner">
+        <div class="compare">
+          <div class="compare-pane">
+            <p class="pane-label">Edit, never add</p>
+            <h2 class="pane-title">Worktree</h2>
+            <div class="codeblock">HEAD     README = v1
+index    README = v1
+worktree README = v2
+
+commit → still v1
+status: modified, unstaged</div>
+            <p class="caption">The next commit is the index, not the files on disk.</p>
+          </div>
+          <div class="compare-vs">vs</div>
+          <div class="compare-pane compare-pane--hit">
+            <p class="pane-label">Add, then edit again</p>
+            <h2 class="pane-title">Staged</h2>
+            <div class="codeblock">add  → index = v2
+edit → worktree = v3
+
+commit writes v2
+v3 stays unstaged
+
+restore --staged
+un-copies index ← HEAD</div>
+            <p class="caption"><code>git status</code> is the three-way diff of HEAD / index / worktree.</p>
+          </div>
+        </div>
+        <div class="deck">
+          <div class="deck-row"><span class="deck-k">What</span><p>A snapshot you build, then name. Not a list of patches. <code>add</code> records bytes at that moment.</p></div>
+          <div class="deck-row"><span class="deck-k">Why</span><p>Partial commits. “Why didn’t my change ship” — it was in the worktree, never the index.</p></div>
+          <div class="deck-row deck-row--trap"><span class="deck-k">Trap</span><p><code>commit -a</code> as a reflex: skips new untracked files, includes every tracked edit. Assuming <code>add</code> watches the file afterward.</p></div>
+        </div>
+      </div>
+    </section>
+    <footer class="foot"><p class="one-liner"></p><p class="plate-id">Plate 365 / 375</p></footer>
+  </article>
+</body>
+</html>

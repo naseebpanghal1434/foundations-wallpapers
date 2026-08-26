@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PLATE 104 — Prev makes splice O(1).</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@800;900&family=Fraunces:ital,opsz,wght@1,9..144,400;1,9..144,500&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/poster.css">
+</head>
+<body>
+  <article class="poster" data-track="dsa">
+    <span class="mark mark--tl"></span><span class="mark mark--tr"></span><span class="mark mark--bl"></span><span class="mark mark--br"></span>
+    <p class="spine">Foundations series — software engineering mental models</p>
+    <div class="rule"></div><div class="ghost">104</div><div class="vignette"></div>
+    <svg class="grain" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="4" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(#n)"></rect></svg>
+    <header class="mast">
+      <p class="kicker"><span>DSA</span><span class="dot"></span><span class="whisper">LRU node · two links</span></p>
+      <h1 class="title">Prev makes <span class="title-accent">splice O(1).</span></h1>
+      <p class="lede">A doubly-linked node has <code>prev</code> and <code>next</code>. If you already hold the node, unlink is four pointer writes — O(1), no scan. LRU cache is a hashmap from key to node plus this list for recency. The map finds; the list splices.</p>
+    </header>
+    <section class="stage">
+      <div class="stage-inner">
+        <div class="steps">
+          <div class="step"><span class="step-n">1</span><p class="step-copy">Two sentinels<span><code>dummyH ⇄ A ⇄ B ⇄ C ⇄ dummyT</code>. Head and tail are never null, so every real node has two neighbors. Least-recent sits after <code>dummyH</code>.</span></p><span class="step-meta">sentinels</span></div>
+          <div class="step"><span class="step-n">2</span><p class="step-copy">Unlink B<span><code>A.next=C</code>, <code>C.prev=A</code>, then clear <code>B.prev</code>/<code>B.next</code>. Four writes. O(1) only because you already hold B — finding by value is still O(n).</span></p><span class="step-meta">cut</span></div>
+          <div class="step step--hit"><span class="step-n">3</span><p class="step-copy">Move B to tail<span>Most-recent: unlink, then attach before <code>dummyT</code>. LRU get/put is this splice plus a hash map (plate 150). Evict <code>dummyH.next</code>.</span></p><span class="step-meta">recency</span></div>
+        </div>
+        <div class="deck">
+          <div class="deck-row"><span class="deck-k">What</span><p>Four links to cut a node (its neighbors and its own <code>prev</code>/<code>next</code>). O(1) only if you have the node. Finding by value is still O(n) — that is why LRU pairs the list with a hash map (plate 150).</p></div>
+          <div class="deck-row"><span class="deck-k">Why</span><p>LRU, LFU’s recency list, browser history, deque internals. Interview design: “O(1) get and put” forces hash + DLL. Say both.</p></div>
+          <div class="deck-row deck-row--trap"><span class="deck-k">Trap</span><p>Forgetting to update both directions — a one-way splice corrupts the list. Deleting while iterating without saving <code>next</code>. Using a singly list for LRU and scanning for the victim — that’s O(n), not O(1).</p></div>
+        </div>
+      </div>
+    </section>
+    <footer class="foot"><p class="one-liner"></p><p class="plate-id">Plate 104 / 200</p></footer>
+  </article>
+</body>
+</html>

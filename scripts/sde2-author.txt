@@ -1,0 +1,22 @@
+Foundations SDE-2 design plates 201–225 — authoring contract
+
+Write posters/{id}.html only. Do NOT edit catalog.json, index.html, poster.css, other plates, or scripts.
+
+Chrome: copy plates 91 or 100. Differences:
+- data-track="{track}" from spec (system | backend | database | network)
+- kicker left word = spec.kicker (System | Backend | Database | Network)
+- Footer: Plate N / 225
+- Ghost: unpadded N
+- Title MUST equal spec.title via spec.lead + <span class="title-accent">spec.accent</span>
+- Whisper = spec.whisper
+- Lede = spec.lede, you may tighten one clause but keep facts
+- Keep ledes to 2–3 sentences. What/Why/Trap each 1–2 sentences. Overflow clips the Trap on 14" (1964px). Prefer short.
+
+Layout: spec.layout (compare | trio | steps). stage--wide only for trio.
+Classes allowed: same as posters 91/100 — compare, trio, box, box--pool, steps, step, step--hit, codeblock, codeblock ok, caption, deck, deck-row, deck-row--trap. Do not invent CSS.
+
+Escape &lt; &gt; &amp;. Cross-ref plates as "plate 33" not links.
+Accuracy: Redis INCR+Lua for limiter, outbox in SAME db transaction, WS directory+pubsub, money as cents ledger, geohash+neighbors, hold-then-pay, signed URL not proxy bytes.
+These are PRODUCT DESIGNS that compose older concept plates. Do not retitle plate 33/35/91.
+
+When done, list files written and confirm titles match spec.

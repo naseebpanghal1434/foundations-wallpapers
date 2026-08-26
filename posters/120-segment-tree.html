@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PLATE 120 — Each node is a range.</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@800;900&family=Fraunces:ital,opsz,wght@1,9..144,400;1,9..144,500&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/poster.css">
+</head>
+<body>
+  <article class="poster" data-track="dsa">
+    <span class="mark mark--tl"></span><span class="mark mark--tr"></span><span class="mark mark--bl"></span><span class="mark mark--br"></span>
+    <p class="spine">Foundations series — software engineering mental models</p>
+    <div class="rule"></div><div class="ghost">120</div><div class="vignette"></div>
+    <svg class="grain" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="4" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(#n)"></rect></svg>
+    <header class="mast">
+      <p class="kicker"><span>DSA</span><span class="dot"></span><span class="whisper">Range query · point update</span></p>
+      <h1 class="title">Each node <span class="title-accent">is a range.</span></h1>
+      <p class="lede">A segment tree is a binary tree over the array’s ranges. The root is [0,n). Left is the first half, right the second. A node stores an aggregate (sum, min, gcd) of its range. Query and point update walk O(log n) nodes. Build is O(n).</p>
+    </header>
+    <section class="stage">
+      <div class="stage-inner">
+        <div class="compare">
+          <div class="compare-pane compare-pane--hit">
+            <p class="pane-label">a = [1, 3, 5, 7] · sum</p>
+            <h2 class="pane-title">The tree</h2>
+            <div class="codeblock ok">        16 [0,4)
+       /         \
+    4 [0,2)    12 [2,4)
+    /    \      /    \
+   1      3    5      7
+query [1,3) = 3+5
+  full leaf + full leaf</div>
+            <p class="caption">Invariant: node = merge(left, right). Tree array size ~4n. Half-open [l,r).</p>
+          </div>
+          <div class="compare-vs">vs</div>
+          <div class="compare-pane">
+            <p class="pane-label">Point update, walk up</p>
+            <h2 class="pane-title">Set a[2]=10</h2>
+            <div class="codeblock">leaf 5 → 10
+[2,4)  12 → 17
+root   16 → 21
+[1, 3, 10, 7]
+
+walk to the leaf, set,
+recompute each parent</div>
+            <p class="caption">O(log n) nodes touch. Fenwick does prefix sums simpler (plate 121). Min/gcd want this tree.</p>
+          </div>
+        </div>
+        <div class="deck">
+          <div class="deck-row"><span class="deck-k">What</span><p>Associative merge (sum, min, max, gcd). Point update + range query, or lazy range update. Index-tree form or recursive with mid. ~4n slots so 2*node / 2*node+1 never run off the end.</p></div>
+          <div class="deck-row"><span class="deck-k">Why</span><p>Range-sum / range-min with updates. Interview bar: say the invariant “node = merge(left, right)” and O(log n). Prefix arrays die the moment one cell changes.</p></div>
+          <div class="deck-row deck-row--trap"><span class="deck-k">Trap</span><p>Building n². Off-by-one on half-open [l,r). Using a segment tree when a prefix array would do (no updates). Lazy propagation without a spec for range add — skip unless asked.</p></div>
+        </div>
+      </div>
+    </section>
+    <footer class="foot"><p class="one-liner"></p><p class="plate-id">Plate 120 / 200</p></footer>
+  </article>
+</body>
+</html>

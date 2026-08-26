@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PLATE 186 — DFS the board. Mark the cell.</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@800;900&family=Fraunces:ital,opsz,wght@1,9..144,400;1,9..144,500&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/poster.css">
+</head>
+<body>
+  <article class="poster" data-track="dsa">
+    <span class="mark mark--tl"></span><span class="mark mark--tr"></span><span class="mark mark--bl"></span><span class="mark mark--br"></span>
+    <p class="spine">Foundations series — software engineering mental models</p>
+    <div class="rule"></div><div class="ghost">186</div><div class="vignette"></div>
+    <svg class="grain" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="4" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(#n)"></rect></svg>
+    <header class="mast">
+      <p class="kicker"><span>DSA</span><span class="dot"></span><span class="whisper">Backtrack on a grid</span></p>
+      <h1 class="title">DFS the board. <span class="title-accent">Mark the cell.</span></h1>
+      <p class="lede">Word search: does the word exist as a 4-dir path of cells, no reuse. DFS from every cell that matches <code>word[0]</code>. At step k, try four neighbors matching <code>word[k]</code>. Mark visited (swap the cell to <code>'#'</code>) and undo on return. Prune bounds, mismatch, visited. Word search II: a trie of words, DFS once, not per word (plate 62).</p>
+    </header>
+    <section class="stage">
+      <div class="stage-inner">
+        <div class="steps">
+          <div class="step"><span class="step-n">1</span><p class="step-copy">ABCE / SFCS / ADEE · word ABCCED<span>Start at A, then B, C, C, E, D. 4-dir, not 8. Found → return true immediately.</span></p><span class="step-meta">LC 79</span></div>
+          <div class="step step--hit"><span class="step-n">2</span><p class="step-copy">Mark, recurse, unmark<span><code>board[r][c] = '#'</code> then four neighbors, then restore the letter. Mark/unmark is the undo. Don’t copy the board.</span></p><span class="step-meta"># then restore</span></div>
+          <div class="step"><span class="step-n">3</span><p class="step-copy">Word search II is a trie walk<span>One DFS from each cell, follow trie edges, collect when <code>end</code>. Not a separate search per dictionary word. O(m n 4<sup>L</sup>) worst, L = word length.</span></p><span class="step-meta">LC 212</span></div>
+        </div>
+        <p class="caption">Another start must be allowed to reuse those cells — that’s why you undo. A visited set of coordinates is the same idea, heavier.</p>
+        <div class="deck">
+          <div class="deck-row"><span class="deck-k">What</span><p>Grid backtracking. Mark/unmark is the undo (plate 181 on a board). Found → return true. Bounds, mismatch, already-marked: prune. 4-dir unless the spec says otherwise.</p></div>
+          <div class="deck-row"><span class="deck-k">Why</span><p>LeetCode 79/212. Mix of grid DFS (plate 118) and backtracking undo. 212 is the “now do it for a dictionary” follow-up — a trie, not n independent searches.</p></div>
+          <div class="deck-row deck-row--trap"><span class="deck-k">Trap</span><p>Not unmarking. Reusing a cell. 8-dir. Searching the whole remaining board with a set of coordinates instead of from the current cell. Building all paths when a boolean exists.</p></div>
+        </div>
+      </div>
+    </section>
+    <footer class="foot"><p class="one-liner"></p><p class="plate-id">Plate 186 / 200</p></footer>
+  </article>
+</body>
+</html>

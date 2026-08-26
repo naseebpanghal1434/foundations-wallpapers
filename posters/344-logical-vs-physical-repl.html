@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PLATE 344 — Physical ships pages. Logical ships rows.</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@800;900&family=Fraunces:ital,opsz,wght@1,9..144,400;1,9..144,500&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/poster.css">
+</head>
+<body>
+  <article class="poster" data-track="database">
+    <span class="mark mark--tl"></span><span class="mark mark--tr"></span><span class="mark mark--bl"></span><span class="mark mark--br"></span>
+    <p class="spine">Foundations series — software engineering mental models</p>
+    <div class="rule"></div><div class="ghost">344</div><div class="vignette"></div>
+    <svg class="grain" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="4" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(#n)"></rect></svg>
+    <header class="mast">
+      <p class="kicker"><span>Database</span><span class="dot"></span><span class="whisper">WAL shipping · pgoutput</span></p>
+      <h1 class="title">Physical ships pages. <span class="title-accent">Logical ships rows.</span></h1>
+      <p class="lede">Physical/streaming: the replica is the same bytes (block-for-block), same major version, read-only hot standby. Logical: decode WAL to row events, apply to another schema or version, selective tables. Logical is CDC, upgrades, heterogeneous. Physical is HA.</p>
+    </header>
+    <section class="stage">
+      <div class="stage-inner">
+        <div class="compare">
+          <div class="compare-pane compare-pane--hit">
+            <p class="pane-label">Same cluster, extra copy</p>
+            <h2 class="pane-title">Physical</h2>
+            <div class="codeblock ok">primary WAL
+  → streaming
+replica replay
+  8 KiB pages
+
+same major version
+hot standby reads
+failover target</div>
+            <p class="caption">Byte clone. You cannot skip a table. Lag is replay lag (plate 99).</p>
+          </div>
+          <div class="compare-vs">vs</div>
+          <div class="compare-pane">
+            <p class="pane-label">Row events, other shape</p>
+            <h2 class="pane-title">Logical</h2>
+            <div class="codeblock">PUBLICATION
+  → slot (pgoutput)
+  → subscriber
+    INSERT/UPDATE/DELETE
+
+CDC, major upgrades
+Debezium (plate 224)</div>
+            <p class="caption">Slots retain WAL until consumed. A stuck slot fills the disk.</p>
+          </div>
+        </div>
+        <div class="deck">
+          <div class="deck-row"><span class="deck-k">What</span><p>Same-cluster clone vs an event stream of rows. Both can lag. Logical needs a replica identity (usually the PK) to emit UPDATEs.</p></div>
+          <div class="deck-row"><span class="deck-k">Why</span><p>HA vs integration. Physical for “the other box has the same bytes.” Logical when the subscriber is not a twin.</p></div>
+          <div class="deck-row deck-row--trap"><span class="deck-k">Trap</span><p>Logical on a chatty table without replica identity. A replication slot left behind after dropping a consumer — WAL grows until the disk doesn’t.</p></div>
+        </div>
+      </div>
+    </section>
+    <footer class="foot"><p class="one-liner"></p><p class="plate-id">Plate 344 / 375</p></footer>
+  </article>
+</body>
+</html>

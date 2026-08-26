@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PLATE 69 — Frames die. Heap objects live.</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@800;900&family=Fraunces:ital,opsz,wght@1,9..144,400;1,9..144,500&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/poster.css">
+</head>
+<body>
+  <article class="poster" data-track="lang">
+    <span class="mark mark--tl"></span><span class="mark mark--tr"></span><span class="mark mark--bl"></span><span class="mark mark--br"></span>
+    <p class="spine">Foundations series — software engineering mental models</p>
+    <div class="rule"></div><div class="ghost">69</div><div class="vignette"></div>
+    <svg class="grain" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="4" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(#n)"></rect></svg>
+    <header class="mast">
+      <p class="kicker"><span>Language</span><span class="dot"></span><span class="whisper">8 MiB stack · malloc/mmap</span></p>
+      <h1 class="title">Frames die. <span class="title-accent">Heap objects live.</span></h1>
+      <p class="lede">A call pushes a stack frame (return address, saved frame pointer, locals) and return pops it. Linux default pthread stack is 8 MiB; x86-64 stacks grow down. Heap objects come from <code>malloc</code> / <code>brk</code> / <code>mmap</code> / <code>new</code> and outlive the frame until nothing points at them (plate 70). Never <code>return &amp;local</code> — that address is junk after the pop.</p>
+    </header>
+    <section class="stage stage--wide">
+      <div class="stage-inner">
+        <div class="facts">
+          <div class="fact">
+            <p class="fact-k">Stack</p>
+            <p class="fact-n">8 MiB</p>
+            <p class="fact-c">Per thread. LIFO frames. Allocation is add to RSP. Gone on return. C: <code>int x</code> lives here.</p>
+          </div>
+          <div class="fact fact--hit">
+            <p class="fact-k">Heap</p>
+            <p class="fact-n">brk / mmap</p>
+            <p class="fact-c"><code>User</code>, arrays, closures. Lifetime is reachability (or <code>free</code>). The binding <code>p</code> was in the frame; the object is here.</p>
+          </div>
+          <div class="fact">
+            <p class="fact-k">Frame</p>
+            <p class="fact-n">RIP · RBP</p>
+            <p class="fact-c">Return address, saved RBP, args, locals. Recursion (plate 56) is this stack, not the heap data structure (plate 52).</p>
+          </div>
+          <div class="fact">
+            <p class="fact-k">C bug</p>
+            <p class="fact-n">return &amp;x</p>
+            <p class="fact-c"><code>int *f(){ int x=1; return &amp;x; }</code> — use-after-return. JS will not give you that address.</p>
+          </div>
+        </div>
+        <div class="deck">
+          <div class="deck-row"><span class="deck-k">What</span><p>Stack = per-call storage, popped on return. Heap = objects whose lifetime is reachability. Closures move captured bindings onto the heap (plate 23). A binary heap is a third word (plate 63).</p></div>
+          <div class="deck-row"><span class="deck-k">Why</span><p>Explains mutation vs copy (plate 68) and why a returned inner function still sees <code>count</code>. Interviews want the picture, then the C dangling pointer.</p></div>
+          <div class="deck-row deck-row--trap"><span class="deck-k">Trap</span><p>Answering “what’s a stack?” with heap-vs-stack memory when they wanted LIFO (plate 52) — or the reverse. Also: treating JS numbers as heap boxes; engines tag small ints.</p></div>
+        </div>
+      </div>
+    </section>
+    <footer class="foot"><p class="one-liner"></p><p class="plate-id">Plate 69 / 375</p></footer>
+  </article>
+</body>
+</html>

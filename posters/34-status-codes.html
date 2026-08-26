@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PLATE 34 — Status codes are a contract.</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@800;900&family=Fraunces:ital,opsz,wght@1,9..144,400;1,9..144,500&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/poster.css">
+</head>
+<body>
+  <article class="poster" data-track="backend">
+    <span class="mark mark--tl"></span><span class="mark mark--tr"></span><span class="mark mark--bl"></span><span class="mark mark--br"></span>
+    <p class="spine">Foundations series — software engineering mental models</p>
+    <div class="rule"></div><div class="ghost">34</div><div class="vignette"></div>
+    <svg class="grain" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="4" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(#n)"></rect></svg>
+    <header class="mast">
+      <p class="kicker"><span>Backend</span><span class="dot"></span><span class="whisper">RFC 9110 · 2xx 4xx 5xx</span></p>
+      <h1 class="title">Status codes are <span class="title-accent">a contract.</span></h1>
+      <p class="lede">The number tells the client what to do next. 2xx succeeded. 4xx the client must change the request. 5xx the client may retry. Returning 200 with <code>{ "error": true }</code> hides that contract from browsers, caches, load balancers, and on-call.</p>
+    </header>
+    <section class="stage stage--wide">
+      <div class="stage-inner">
+        <div class="facts">
+          <div class="fact fact--hit">
+            <p class="fact-k">done</p>
+            <p class="fact-n">200 201 204</p>
+            <p class="fact-c">200 OK. 201 Created + Location. 204 no body. 304 cache still valid (not a 2xx, no body).</p>
+          </div>
+          <div class="fact">
+            <p class="fact-k">your request</p>
+            <p class="fact-n">401 ≠ 403</p>
+            <p class="fact-c">401 who are you. 403 we know you, no. 400 bad input. 404 missing. 409 conflict. 429 slow down.</p>
+          </div>
+          <div class="fact">
+            <p class="fact-k">our fault</p>
+            <p class="fact-n">500 502 503</p>
+            <p class="fact-c">500 bug. 502 bad gateway (upstream died). 503 unavailable. 504 gateway timeout. Retry 502/503/504, not 400.</p>
+          </div>
+          <div class="fact">
+            <p class="fact-k">the rule</p>
+            <p class="fact-n">4 vs 5</p>
+            <p class="fact-c">User can fix the request → 4xx. Try later → 5xx. 301/308 preserve vs change method. 429 is a limit, not a crash.</p>
+          </div>
+        </div>
+        <div class="deck">
+          <div class="deck-row"><span class="deck-k">What</span><p>RFC 9110. 404 on a missing id, 400 on a malformed id. 409 when the version doesn’t match (optimistic lock). 429 + <code>Retry-After</code>. 401 ≠ 403 (plate 14).</p></div>
+          <div class="deck-row"><span class="deck-k">Why</span><p>Load balancers, caches, and retry libraries key off the number. A 200-error means they cache a failure and never retry a blip.</p></div>
+          <div class="deck-row deck-row--trap"><span class="deck-k">Trap</span><p>200 for everything. 500 for validation errors (blames you, retries forever). 404 for “not allowed” (hides existence — sometimes intentional). 301 vs 302 if you care about method preservation.</p></div>
+        </div>
+      </div>
+    </section>
+    <footer class="foot"><p class="one-liner"></p><p class="plate-id">Plate 34 / 375</p></footer>
+  </article>
+</body>
+</html>

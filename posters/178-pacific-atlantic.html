@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PLATE 178 — Two oceans. BFS from both shores.</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@800;900&family=Fraunces:ital,opsz,wght@1,9..144,400;1,9..144,500&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/poster.css">
+</head>
+<body>
+  <article class="poster" data-track="dsa">
+    <span class="mark mark--tl"></span><span class="mark mark--tr"></span><span class="mark mark--bl"></span><span class="mark mark--br"></span>
+    <p class="spine">Foundations series — software engineering mental models</p>
+    <div class="rule"></div><div class="ghost">178</div><div class="vignette"></div>
+    <svg class="grain" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="4" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(#n)"></rect></svg>
+    <header class="mast">
+      <p class="kicker"><span>DSA</span><span class="dot"></span><span class="whisper">Multi-source · uphill</span></p>
+      <h1 class="title">Two oceans. <span class="title-accent">BFS from both shores.</span></h1>
+      <p class="lede">Pacific Atlantic water flow: which cells can reach both oceans? Water flows to equal-or-lower. Invert: flow uphill from each ocean. Multi-source BFS/DFS from Pacific-border cells, same from Atlantic, intersect the two reachable sets. O(rows×cols).</p>
+    </header>
+    <section class="stage">
+      <div class="stage-inner">
+        <div class="compare">
+          <div class="compare-pane compare-pane--hit">
+            <p class="pane-label">Search uphill from the sea</p>
+            <h2 class="pane-title">Two floods</h2>
+            <div class="codeblock ok">P P P P P     top/left  = Pacific
+P 3 3 5 A     bot/right = Atlantic
+P 3 4 4 A     step to h[v] ≥ h[u]
+P 5 4 4 A
+A A A A A
+
+P-set ∩ A-set
+= cells that can reach both</div>
+            <div class="bullets">
+              <div>Climb. Corners sit on both shores.</div>
+              <div>Same multi-source template as plate 174.</div>
+            </div>
+          </div>
+          <div class="compare-vs">vs</div>
+          <div class="compare-pane">
+            <p class="pane-label">From every cell, both ways</p>
+            <h2 class="pane-title">n² DFS</h2>
+            <div class="codeblock">for each cell:
+  DFS downhill, hope
+  you hit P and A
+repeats work
+worst O(n²) cells × n
+
+union-find without a
+height plan: also wrong</div>
+            <div class="bullets">
+              <div>Rotting oranges / walls-and-gates: same BFS.</div>
+              <div>A border cell already belongs to that ocean.</div>
+            </div>
+          </div>
+        </div>
+        <div class="deck">
+          <div class="deck-row"><span class="deck-k">What</span><p>Reachability from two sources. Intersection. Flow is reversed so you climb: a neighbor is allowed iff its height ≥ current. Each cell enters each ocean’s set at most once — O(n).</p></div>
+          <div class="deck-row"><span class="deck-k">Why</span><p>LeetCode 417. Tests that you flip the search direction. Interviewers like “why from the ocean?” — because downhill from every cell redoes the same valleys.</p></div>
+          <div class="deck-row deck-row--trap"><span class="deck-k">Trap</span><p>Simulating downhill from every cell. Strict <code>&lt;</code> instead of <code>≤</code> (equal height is a legal flow). Forgetting a border belongs to an ocean. Using union-find without a plan for height constraints.</p></div>
+        </div>
+      </div>
+    </section>
+    <footer class="foot"><p class="one-liner"></p><p class="plate-id">Plate 178 / 200</p></footer>
+  </article>
+</body>
+</html>

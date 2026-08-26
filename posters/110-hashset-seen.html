@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PLATE 110 — Have I seen this?</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@800;900&family=Fraunces:ital,opsz,wght@1,9..144,400;1,9..144,500&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/poster.css">
+</head>
+<body>
+  <article class="poster" data-track="dsa">
+    <span class="mark mark--tl"></span><span class="mark mark--tr"></span><span class="mark mark--bl"></span><span class="mark mark--br"></span>
+    <p class="spine">Foundations series — software engineering mental models</p>
+    <div class="rule"></div><div class="ghost">110</div><div class="vignette"></div>
+    <svg class="grain" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="4" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(#n)"></rect></svg>
+    <header class="mast">
+      <p class="kicker"><span>DSA</span><span class="dot"></span><span class="whisper">Membership · first dup</span></p>
+      <h1 class="title">Have I <span class="title-accent">seen this?</span></h1>
+      <p class="lede">A hash set is a map with no values — only membership. Add, remove, contains: average O(1). The interview line is “seen.” First duplicate, longest consecutive sequence (start a run only if <code>n-1</code> is missing), a sliding window of unique chars.</p>
+    </header>
+    <section class="stage">
+      <div class="stage-inner">
+        <div class="steps">
+          <div class="step"><span class="step-n">1</span><p class="step-copy">First duplicate<span>Walk <code>[3,1,4,1]</code>. seen <code>{3}</code>, <code>{3,1}</code>, <code>{3,1,4}</code>, then <code>1</code> already in → first dup. Membership, not a scan of the prefix.</span></p><span class="step-meta">dup</span></div>
+          <div class="step step--hit"><span class="step-n">2</span><p class="step-copy">Longest consecutive<span><code>[100,4,200,1,3,2]</code> → set. For <code>x</code>, if <code>x-1</code> not in set, count <code>x, x+1, …</code>. Only 1 starts the run 1–4. Each number is a start at most once → O(n).</span></p><span class="step-meta">run</span></div>
+          <div class="step"><span class="step-n">3</span><p class="step-copy">Window of unique chars<span>Set of chars in <code>[l,r]</code>. Repeat at <code>r</code> → shrink <code>l</code> until it leaves. Longest substring without a repeat (plate 55) is this set plus two pointers.</span></p><span class="step-meta">window</span></div>
+        </div>
+        <div class="deck">
+          <div class="deck-row"><span class="deck-k">What</span><p>Membership. No order (<code>HashSet</code>). Need order? <code>TreeSet</code> / ordered set (plate 125) is log n. Python <code>set</code>, JS <code>Set</code>, Java <code>HashSet</code>.</p></div>
+          <div class="deck-row"><span class="deck-k">Why</span><p>Dedup, “exists,” graph visited, union of two arrays. Consecutive sequence is the trick that looks sort-O(n log n) and is O(n) with a set.</p></div>
+          <div class="deck-row deck-row--trap"><span class="deck-k">Trap</span><p>Checking <code>x-1 in set</code> inside the count loop without the start-of-run test — becomes O(n²). Using a list as “seen” — contains is O(n). Floating keys and NaN. Assuming iteration order.</p></div>
+        </div>
+      </div>
+    </section>
+    <footer class="foot"><p class="one-liner"></p><p class="plate-id">Plate 110 / 200</p></footer>
+  </article>
+</body>
+</html>

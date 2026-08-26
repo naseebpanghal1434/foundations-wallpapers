@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PLATE 277 — Keep-alive is reuse, not magic.</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@800;900&family=Fraunces:ital,opsz,wght@1,9..144,400;1,9..144,500&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/poster.css">
+</head>
+<body>
+  <article class="poster" data-track="network">
+    <span class="mark mark--tl"></span><span class="mark mark--tr"></span><span class="mark mark--bl"></span><span class="mark mark--br"></span>
+    <p class="spine">Foundations series — software engineering mental models</p>
+    <div class="rule"></div><div class="ghost">277</div><div class="vignette"></div>
+    <svg class="grain" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="4" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(#n)"></rect></svg>
+    <header class="mast">
+      <p class="kicker"><span>Network</span><span class="dot"></span><span class="whisper">Connection: keep-alive</span></p>
+      <h1 class="title">Keep-alive is reuse, <span class="title-accent">not magic.</span></h1>
+      <p class="lede">Keep-alive (HTTP/1.1 default) leaves the TCP/TLS socket open for the next request, skipping handshake and slow start (plates 78, 276). Idle timeouts on the load balancer, NAT, and origin will still kill it.</p>
+    </header>
+    <section class="stage">
+      <div class="stage-inner">
+        <div class="compare">
+          <div class="compare-pane">
+            <p class="pane-label">GET, FIN, GET</p>
+            <h2 class="pane-title">Two TLS</h2>
+            <div class="codeblock">GET /a   200
+FIN
+TCP + TLS again
+GET /b   200
+
+Connection: close
+ends the socket</div>
+            <p class="caption">You paid the handshake twice. A pool of idle sockets is the real design (plate 3).</p>
+          </div>
+          <div class="compare-vs">vs</div>
+          <div class="compare-pane compare-pane--hit">
+            <p class="pane-label">GET, GET · same fd</p>
+            <h2 class="pane-title">Reuse</h2>
+            <div class="codeblock">GET /a   200
+GET /b   200
+same fd
+
+H1: one at a time
+H2: reuse + multiplex</div>
+            <p class="caption">Timeouts must agree. Proxies may coalesce or not (plate 286).</p>
+          </div>
+        </div>
+        <div class="deck">
+          <div class="deck-row"><span class="deck-k">What</span><p>Reuse the session. Client, load balancer, and server idle timers must agree. Recycle idle connections on purpose.</p></div>
+          <div class="deck-row"><span class="deck-k">Why</span><p>APIs, browsers, gRPC channels. Tail latency is often a new handshake, not the handler.</p></div>
+          <div class="deck-row deck-row--trap"><span class="deck-k">Trap</span><p>Infinite idle. Mismatched timeouts: NAT 60s, you think 5 minutes — mystery resets. One giant H1 keep-alive and a greedy neighbor blocking the line.</p></div>
+        </div>
+      </div>
+    </section>
+    <footer class="foot"><p class="one-liner"></p><p class="plate-id">Plate 277 / 286</p></footer>
+  </article>
+</body>
+</html>

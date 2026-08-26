@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PLATE 01 — HTTP rides on TCP.</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@800;900&family=Fraunces:ital,opsz,wght@1,9..144,400;1,9..144,500&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/poster.css">
+</head>
+<body>
+  <article class="poster" data-track="network">
+    <span class="mark mark--tl"></span><span class="mark mark--tr"></span><span class="mark mark--bl"></span><span class="mark mark--br"></span>
+    <p class="spine">Foundations series — software engineering mental models</p>
+    <div class="rule"></div><div class="ghost">01</div><div class="vignette"></div>
+    <svg class="grain" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="4" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(#n)"></rect></svg>
+    <header class="mast">
+      <p class="kicker"><span>Network</span><span class="dot"></span><span class="whisper">L7 on L4 · 80 / 443</span></p>
+      <h1 class="title">HTTP <span class="verb">rides on</span> TCP.</h1>
+      <p class="lede">HTTP (RFC 9110) is methods, headers, status, body. TCP (RFC 9293) is <code>SOCK_STREAM</code>: <code>connect</code>, sequence numbers, ACKs, retransmit. HTTP/1.1 and HTTP/2 use TCP; HTTP/3 keeps the same HTTP on QUIC/UDP 443 (plate 275).</p>
+    </header>
+    <section class="stage stage--wide">
+      <div class="stage-inner">
+        <div class="facts facts-5">
+          <div class="fact"><p class="fact-k">TCP</p><p class="fact-n">1 RTT</p><p class="fact-c">SYN, SYN-ACK, ACK. ~20 ms metro, 80–150 ms US/EU</p></div>
+          <div class="fact fact--hit"><p class="fact-k">TLS 1.3</p><p class="fact-n">+1 RTT</p><p class="fact-c">Port 443. 0-RTT resume is replayable (plate 279)</p></div>
+          <div class="fact"><p class="fact-k">HTTP/1.1</p><p class="fact-n">one req</p><p class="fact-c">Per fd until the response ends. 80 or 443</p></div>
+          <div class="fact"><p class="fact-k">HTTP/2</p><p class="fact-n">streams</p><p class="fact-c">Many streams, one TCP. HOL is still TCP (plate 274)</p></div>
+          <div class="fact"><p class="fact-k">HTTP/3</p><p class="fact-n">UDP 443</p><p class="fact-c">Same GET/200. Transport is QUIC, not TCP</p></div>
+        </div>
+        <div class="legend">
+          <div class="codeblock">socket() → connect()          // 1 RTT handshake
+write(fd, "GET /api HTTP/1.1\r\nHost: api.shop.io\r\n\r\n")
+read(fd)  →  200 / 404 / 500   // HTTP parses; TCP only delivered bytes</div>
+        </div>
+        <div class="deck">
+          <div class="deck-row"><span class="deck-k">What</span><p>HTTP parses methods and status. TCP is <code>connect/send/recv/close</code> on a sequenced stream. Layers, not alternatives.</p></div>
+          <div class="deck-row"><span class="deck-k">Why</span><p><code>ECONNREFUSED</code> is TCP. Cert alert is TLS. <code>503</code> is HTTP. Naming the layer is the debug (plate 13).</p></div>
+          <div class="deck-row deck-row--trap"><span class="deck-k">Trap</span><p>Picking “TCP or HTTP.” HTTP/3 is still HTTP — only the transport is QUIC. Blocking UDP/443 forces a fallback to HTTP/2.</p></div>
+        </div>
+      </div>
+    </section>
+    <footer class="foot"><p class="one-liner"></p><p class="plate-id">Plate 01 / 375</p></footer>
+  </article>
+</body>
+</html>

@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PLATE 163 — Partition like quicksort. Stop at k.</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@800;900&family=Fraunces:ital,opsz,wght@1,9..144,400;1,9..144,500&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/poster.css">
+</head>
+<body>
+  <article class="poster" data-track="dsa">
+    <span class="mark mark--tl"></span><span class="mark mark--tr"></span><span class="mark mark--bl"></span><span class="mark mark--br"></span>
+    <p class="spine">Foundations series — software engineering mental models</p>
+    <div class="rule"></div><div class="ghost">163</div><div class="vignette"></div>
+    <svg class="grain" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="4" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(#n)"></rect></svg>
+    <header class="mast">
+      <p class="kicker"><span>DSA</span><span class="dot"></span><span class="whisper">Quickselect · average O(n)</span></p>
+      <h1 class="title">Partition like quicksort. <span class="title-accent">Stop at k.</span></h1>
+      <p class="lede">Kth largest: heap of size k is O(n log k). Quickselect partitions like quicksort and keeps one side. Pivot at index n−k is the answer. Average O(n); shuffle so worst-case sorted input doesn’t go quadratic.</p>
+    </header>
+    <section class="stage">
+      <div class="stage-inner">
+        <div class="compare">
+          <div class="compare-pane compare-pane--hit">
+            <p class="pane-label">One side dies · like quicksort</p>
+            <h2 class="pane-title">Quickselect</h2>
+            <div class="codeblock ok">[3,2,1,5,6,4]  k=2
+n-k = 4
+
+shuffle first
+pivot 4 lands at 3
+3 &lt; 4 → search right
+pivot 5 lands at 4
+answer 5</div>
+            <p class="caption">In-place, not stable. Duplicates: 3-way partition helps. kth smallest is index k−1.</p>
+          </div>
+          <div class="compare-vs">or</div>
+          <div class="compare-pane">
+            <p class="pane-label">Always n log k</p>
+            <h2 class="pane-title">Heap of k</h2>
+            <div class="codeblock">min-heap size 2
+scan 3,2,1,5,6,4
+keep the large:
+  [5, 6]
+root 5 = kth
+
+O(n log k)
+no worst n²</div>
+            <p class="caption">Same min-heap as plate 63 / 162. Follow-up when they fear the quadratic case.</p>
+          </div>
+        </div>
+        <p class="caption">Shuffle so adversarial sorted input doesn’t quadratic. Recursing both sides is sort — you only need the side that holds n−k.</p>
+        <div class="deck">
+          <div class="deck-row"><span class="deck-k">What</span><p>Quickselect = quicksort without the other side. Average O(n) from n + n/2 + n/4 + …. Heap of size k is the safe write.</p></div>
+          <div class="deck-row"><span class="deck-k">Why</span><p>LeetCode 215. Name <em>average</em> O(n). Worst case: heap, or median-of-medians (don’t code it).</p></div>
+          <div class="deck-row deck-row--trap"><span class="deck-k">Trap</span><p>kth largest is index n−k, not k. Recursing both sides. Heap of n. Saying O(n) without “average.”</p></div>
+        </div>
+      </div>
+    </section>
+    <footer class="foot"><p class="one-liner"></p><p class="plate-id">Plate 163 / 200</p></footer>
+  </article>
+</body>
+</html>

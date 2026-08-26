@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PLATE 183 — Swap i with each later j.</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@800;900&family=Fraunces:ital,opsz,wght@1,9..144,400;1,9..144,500&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/poster.css">
+</head>
+<body>
+  <article class="poster" data-track="dsa">
+    <span class="mark mark--tl"></span><span class="mark mark--tr"></span><span class="mark mark--bl"></span><span class="mark mark--br"></span>
+    <p class="spine">Foundations series — software engineering mental models</p>
+    <div class="rule"></div><div class="ghost">183</div><div class="vignette"></div>
+    <svg class="grain" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="4" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(#n)"></rect></svg>
+    <header class="mast">
+      <p class="kicker"><span>DSA</span><span class="dot"></span><span class="whisper">n! · used array</span></p>
+      <h1 class="title">Swap i with <span class="title-accent">each later j.</span></h1>
+      <p class="lede">Permutations: n! orders. Two writes. (1) <code>used[]</code> boolean, loop all indices not used, append, recurse, pop. (2) in-place swap: for <code>j</code> in <code>i..n-1</code> swap i,j, recurse i+1, swap back. Duplicates: sort, skip equal j at the same depth, or the swap version with a local set of values already placed at i.</p>
+    </header>
+    <section class="stage">
+      <div class="stage-inner">
+        <div class="compare">
+          <div class="compare-pane compare-pane--hit">
+            <p class="pane-label">used[] · record at length n</p>
+            <h2 class="pane-title">Choose i</h2>
+            <div class="codeblock ok">[1,2,3]  first slot 1|2|3
+fix 1 → 12,13
+fix 2 → 21,23
+fix 3 → 31,32
+6 leaves = 3!
+
+for i in 0..n-1:
+  if used[i]: continue
+  used[i]=1; path+=nums[i]
+  bt(); pop; used[i]=0</div>
+            <div class="bullets">
+              <div>Unlike subsets, you loop remaining items, not a suffix.</div>
+              <div>LC 46 unique nums, 47 with dups.</div>
+            </div>
+          </div>
+          <div class="compare-vs">vs</div>
+          <div class="compare-pane">
+            <p class="pane-label">In place · swap back</p>
+            <h2 class="pane-title">Swap</h2>
+            <div class="codeblock">[1,2,3] i=0
+swap with 0,1,2
+  [1,2,3] [2,1,3] [3,2,1]
+then i=1 on each
+
+start-index like subsets:
+  you skip earlier items
+  forever — not n!</div>
+            <div class="bullets">
+              <div>Heap’s algorithm exists; they want used[] or swap.</div>
+              <div>Next permutation (LC 31) is a different O(n) trick.</div>
+            </div>
+          </div>
+        </div>
+        <div class="deck">
+          <div class="deck-row"><span class="deck-k">What</span><p>O(n · n!) to write. Path length n is the leaf — record only there. Swap is the same tree without a <code>used[]</code>. Duplicates: sort and skip, or a set of values already tried at this i.</p></div>
+          <div class="deck-row"><span class="deck-k">Why</span><p>LeetCode 46/47. The other child of plate 181. Next permutation (LC 31) is find the descent, swap, reverse the tail — mention if they ask in-place next, not all perms.</p></div>
+          <div class="deck-row deck-row--trap"><span class="deck-k">Trap</span><p>Start-index like subsets (you skip earlier items forever). Not marking used so 1 is picked twice. Dup skip without sort. Recording before path length n.</p></div>
+        </div>
+      </div>
+    </section>
+    <footer class="foot"><p class="one-liner"></p><p class="plate-id">Plate 183 / 200</p></footer>
+  </article>
+</body>
+</html>

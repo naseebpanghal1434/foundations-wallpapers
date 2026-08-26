@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PLATE 245 — ETag asks: has this changed?</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@800;900&family=Fraunces:ital,opsz,wght@1,9..144,400;1,9..144,500&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/poster.css">
+</head>
+<body>
+  <article class="poster" data-track="frontend">
+    <span class="mark mark--tl"></span><span class="mark mark--tr"></span><span class="mark mark--bl"></span><span class="mark mark--br"></span>
+    <p class="spine">Foundations series — software engineering mental models</p>
+    <div class="rule"></div><div class="ghost">245</div><div class="vignette"></div>
+    <svg class="grain" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="4" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(#n)"></rect></svg>
+    <header class="mast">
+      <p class="kicker"><span>Frontend</span><span class="dot"></span><span class="whisper">If-None-Match · 304</span></p>
+      <h1 class="title">ETag asks: <span class="title-accent">has this changed?</span></h1>
+      <p class="lede">ETag is a version token for a representation. The client sends <code>If-None-Match</code>; a match returns <code>304 Not Modified</code> — no body, the cache already has the bytes.</p>
+    </header>
+    <section class="stage">
+      <div class="stage-inner">
+        <div class="steps">
+          <div class="step"><span class="step-n">1</span><p class="step-copy">First GET keeps a token<span><code>GET /app.js</code> → <code>200</code> plus <code>ETag: "abc"</code>. Pair with <code>Cache-Control: no-cache</code> so it stores but revalidates.</span></p><span class="step-meta">200</span></div>
+          <div class="step step--hit"><span class="step-n">2</span><p class="step-copy">Ask with If-None-Match<span>Next load: <code>If-None-Match: "abc"</code>. Weak tags (<code>W/</code>) compare semantic equality. <code>Last-Modified</code> is the date cousin.</span></p><span class="step-meta">validator</span></div>
+          <div class="step"><span class="step-n">3</span><p class="step-copy">304 — empty body, same bytes<span>Success with no payload. The cache already has the file. Must-revalidate on money pages.</span></p><span class="step-meta">304</span></div>
+        </div>
+        <div class="deck">
+          <div class="deck-row"><span class="deck-k">What</span><p>Validator + conditional GET. <code>304</code> is success with an empty body. The cache already has the bytes.</p></div>
+          <div class="deck-row"><span class="deck-k">Why</span><p>Fast reloads, CDNs, APIs with big JSON. Cheaper than <code>max-age</code> when content changes often.</p></div>
+          <div class="deck-row deck-row--trap"><span class="deck-k">Trap</span><p>New ETag every response (timestamp) — 304 never hits. Gzip changing ETag vs identity. Ignoring 304 and parsing an empty body as JSON.</p></div>
+        </div>
+      </div>
+    </section>
+    <footer class="foot"><p class="one-liner"></p><p class="plate-id">Plate 245 / 286</p></footer>
+  </article>
+</body>
+</html>

@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PLATE 369 — 0 succeeded. Nonzero is the error code.</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@800;900&family=Fraunces:ital,opsz,wght@1,9..144,400;1,9..144,500&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/poster.css">
+</head>
+<body>
+  <article class="poster" data-track="tools">
+    <span class="mark mark--tl"></span><span class="mark mark--tr"></span><span class="mark mark--bl"></span><span class="mark mark--br"></span>
+    <p class="spine">Foundations series — software engineering mental models</p>
+    <div class="rule"></div><div class="ghost">369</div><div class="vignette"></div>
+    <svg class="grain" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="4" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(#n)"></rect></svg>
+    <header class="mast">
+      <p class="kicker"><span>Tools</span><span class="dot"></span><span class="whisper">waitpid · 0–255</span></p>
+      <h1 class="title">0 succeeded. <span class="title-accent">Nonzero is the error code.</span></h1>
+      <p class="lede"><code>exit(n)</code> is an 8-bit status: 0 means success for shells and Make. 1 generic fail, 2 misuse, 127 not found, 128+N killed by signal N (SIGKILL → 137). <code>set -e</code> aborts a shell on nonzero; CI is a chain of these integers.</p>
+    </header>
+    <section class="stage stage--wide">
+      <div class="stage-inner">
+        <div class="facts facts-5">
+          <div class="fact fact--hit">
+            <p class="fact-k">ok</p>
+            <p class="fact-n">0</p>
+            <p class="fact-c">success. Make and shells continue.</p>
+          </div>
+          <div class="fact">
+            <p class="fact-k">fail</p>
+            <p class="fact-n">1</p>
+            <p class="fact-c">generic error. grep: no match.</p>
+          </div>
+          <div class="fact">
+            <p class="fact-k">PATH</p>
+            <p class="fact-n">127</p>
+            <p class="fact-c">command not found. 126 = not executable.</p>
+          </div>
+          <div class="fact">
+            <p class="fact-k">SIGINT</p>
+            <p class="fact-n">130</p>
+            <p class="fact-c">128+2. Ctrl-C. SIGTERM is 143.</p>
+          </div>
+          <div class="fact">
+            <p class="fact-k">SIGKILL</p>
+            <p class="fact-n">137</p>
+            <p class="fact-c">128+9. OOM killer. Cannot catch.</p>
+          </div>
+        </div>
+        <p class="caption">waitpid packs exit in bits 15–8; the shell maps signal N to 128+N. Python <code>sys.exit</code>. stdout may still have data.</p>
+        <div class="deck">
+          <div class="deck-row"><span class="deck-k">What</span><p>The process’s summary integer, 0–255. Not a substitute for the streams (plate 368).</p></div>
+          <div class="deck-row"><span class="deck-k">Why</span><p>Scripts, container <code>restartPolicy</code>, Make recipes. CI is literally these codes in a chain.</p></div>
+          <div class="deck-row deck-row--trap"><span class="deck-k">Trap</span><p><code>exit(256)</code> becomes 0. Returning <code>-1</code> from main → 255. grep no-match is 1 — “failure” under <code>set -e</code> pipelines.</p></div>
+        </div>
+      </div>
+    </section>
+    <footer class="foot"><p class="one-liner"></p><p class="plate-id">Plate 369 / 375</p></footer>
+  </article>
+</body>
+</html>

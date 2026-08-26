@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PLATE 286 — One connection can serve many hosts.</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@800;900&family=Fraunces:ital,opsz,wght@1,9..144,400;1,9..144,500&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/poster.css">
+</head>
+<body>
+  <article class="poster" data-track="network">
+    <span class="mark mark--tl"></span><span class="mark mark--tr"></span><span class="mark mark--bl"></span><span class="mark mark--br"></span>
+    <p class="spine">Foundations series — software engineering mental models</p>
+    <div class="rule"></div><div class="ghost">286</div><div class="vignette"></div>
+    <svg class="grain" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="4" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(#n)"></rect></svg>
+    <header class="mast">
+      <p class="kicker"><span>Network</span><span class="dot"></span><span class="whisper">SNI · coalescing · HTTP/2</span></p>
+      <h1 class="title">One connection can serve <span class="title-accent">many hosts.</span></h1>
+      <p class="lede">HTTP/2 coalescing: if two hostnames share an IP and the cert covers both (SAN or wildcard), the browser may reuse one TLS connection. SNI named the host at handshake; <code>:authority</code> on each stream picks the host after that.</p>
+    </header>
+    <section class="stage">
+      <div class="stage-inner">
+        <div class="compare">
+          <div class="compare-pane compare-pane--hit">
+            <p class="pane-label">Same IP · cert covers both</p>
+            <h2 class="pane-title">One socket</h2>
+            <div class="codeblock">a.cdn.com
+b.cdn.com
+A     203.0.113.8
+SAN   *.cdn.com
+
+SNI then :authority
+→ 1 TLS, many streams</div>
+            <p class="caption">Partition cookies by host still. Coalescing is a client optimization, not a server toggle by name.</p>
+          </div>
+          <div class="compare-vs">vs</div>
+          <div class="compare-pane">
+            <p class="pane-label">Different IP or cert</p>
+            <h2 class="pane-title">Two sockets</h2>
+            <div class="codeblock">a.cdn.com  203.0.113.8
+b.cdn.com  203.0.113.9
+or SAN misses b
+
+HTTP/1 cannot
+multiplex names
+on one fd anyway</div>
+            <p class="caption">CDNs love coalescing. Origin isolation hates a surprise shared connection.</p>
+          </div>
+        </div>
+        <div class="deck">
+          <div class="deck-row"><span class="deck-k">What</span><p>Connection reuse across names when IP and cert both allow it. HTTP/1 cannot multiplex those names on one fd.</p></div>
+          <div class="deck-row"><span class="deck-k">Why</span><p>Sharding on a CDN can collapse back to one connection (often good). A wildcard cert has blast radius.</p></div>
+          <div class="deck-row deck-row--trap"><span class="deck-k">Trap</span><p>Assuming Host: is isolated because you terminated TLS per domain on one IP — the client may still coalesce. Cookie Domain too wide (plate 280).</p></div>
+        </div>
+      </div>
+    </section>
+    <footer class="foot"><p class="one-liner"></p><p class="plate-id">Plate 286 / 286</p></footer>
+  </article>
+</body>
+</html>

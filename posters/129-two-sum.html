@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PLATE 129 — Remember what you already saw.</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@800;900&family=Fraunces:ital,opsz,wght@1,9..144,400;1,9..144,500&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/poster.css">
+</head>
+<body>
+  <article class="poster" data-track="dsa">
+    <span class="mark mark--tl"></span><span class="mark mark--tr"></span><span class="mark mark--bl"></span><span class="mark mark--br"></span>
+    <p class="spine">Foundations series — software engineering mental models</p>
+    <div class="rule"></div><div class="ghost">129</div><div class="vignette"></div>
+    <svg class="grain" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="4" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(#n)"></rect></svg>
+    <header class="mast">
+      <p class="kicker"><span>DSA</span><span class="dot"></span><span class="whisper">Hash · one pass</span></p>
+      <h1 class="title">Remember what <span class="title-accent">you already saw.</span></h1>
+      <p class="lede">Two-sum: indices i &lt; j with <code>a[i]+a[j]=target</code>. Nested loop is O(n²). Hash map: at i, if <code>target−a[i]</code> is in the map, return those indices; else <code>map[a[i]]=i</code>. One pass, average O(n). Sorted two-pointers is O(n) after sort but loses original indices unless you store them.</p>
+    </header>
+    <section class="stage">
+      <div class="stage-inner">
+        <div class="steps">
+          <div class="step"><span class="step-n">1</span><p class="step-copy">Lookup, then store<span><code>a=[3,2,4]</code> t=6. i=0 store 3→0. i=1 need 4, miss, store 2→1. i=2 need 2, hit 1 → <code>[1,2]</code>.</span></p><span class="step-meta">one pass</span></div>
+          <div class="step step--hit"><span class="step-n">2</span><p class="step-copy">Look up before insert<span><code>[3,3]</code> t=6. Need 3, miss, then store. Second 3 hits index 0. Insert first and you pair an index with itself.</span></p><span class="step-meta">not twice</span></div>
+          <div class="step"><span class="step-n">3</span><p class="step-copy">Sorted is a different tool<span>lo/hi, move the side that overshoots (plate 54). Needs sorted data. Unsorted two-sum is a hash, not two pointers.</span></p><span class="step-meta">plate 54</span></div>
+        </div>
+        <div class="deck">
+          <div class="deck-row"><span class="deck-k">What</span><p>Need indices → hash (plate 109). Need any pair on already-sorted data → two pointers. Need all unique pairs → sort + two pointers + skip dups (then 3Sum, plate 130). Average O(n) time, O(n) extra for the map.</p></div>
+          <div class="deck-row"><span class="deck-k">Why</span><p>LeetCode 1 — the first problem and the hashmap pattern that repeats in the 3Sum family, two-sum in a BST, two-sum less than k. Say: “store the complement I already walked.”</p></div>
+          <div class="deck-row deck-row--trap"><span class="deck-k">Trap</span><p>Using the same index twice (look up after insert, or <code>target=2*a[i]</code> with one copy). Sorting in place when the caller wanted original indices. Two pointers on unsorted data — shrinking the range is a guess.</p></div>
+        </div>
+      </div>
+    </section>
+    <footer class="foot"><p class="one-liner"></p><p class="plate-id">Plate 129 / 200</p></footer>
+  </article>
+</body>
+</html>

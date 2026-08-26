@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PLATE 360 — HSTS remembers HTTPS. The first HTTP visit is still open.</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@800;900&family=Fraunces:ital,opsz,wght@1,9..144,400;1,9..144,500&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/poster.css">
+</head>
+<body>
+  <article class="poster" data-track="backend">
+    <span class="mark mark--tl"></span><span class="mark mark--tr"></span><span class="mark mark--bl"></span><span class="mark mark--br"></span>
+    <p class="spine">Foundations series — software engineering mental models</p>
+    <div class="rule"></div><div class="ghost">360</div><div class="vignette"></div>
+    <svg class="grain" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="4" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(#n)"></rect></svg>
+    <header class="mast">
+      <p class="kicker"><span>Backend</span><span class="dot"></span><span class="whisper">Strict-Transport-Security · preload</span></p>
+      <h1 class="title">HSTS remembers HTTPS. <span class="title-accent">The first HTTP visit is still open.</span></h1>
+      <p class="lede"><code>Strict-Transport-Security: max-age=31536000; includeSubDomains; preload</code>. After one HTTPS response, the browser will not speak HTTP to that host for max-age. Preload bakes it into Chrome; the first visit (or a captive portal) can still be MITM without preload.</p>
+    </header>
+    <section class="stage">
+      <div class="stage-inner">
+        <div class="steps">
+          <div class="step">
+            <span class="step-n">1</span>
+            <p class="step-copy">First GET http://bank — MITM possible<span>SSL strip on the first HTTP hop. No HSTS yet. Captive portals sit here. Preload is the only pin before first visit.</span></p>
+            <span class="step-meta">TOFU</span>
+          </div>
+          <div class="step">
+            <span class="step-n">2</span>
+            <p class="step-copy">HTTPS + HSTS header<span><code>max-age=31536000</code> (365 d). <code>includeSubDomains</code>. <code>preload</code> only after you mean it for every subdomain.</span></p>
+            <span class="step-meta">set</span>
+          </div>
+          <div class="step step--hit">
+            <span class="step-n">3</span>
+            <p class="step-copy">Later http upgraded internally, never sent<span>The browser does not put HTTP on the wire. <code>max-age=0</code> disables. Mixed content is a separate rule.</span></p>
+            <span class="step-meta">pin</span>
+          </div>
+        </div>
+        <div class="deck">
+          <div class="deck-row"><span class="deck-k">What</span><p>A browser pin to TLS. Server-side HTTPS-only is not the same as HSTS — the redirect itself is strippable.</p></div>
+          <div class="deck-row"><span class="deck-k">Why</span><p>SSL stripping. Why preload exists for banks. max-age is seconds; 31536000 is a year.</p></div>
+          <div class="deck-row deck-row--trap"><span class="deck-k">Trap</span><p>HSTS on a host that still has HTTP-only subdomains. Tiny max-age. HTTP→HTTPS redirect without HSTS (the redirect itself is strippable).</p></div>
+        </div>
+      </div>
+    </section>
+    <footer class="foot"><p class="one-liner"></p><p class="plate-id">Plate 360 / 375</p></footer>
+  </article>
+</body>
+</html>

@@ -1,0 +1,70 @@
+Foundations wave 2 — authoring contract
+========================================
+
+Write one complete HTML file per plate: posters/{id}.html
+Do NOT edit catalog.json, index.html, poster.css, other plates, or scripts.
+
+Chrome (copy exactly, swap NUMBER, ID, TITLE, WHISPER, ACCENT, LEDE, BODY, N):
+
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PLATE N — TITLE</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@800;900&family=Fraunces:ital,opsz,wght@1,9..144,400;1,9..144,500&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/poster.css">
+</head>
+<body>
+  <article class="poster" data-track="dsa">
+    <span class="mark mark--tl"></span><span class="mark mark--tr"></span><span class="mark mark--bl"></span><span class="mark mark--br"></span>
+    <p class="spine">Foundations series — software engineering mental models</p>
+    <div class="rule"></div><div class="ghost">N</div><div class="vignette"></div>
+    <svg class="grain" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="4" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(#n)"></rect></svg>
+    <header class="mast">
+      <p class="kicker"><span>DSA</span><span class="dot"></span><span class="whisper">WHISPER</span></p>
+      <h1 class="title">LEAD <span class="title-accent">ACCENT</span></h1>
+      <p class="lede">LEDE</p>
+    </header>
+    <section class="stage OR stage stage--wide">
+      <div class="stage-inner">
+        DIAGRAM
+        <div class="deck">
+          <div class="deck-row"><span class="deck-k">What</span><p>WHAT</p></div>
+          <div class="deck-row"><span class="deck-k">Why</span><p>WHY</p></div>
+          <div class="deck-row deck-row--trap"><span class="deck-k">Trap</span><p>TRAP</p></div>
+        </div>
+      </div>
+    </section>
+    <footer class="foot"><p class="one-liner"></p><p class="plate-id">Plate N / 200</p></footer>
+  </article>
+</body>
+</html>
+
+Title: use class title-accent on the last phrase (usually the second sentence). Keep the visible title identical to catalog title.
+Ghost number: unpadded (101 not 0101). Plate-id: "Plate 101 / 200".
+Kicker left word is always DSA. Whisper is short uppercase-friendly (the CSS already uppercases).
+
+Layout classes you MAY use (already in poster.css). Do not invent classes.
+- compare / compare-pane / compare-pane--hit / compare-vs / pane-label / pane-title
+- trio / box / box--pool / box-title / col-label
+- grid4 / hops / hop / hop--here / hop-n / hop-name / hop-copy
+- steps / step / step--hit / step-n / step-copy / step-meta
+- codeblock  (add class "ok" when that pane is the good pattern)
+- caption / bullets / rows / row / row--read / chips / chip
+- pipeline only if it fits; prefer compare, trio, steps, grid4
+Use stage--wide for trio and grid4.
+
+HTML: escape < > & in code as &lt; &gt; &amp;. Use <code> for identifiers. Use <em> sparingly.
+
+Voice: punchy, accurate, wallpaper-distance. Like plates 49–64. Concrete numbers and a worked example in the diagram. Name the interview problem. Cross-ref older plates as "plate 51" not links.
+
+Accuracy over slogans. If a complexity is average, say average. Include the standard trap.
+
+Density: lede 2–4 sentences. What/Why/Trap each 2–4 sentences. Diagram must teach, not decorate.
+
+Do not wrap lines in codeblocks with extra indent that will show. Keep codeblock text left-aligned.
+
+Existing plates 49–64 are overviews (Big O, array vs list, hashmap, stack/queue, binary search, two pointers, sliding window, recursion, traversals, BST vs heap, BFS/DFS, graphs, DP, trie, heaps, sorting). Wave 2 goes deeper with examples and named problems. Do not copy their titles. Overlap of topic is OK if the example is new.

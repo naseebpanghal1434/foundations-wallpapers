@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PLATE 330 — Acquire sees the store. Relaxed does not.</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@800;900&family=Fraunces:ital,opsz,wght@1,9..144,400;1,9..144,500&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/poster.css">
+</head>
+<body>
+  <article class="poster" data-track="lang">
+    <span class="mark mark--tl"></span><span class="mark mark--tr"></span><span class="mark mark--bl"></span><span class="mark mark--br"></span>
+    <p class="spine">Foundations series — software engineering mental models</p>
+    <div class="rule"></div><div class="ghost">330</div><div class="vignette"></div>
+    <svg class="grain" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="4" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(#n)"></rect></svg>
+    <header class="mast">
+      <p class="kicker"><span>Lang</span><span class="dot"></span><span class="whisper">C11 · memory_order</span></p>
+      <h1 class="title">Acquire sees the store. <span class="title-accent">Relaxed does not.</span></h1>
+      <p class="lede">Atomics without a mutex still need an order. <code>relaxed</code>: atomicity only. An acquire load sees all stores before the matching release store. <code>seq_cst</code>: a global order, slowest. x86 is TSO — many orders compile to the same <code>MOV</code>; ARM and RISC-V do not.</p>
+    </header>
+    <section class="stage">
+      <div class="stage-inner">
+        <div class="compare">
+          <div class="compare-pane">
+            <p class="pane-label">Atomicity only · ARM stale</p>
+            <h2 class="pane-title">Relaxed</h2>
+            <div class="codeblock">data = 42;
+flag.store(1, relaxed);
+
+if (flag.load(relaxed))
+  use(data);
+  // may be stale
+  // on ARM / RISC-V
+
+x86 TSO often hides this</div>
+            <p class="caption">A data race on a non-atomic is UB in C++ (plate 327). Wrong order on an atomic is a silent stale read.</p>
+          </div>
+          <div class="compare-vs">vs</div>
+          <div class="compare-pane compare-pane--hit">
+            <p class="pane-label">Happens-before</p>
+            <h2 class="pane-title">Acq / rel</h2>
+            <div class="codeblock">data = 42;
+flag.store(1, release);
+
+if (flag.load(acquire))
+  use(data);
+  // sees 42
+
+seq_cst: one total
+order, more fences</div>
+            <p class="caption">Java <code>volatile</code> ≈ acquire/release. Go happens-before via channel send. Not C <code>volatile</code> (plate 331).</p>
+          </div>
+        </div>
+        <div class="deck">
+          <div class="deck-row"><span class="deck-k">What</span><p>Release publishes prior writes; acquire observes them. Relaxed is a single atomic location with no envelope. <code>seq_cst</code> is a process-wide total order.</p></div>
+          <div class="deck-row"><span class="deck-k">Why</span><p>Lock-free flags, once-flags, message passing without a mutex. The flag is the handshake; the payload is ordinary writes before the release.</p></div>
+          <div class="deck-row deck-row--trap"><span class="deck-k">Trap</span><p>Copying an x86-only mental model to ARM (phones, Apple silicon, Graviton). Using C <code>volatile</code> as a mutex (plate 331).</p></div>
+        </div>
+      </div>
+    </section>
+    <footer class="foot"><p class="one-liner"></p><p class="plate-id">Plate 330 / 375</p></footer>
+  </article>
+</body>
+</html>

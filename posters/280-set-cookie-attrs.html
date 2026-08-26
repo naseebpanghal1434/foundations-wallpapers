@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PLATE 280 — Secure, HttpOnly, Path. That's the cookie.</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@800;900&family=Fraunces:ital,opsz,wght@1,9..144,400;1,9..144,500&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/poster.css">
+</head>
+<body>
+  <article class="poster" data-track="network">
+    <span class="mark mark--tl"></span><span class="mark mark--tr"></span><span class="mark mark--bl"></span><span class="mark mark--br"></span>
+    <p class="spine">Foundations series — software engineering mental models</p>
+    <div class="rule"></div><div class="ghost">280</div><div class="vignette"></div>
+    <svg class="grain" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="4" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(#n)"></rect></svg>
+    <header class="mast">
+      <p class="kicker"><span>Network</span><span class="dot"></span><span class="whisper">Set-Cookie · host-only</span></p>
+      <h1 class="title">Secure, HttpOnly, Path. <span class="title-accent">That's the cookie.</span></h1>
+      <p class="lede">The cookie is a response header: <code>Set-Cookie: name=value</code> plus attributes. Secure means HTTPS only; HttpOnly means no JS (plate 232); Path and Domain scope where it is sent — missing flags are the vulnerability.</p>
+    </header>
+    <section class="stage">
+      <div class="stage-inner">
+        <div class="steps">
+          <div class="step step--hit">
+            <span class="step-n">1</span>
+            <p class="step-copy">Set-Cookie: sid=…; Secure; HttpOnly; Path=/; SameSite=Lax<span>Max-Age=3600. SameSite is also an attribute (plate 233). <code>__Host-</code> needs Secure and Path=/.</span></p>
+            <span class="step-meta">header</span>
+          </div>
+          <div class="step">
+            <span class="step-n">2</span>
+            <p class="step-copy">Browser stores it<span>You cannot later add HttpOnly from JS. Size ~4KB. Host-only (no Domain) is tighter than Domain=.example.com.</span></p>
+            <span class="step-meta">jar</span>
+          </div>
+          <div class="step">
+            <span class="step-n">3</span>
+            <p class="step-copy">Matching request includes Cookie: sid=…<span>Domain=.example.com sends to subdomains. Each cookie needs its own Set-Cookie line.</span></p>
+            <span class="step-meta">Cookie:</span>
+          </div>
+        </div>
+        <div class="deck">
+          <div class="deck-row"><span class="deck-k">What</span><p>Server-set credentials with a send policy. The flags are the contract, not the name=value pair.</p></div>
+          <div class="deck-row"><span class="deck-k">Why</span><p>Session design. Frontend plates 231–233 are the browser side; this is the header.</p></div>
+          <div class="deck-row deck-row--trap"><span class="deck-k">Trap</span><p>Set-Cookie without Secure on an HTTPS site — still sent on a later HTTP navigation. Domain too wide. Two cookies jammed on one header line so one overwrites the other.</p></div>
+        </div>
+      </div>
+    </section>
+    <footer class="foot"><p class="one-liner"></p><p class="plate-id">Plate 280 / 286</p></footer>
+  </article>
+</body>
+</html>

@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PLATE 143 — A peak is bigger than both neighbors.</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@800;900&family=Fraunces:ital,opsz,wght@1,9..144,400;1,9..144,500&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/poster.css">
+</head>
+<body>
+  <article class="poster" data-track="dsa">
+    <span class="mark mark--tl"></span><span class="mark mark--tr"></span><span class="mark mark--bl"></span><span class="mark mark--br"></span>
+    <p class="spine">Foundations series — software engineering mental models</p>
+    <div class="rule"></div><div class="ghost">143</div><div class="vignette"></div>
+    <svg class="grain" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="4" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(#n)"></rect></svg>
+    <header class="mast">
+      <p class="kicker"><span>DSA</span><span class="dot"></span><span class="whisper">Bitonic · log n</span></p>
+      <h1 class="title">A peak is bigger <span class="title-accent">than both neighbors.</span></h1>
+      <p class="lede">A peak is bigger than both neighbors. Any array has one. If <code>a[mid] &lt; a[mid+1]</code>, a peak sits to the right; else at mid or left. O(log n). Any peak is enough unless they said mountain.</p>
+    </header>
+    <section class="stage">
+      <div class="stage-inner">
+        <div class="compare">
+          <div class="compare-pane compare-pane--hit">
+            <p class="pane-label">Slope tells the side</p>
+            <h2 class="pane-title">Climb right</h2>
+            <div class="codeblock ok">[1, 3, 2, 1]
+mid=1 val=3 &gt; both → peak
+
+[1, 2, 3, 1]
+mid=1 val=2 &lt; 3
+if a[mid] &lt; a[mid+1]:
+  lo = mid+1   # peak right
+else:
+  hi = mid     # peak here/left
+
+return lo      # any peak</div>
+            <p class="caption">Usually <code>a[i] != a[i+1]</code> is promised. Edges compare one neighbor.</p>
+          </div>
+          <div class="compare-vs">vs</div>
+          <div class="compare-pane">
+            <p class="pane-label">Unique max vs any peak</p>
+            <h2 class="pane-title">Mountain</h2>
+            <div class="codeblock">bitonic: up then down
+peak = the unique max
+same walk as 162
+
+LC 1095 find in mountain:
+  1) peak
+  2) binary left
+  3) binary right
+≠ “return any peak”</div>
+            <p class="caption">Linear scan also finds a peak. They want log n. Global max is not required unless they said mountain.</p>
+          </div>
+        </div>
+        <div class="deck">
+          <div class="deck-row"><span class="deck-k">What</span><p>Local max via “is the slope up?” No target <code>x</code>. 2D: max of a mid column, step toward the larger neighbor column.</p></div>
+          <div class="deck-row"><span class="deck-k">Why</span><p>LeetCode 162 / 852. Binary search without a target. Mountain peak (852) is the unique case of the same walk.</p></div>
+          <div class="deck-row deck-row--trap"><span class="deck-k">Trap</span><p>Shrinking the wrong side. <code>lo=mid</code> with no progress. Requiring the global max unless they said mountain.</p></div>
+        </div>
+      </div>
+    </section>
+    <footer class="foot"><p class="one-liner"></p><p class="plate-id">Plate 143 / 200</p></footer>
+  </article>
+</body>
+</html>

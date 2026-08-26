@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PLATE 59 — BFS is a queue. DFS is a stack.</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@800;900&family=Fraunces:ital,opsz,wght@1,9..144,400;1,9..144,500&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/poster.css">
+</head>
+<body>
+  <article class="poster" data-track="dsa">
+    <span class="mark mark--tl"></span><span class="mark mark--tr"></span><span class="mark mark--bl"></span><span class="mark mark--br"></span>
+    <p class="spine">Foundations series — software engineering mental models</p>
+    <div class="rule"></div><div class="ghost">59</div><div class="vignette"></div>
+    <svg class="grain" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="4" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(#n)"></rect></svg>
+    <header class="mast">
+      <p class="kicker"><span>DSA</span><span class="dot"></span><span class="whisper">Unweighted shortest</span></p>
+      <h1 class="title">BFS is a queue. <span class="title-accent">DFS is a stack.</span></h1>
+      <p class="lede">BFS: push neighbors on a queue, pop the oldest. You finish a level before the next — first time you hit a node is the fewest edges. DFS: a stack, or recursion’s call stack; go deep, then backtrack. Same graph (plate 60). Different order. Only BFS is unweighted shortest path.</p>
+    </header>
+    <section class="stage">
+      <div class="stage-inner">
+        <div class="compare">
+          <div class="compare-pane compare-pane--hit">
+            <p class="pane-label">FIFO · level by level</p>
+            <h2 class="pane-title">BFS</h2>
+            <div class="codeblock ok">q: [A]
+   [B C]      pop A
+   [C D E]    pop B
+first time we see D:
+  dist[D] = dist[B] + 1
+  = 2   ← shortest in edges</div>
+            <div class="bullets">
+              <div>Unweighted shortest. Grid: rotten oranges, word ladder.</div>
+              <div>Mark visited when you enqueue, not when you pop.</div>
+            </div>
+          </div>
+          <div class="compare-vs">vs</div>
+          <div class="compare-pane">
+            <p class="pane-label">LIFO · go deep</p>
+            <h2 class="pane-title">DFS</h2>
+            <div class="codeblock">stack / recursion
+A → B → D → …
+first path to D may be 5 edges
+not shortest
+
+cycle A—B, no visited:
+A → B → A → B → …</div>
+            <div class="bullets">
+              <div>Cycle, connected components, topo (finish times), a maze.</div>
+              <div>Recursion depth = path length. Stack overflow is a real bug.</div>
+            </div>
+          </div>
+        </div>
+        <div class="deck">
+          <div class="deck-row"><span class="deck-k">What</span><p>Queue vs stack is the whole trick. Both O(V+E) with a visited set. Weighted shortest is Dijkstra (a heap, plate 63) or 0-1 BFS — not “DFS with a depth variable.”</p></div>
+          <div class="deck-row"><span class="deck-k">Why</span><p>“Shortest path in a maze / bus stops / friendship hops” is BFS until someone says weights. Interviews fail people who DFS and return the first path they find.</p></div>
+          <div class="deck-row deck-row--trap"><span class="deck-k">Trap</span><p>DFS for shortest path. No <code>visited</code> on a graph with cycles (infinite, or exponential re-walks). Marking too late in BFS so the same node sits in the queue ten times. Directed vs undirected: still visit once; undirected without visited is an instant bounce.</p></div>
+        </div>
+      </div>
+    </section>
+    <footer class="foot"><p class="one-liner"></p><p class="plate-id">Plate 59 / 100</p></footer>
+  </article>
+</body>
+</html>

@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PLATE 131 — Prefix times suffix. Skip i.</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@800;900&family=Fraunces:ital,opsz,wght@1,9..144,400;1,9..144,500&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/poster.css">
+</head>
+<body>
+  <article class="poster" data-track="dsa">
+    <span class="mark mark--tl"></span><span class="mark mark--tr"></span><span class="mark mark--bl"></span><span class="mark mark--br"></span>
+    <p class="spine">Foundations series — software engineering mental models</p>
+    <div class="rule"></div><div class="ghost">131</div><div class="vignette"></div>
+    <svg class="grain" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="4" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(#n)"></rect></svg>
+    <header class="mast">
+      <p class="kicker"><span>DSA</span><span class="dot"></span><span class="whisper">No division · two passes</span></p>
+      <h1 class="title">Prefix times suffix. <span class="title-accent">Skip i.</span></h1>
+      <p class="lede">Product of the array except <code>a[i]</code>, without division (zeroes would die, and the spec forbids it). <code>left[i]</code> = product of <code>a[0..i)</code>. <code>right[i]</code> = product of <code>a[i+1..]</code>. <code>answer[i] = left[i]*right[i]</code>. Then drop the extra arrays: one output array as left, multiply a running suffix from the right.</p>
+    </header>
+    <section class="stage">
+      <div class="stage-inner">
+        <div class="steps">
+          <div class="step"><span class="step-n">1</span><p class="step-copy">Left skips i and the right<span><code>a=[1,2,3,4]</code>. <code>left=[1,1,2,6]</code> — product strictly before i. <code>left[0]=1</code> (empty product).</span></p><span class="step-meta">prefix</span></div>
+          <div class="step"><span class="step-n">2</span><p class="step-copy">Right skips i and the left<span><code>right=[24,12,4,1]</code>. Multiply: <code>ans=[24,12,8,6]</code>. Zeros: one zero → that index gets the rest, others 0. Two zeros → all 0.</span></p><span class="step-meta">suffix</span></div>
+          <div class="step step--hit"><span class="step-n">3</span><p class="step-copy">Running suffix, O(1) extra<span>After the left pass <code>ans=[1,1,2,6]</code>, <code>suffix=1</code>. i=3: <code>*=1</code> suffix=4; i=2 <code>*=4</code> suffix=12; i=1 <code>*=12</code> suffix=24; i=0 <code>*=24</code>.</span></p><span class="step-meta">in-place</span></div>
+        </div>
+        <div class="deck">
+          <div class="deck-row"><span class="deck-k">What</span><p>Prefix/suffix products. No division. <code>left[i]</code> does not include <code>a[i]</code>. The output array may count as free; a running suffix is the O(1)-extra write. Zeros fall out of the products — do not special-case unless you want to.</p></div>
+          <div class="deck-row"><span class="deck-k">Why</span><p>LeetCode 238. A poster child for “don’t divide, precompute both sides.” Same shape as trapping rain two-pass max (plate 155): a left scan, a right scan, combine at i.</p></div>
+          <div class="deck-row deck-row--trap"><span class="deck-k">Trap</span><p>Division. Multiplying the whole array then dividing by <code>a[i]</code> (fails on 0, fails the spec). <code>left[i]</code> including <code>a[i]</code>. Using O(n) extra after they asked O(1) extra — mention the running suffix.</p></div>
+        </div>
+      </div>
+    </section>
+    <footer class="foot"><p class="one-liner"></p><p class="plate-id">Plate 131 / 200</p></footer>
+  </article>
+</body>
+</html>

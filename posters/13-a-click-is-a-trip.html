@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PLATE 13 — A click is a trip.</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@800;900&family=Fraunces:ital,opsz,wght@1,9..144,400;1,9..144,500&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/poster.css">
+</head>
+<body>
+  <article class="poster" data-track="network">
+    <span class="mark mark--tl"></span><span class="mark mark--tr"></span><span class="mark mark--bl"></span><span class="mark mark--br"></span>
+    <p class="spine">Foundations series — software engineering mental models</p>
+    <div class="rule"></div><div class="ghost">13</div><div class="vignette"></div>
+    <svg class="grain" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="4" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(#n)"></rect></svg>
+    <header class="mast">
+      <p class="kicker"><span>Network</span><span class="dot"></span><span class="whisper">getaddrinfo · 502 · 500</span></p>
+      <h1 class="title">A click is <span class="title-accent">a trip.</span></h1>
+      <p class="lede"><code>fetch('/api/me')</code> is DNS + TCP + TLS + HTTP + app + DB. Metro RTT ~10–40 ms; US/EU ~80–150 ms. A miss at any hop fails the click. Map the symptom to the hop; don’t restart the app for NXDOMAIN.</p>
+    </header>
+    <section class="stage stage--wide">
+      <div class="stage-inner">
+        <div class="hops">
+          <div class="hop"><p class="hop-n">1</p><h2 class="hop-name">DNS</h2><p class="hop-copy"><code>getaddrinfo</code> A/AAAA. NXDOMAIN, SERVFAIL, 150 ms. TTL (plates 77, 278).</p></div>
+          <div class="hop"><p class="hop-n">2</p><h2 class="hop-name">TCP</h2><p class="hop-copy"><code>connect()</code> SYN. <code>ECONNREFUSED</code>, <code>ETIMEDOUT</code>. 1 RTT.</p></div>
+          <div class="hop"><p class="hop-n">3</p><h2 class="hop-name">TLS</h2><p class="hop-copy">+1 RTT (1.3). <code>certificate_expired</code>. SNI (plates 78, 279).</p></div>
+          <div class="hop hop--here"><p class="hop-n">4</p><h2 class="hop-name">HTTP</h2><p class="hop-copy"><code>GET /api/me</code> → 200 / 401 / 404 / 429 / 500.</p></div>
+          <div class="hop"><p class="hop-n">5</p><h2 class="hop-name">LB</h2><p class="hop-copy">502 bad upstream. 504 gateway timeout. 503 no healthy host.</p></div>
+          <div class="hop hop--here"><p class="hop-n">6</p><h2 class="hop-name">DB</h2><p class="hop-copy">Slow 200 = SELECT. Seq Scan vs Index (plates 02, 98).</p></div>
+        </div>
+        <div class="deck">
+          <div class="deck-row"><span class="deck-k">What</span><p>Browser → DNS → TCP/TLS → HTTP → LB → process → DB. DevTools “failed” is one hop, not all of them.</p></div>
+          <div class="deck-row"><span class="deck-k">Why</span><p>Same user report, five jobs: resolver, cert, proxy, handler, query. Interviews: name the status and the syscall.</p></div>
+          <div class="deck-row deck-row--trap"><span class="deck-k">Trap</span><p>Restarting the app for NXDOMAIN or an expired cert. Blaming the spinner — it is waiting on this RTT budget. A 500 is your process; a 502 is usually not.</p></div>
+        </div>
+      </div>
+    </section>
+    <footer class="foot"><p class="one-liner"></p><p class="plate-id">Plate 13 / 375</p></footer>
+  </article>
+</body>
+</html>

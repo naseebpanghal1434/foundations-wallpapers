@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PLATE 295 — The inode is the file. The name is a link.</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@800;900&family=Fraunces:ital,opsz,wght@1,9..144,400;1,9..144,500&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/poster.css">
+</head>
+<body>
+  <article class="poster" data-track="os">
+    <span class="mark mark--tl"></span><span class="mark mark--tr"></span><span class="mark mark--bl"></span><span class="mark mark--br"></span>
+    <p class="spine">Foundations series — software engineering mental models</p>
+    <div class="rule"></div><div class="ghost">295</div><div class="vignette"></div>
+    <svg class="grain" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="4" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(#n)"></rect></svg>
+    <header class="mast">
+      <p class="kicker"><span>OS</span><span class="dot"></span><span class="whisper">nlink · unlink</span></p>
+      <h1 class="title">The inode is the file. <span class="title-accent">The name is a link.</span></h1>
+      <p class="lede">Directory entry: name → inode number. Inode: type, mode, uid, size, timestamps, block map. nlink counts names. <code>unlink</code> removes a name; the inode and data live until nlink=0 and no fd. Hard link: two names, one inode, same filesystem. Symlink: a path string.</p>
+    </header>
+    <section class="stage">
+      <div class="stage-inner">
+        <div class="compare">
+          <div class="compare-pane">
+            <p class="pane-label">Name gone, fd held</p>
+            <h2 class="pane-title">unlink</h2>
+            <div class="codeblock">rm log while
+process has fd
+nlink → 0
+data lives until close
+then blocks free</div>
+          </div>
+          <div class="compare-vs">vs</div>
+          <div class="compare-pane compare-pane--hit">
+            <p class="pane-label">Two names, one inode</p>
+            <h2 class="pane-title">hard link</h2>
+            <div class="codeblock">ln a b
+st_dev + st_ino
+nlink = 2
+same filesystem</div>
+          </div>
+        </div>
+        <p class="caption">/proc/pid/fd/N names an open inode. rename is atomic on one filesystem; cross-device is EXDEV. Symlink is a path string.</p>
+        <div class="facts facts-3">
+          <div class="fact"><p class="fact-k">ext4 inode</p><p class="fact-n">~256 B</p><p class="fact-c">Type, mode, uid, size, block map.</p></div>
+          <div class="fact fact--hit"><p class="fact-k">max nlink</p><p class="fact-n">~65k</p><p class="fact-c">EXT4_LINK_MAX. Then EMLINK.</p></div>
+          <div class="fact"><p class="fact-k">Identity</p><p class="fact-n">dev+ino</p><p class="fact-c">Paths are lookups, not identity.</p></div>
+        </div>
+        <div class="deck">
+          <div class="deck-row"><span class="deck-k">What</span><p>Identity is the inode (device+ino). Paths are lookups. rename is atomic on one filesystem.</p></div>
+          <div class="deck-row"><span class="deck-k">Why</span><p>Why deleting a log that is still open does not free disk. Why “same file” is <code>st_dev+st_ino</code>.</p></div>
+          <div class="deck-row deck-row--trap"><span class="deck-k">Trap</span><p>Assuming unlink deletes bytes immediately. Crossing devices with rename (EXDEV). Following symlinks in security checks (TOCTOU).</p></div>
+        </div>
+      </div>
+    </section>
+    <footer class="foot"><p class="one-liner"></p><p class="plate-id">Plate 295 / 375</p></footer>
+  </article>
+</body>
+</html>

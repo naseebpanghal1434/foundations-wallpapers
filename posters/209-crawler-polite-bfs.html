@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PLATE 209 — A crawler is polite BFS.</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@800;900&family=Fraunces:ital,opsz,wght@1,9..144,400;1,9..144,500&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/poster.css">
+</head>
+<body>
+  <article class="poster" data-track="system">
+    <span class="mark mark--tl"></span><span class="mark mark--tr"></span><span class="mark mark--bl"></span><span class="mark mark--br"></span>
+    <p class="spine">Foundations series — software engineering mental models</p>
+    <div class="rule"></div><div class="ghost">209</div><div class="vignette"></div>
+    <svg class="grain" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="4" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(#n)"></rect></svg>
+    <header class="mast">
+      <p class="kicker"><span>System</span><span class="dot"></span><span class="whisper">Frontier · robots.txt · politeness</span></p>
+      <h1 class="title">A crawler is <span class="title-accent">polite BFS.</span></h1>
+      <p class="lede">A crawler is BFS over URLs (plate 59) with a per-host cap: <code>robots.txt</code>, 1 in-flight per host, <code>Crawl-delay</code>, honor <code>429</code> + <code>Retry-After</code>. Frontier = priority queue. Seen = Bloom + store (plate 123). Recrawl by change-rate, not daily-all.</p>
+    </header>
+    <section class="stage">
+      <div class="stage-inner">
+        <div class="compare">
+          <div class="compare-pane">
+            <p class="pane-label">Rude recursion</p>
+            <h2 class="pane-title">DFS scrape</h2>
+            <div class="codeblock bad">scrape(url):
+  GET url     no delay
+  for link:
+    scrape(link)
+
+ignore robots.txt
+?session= is “new”
+one global QPS
+  DDoS the small host</div>
+            <p class="caption">DFS blows the stack and the host. Querystrings are not pages. A global QPS still flattens one origin.</p>
+          </div>
+          <div class="compare-vs">vs</div>
+          <div class="compare-pane compare-pane--hit">
+            <p class="pane-label">Frontier + cap</p>
+            <h2 class="pane-title">Polite BFS</h2>
+            <div class="codeblock ok">frontier = PQ
+seen = Bloom + KV
+pop url
+  robots? delay?
+  1 in-flight / host
+  429 → Retry-After
+  normalize → enqueue</div>
+            <p class="caption">Normalize: lowercase host, strip tracking params, pick canonical. Seed sitemaps. Cache DNS and robots per host.</p>
+          </div>
+        </div>
+        <div class="deck">
+          <div class="deck-row"><span class="deck-k">What</span><p>Frontier + seen + fetcher + parser + store. Politeness is 1 in-flight per host plus crawl-delay. Respect <code>429</code> the same way a client respects a rate limiter (plate 201).</p></div>
+          <div class="deck-row"><span class="deck-k">Why</span><p>Web crawler / search-indexer design. Politeness is the interview, not the HTTP GET.</p></div>
+          <div class="deck-row deck-row--trap"><span class="deck-k">Trap</span><p>DFS recursion. No seen-set → infinite calendar links. Crawling <code>?session=</code> as unique. One global QPS. Ignoring <code>robots.txt</code> and <code>429</code>.</p></div>
+        </div>
+      </div>
+    </section>
+    <footer class="foot"><p class="one-liner"></p><p class="plate-id">Plate 209 / 375</p></footer>
+  </article>
+</body>
+</html>

@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PLATE 84 — Logs tell. Metrics count. Traces follow.</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@800;900&family=Fraunces:ital,opsz,wght@1,9..144,400;1,9..144,500&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/poster.css">
+</head>
+<body>
+  <article class="poster" data-track="backend">
+    <span class="mark mark--tl"></span><span class="mark mark--tr"></span><span class="mark mark--bl"></span><span class="mark mark--br"></span>
+    <p class="spine">Foundations series — software engineering mental models</p>
+    <div class="rule"></div><div class="ghost">84</div><div class="vignette"></div>
+    <svg class="grain" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="4" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(#n)"></rect></svg>
+    <header class="mast">
+      <p class="kicker"><span>Backend</span><span class="dot"></span><span class="whisper">RED · OTel · traceparent</span></p>
+      <h1 class="title">Logs tell. Metrics count. <span class="title-accent">Traces follow.</span></h1>
+      <p class="lede">Three telemetry signals. Logs are events: structured JSON with a <code>request_id</code>. Metrics are time series — Prometheus counters, gauges, histograms (<code>http_requests_total</code>, p99). Traces are a span tree; propagate W3C <code>traceparent</code> on every RPC. RED: rate, errors, duration. Same id in all three is how you jump from an alert to a story.</p>
+    </header>
+    <section class="stage stage--wide">
+      <div class="stage-inner">
+        <div class="facts facts-3">
+          <div class="fact">
+            <p class="fact-k">Event</p>
+            <p class="fact-n">Logs</p>
+            <p class="fact-c"><code>order.paid id=88 request_id=7f3a</code>. Why did this one fail? High volume. Not a paragraph.</p>
+          </div>
+          <div class="fact fact--hit">
+            <p class="fact-k">Time series</p>
+            <p class="fact-n">Metrics</p>
+            <p class="fact-c"><code>http_requests_total{code="500"} 42</code>. p99 180 ms → 1400 ms. Alerts live here. Cheap to scrape.</p>
+          </div>
+          <div class="fact">
+            <p class="fact-k">Span tree</p>
+            <p class="fact-n">Traces</p>
+            <p class="fact-c">checkout 220 ms → payments 180 ms → <code>db.query</code> 160 ms. OpenTelemetry. Which hop was slow?</p>
+          </div>
+        </div>
+        <div class="deck">
+          <div class="deck-row"><span class="deck-k">What</span><p>Logs: append-only events. Metrics: RED. Traces: parent/child spans. <code>request_id</code> belongs in logs and traces, not as a Prometheus label.</p></div>
+          <div class="deck-row"><span class="deck-k">Why</span><p>“It’s slow” is a trace. “How often?” is a metric. “What happened to order 88?” is a log. On-call with only one of them is guessing.</p></div>
+          <div class="deck-row deck-row--trap"><span class="deck-k">Trap</span><p>PII in logs: email, tokens, <code>Authorization</code>, whole <code>req.body</code>. High-cardinality labels: <code>user_id</code> / <code>email</code> on a metric → unbounded series, melts the TSDB.</p></div>
+        </div>
+      </div>
+    </section>
+    <footer class="foot"><p class="one-liner"></p><p class="plate-id">Plate 84 / 375</p></footer>
+  </article>
+</body>
+</html>

@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PLATE 237 — memo loses if the object is new.</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@800;900&family=Fraunces:ital,opsz,wght@1,9..144,400;1,9..144,500&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/poster.css">
+</head>
+<body>
+  <article class="poster" data-track="frontend">
+    <span class="mark mark--tl"></span><span class="mark mark--tr"></span><span class="mark mark--bl"></span><span class="mark mark--br"></span>
+    <p class="spine">Foundations series — software engineering mental models</p>
+    <div class="rule"></div><div class="ghost">237</div><div class="vignette"></div>
+    <svg class="grain" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="4" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(#n)"></rect></svg>
+    <header class="mast">
+      <p class="kicker"><span>Frontend</span><span class="dot"></span><span class="whisper">Referential equality</span></p>
+      <h1 class="title">memo loses if <span class="title-accent">the object is new.</span></h1>
+      <p class="lede">React.memo, useMemo, and useCallback skip work when refs are Object.is-equal to last time. Inline <code>{}</code> and <code>() =&gt; {}</code> are new every render, so the child memoizes nothing.</p>
+    </header>
+    <section class="stage">
+      <div class="stage-inner">
+        <div class="compare">
+          <div class="compare-pane">
+            <p class="pane-label">new {} every parent render</p>
+            <h2 class="pane-title">Always renders</h2>
+            <div class="codeblock bad">&lt;Item
+  style={{ color }}
+  onClick={() =&gt; save(id)}
+/&gt;
+memo(Item) still runs
+value={{ user }}  // same bug</div>
+            <p class="caption">Context <code>value={{user}}</code> is a new object for every consumer (plate 238).</p>
+          </div>
+          <div class="compare-vs">vs</div>
+          <div class="compare-pane compare-pane--hit">
+            <p class="pane-label">stable refs · or don’t memo</p>
+            <h2 class="pane-title">Skip if Object.is</h2>
+            <div class="codeblock ok">style = useMemo(…)
+onClick = useCallback(…, [id])
+// or data-id + parent handler
+// (plate 230)
+
+primitive props are free</div>
+            <p class="caption">Wrap the value, or don’t memo — measure first. memo is “skip if the refs match,” not “make it fast.”</p>
+          </div>
+        </div>
+        <div class="deck">
+          <div class="deck-row"><span class="deck-k">What</span><p>Shallow ref equality. Primitive props are free. memo is not “make it fast”; it is “skip if the refs match.”</p></div>
+          <div class="deck-row"><span class="deck-k">Why</span><p>Premature memo is noise. Accidental new objects are why an “optimized” tree still renders.</p></div>
+          <div class="deck-row deck-row--trap"><span class="deck-k">Trap</span><p>memo everywhere. Spreading <code>...props</code> so a new object always arrives. <code>useMemo</code> with empty deps on a value that should update.</p></div>
+        </div>
+      </div>
+    </section>
+    <footer class="foot"><p class="one-liner"></p><p class="plate-id">Plate 237 / 286</p></footer>
+  </article>
+</body>
+</html>

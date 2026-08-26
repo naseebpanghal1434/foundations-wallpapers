@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PLATE 169 — Inorder must increase. Or bounds.</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@800;900&family=Fraunces:ital,opsz,wght@1,9..144,400;1,9..144,500&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/poster.css">
+</head>
+<body>
+  <article class="poster" data-track="dsa">
+    <span class="mark mark--tl"></span><span class="mark mark--tr"></span><span class="mark mark--bl"></span><span class="mark mark--br"></span>
+    <p class="spine">Foundations series — software engineering mental models</p>
+    <div class="rule"></div><div class="ghost">169</div><div class="vignette"></div>
+    <svg class="grain" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="4" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(#n)"></rect></svg>
+    <header class="mast">
+      <p class="kicker"><span>DSA</span><span class="dot"></span><span class="whisper">low &lt; node &lt; high</span></p>
+      <h1 class="title">Inorder must increase. <span class="title-accent">Or bounds.</span></h1>
+      <p class="lede">A BST is the whole left subtree &lt; node &lt; the whole right — not just the kids. Carry bounds, or walk inorder and insist values strictly increase (plate 57).</p>
+    </header>
+    <section class="stage">
+      <div class="stage-inner">
+        <div class="compare">
+          <div class="compare-pane compare-pane--hit">
+            <p class="pane-label">The classic counterexample</p>
+            <h2 class="pane-title">Bounds</h2>
+            <div class="codeblock ok">      5
+     / \
+    1   6
+       / \
+      4   7
+
+kids of 5 look fine
+kids of 6 look fine
+4 is in the right of 5
+4 &lt; 5 — invalid
+bounds at 6: (5, ∞)
+4 fails (5, 6)</div>
+            <p class="caption">±∞ sentinels (Long in Java, None in Python). Not INT_MIN if the tree can hold INT_MIN.</p>
+          </div>
+          <div class="compare-vs">or</div>
+          <div class="compare-pane">
+            <p class="pane-label">BST inorder is sorted</p>
+            <h2 class="pane-title">Inorder</h2>
+            <div class="codeblock">walk left, node, right
+prev = −∞
+each val &gt; prev
+else false
+
+1, 5, 4, 6, 7
+5 then 4  fail</div>
+            <p class="caption">Keep a prev pointer, not a compare-to-parent. Duplicates: LC 98 is strict &lt;; some BSTs allow ≤ on one side — read it.</p>
+          </div>
+        </div>
+        <div class="deck">
+          <div class="deck-row"><span class="deck-k">What</span><p>O(n). Bounds shrink as you descend. Inorder is the same fact: a BST’s inorder is sorted.</p></div>
+          <div class="deck-row"><span class="deck-k">Why</span><p>LeetCode 98. If you cannot name 5 / 1 / 6 / 4 / 7, you have not validated a BST.</p></div>
+          <div class="deck-row deck-row--trap"><span class="deck-k">Trap</span><p>Checking only immediate children. INT_MIN colliding with a node. Inorder without a prev pointer — same kids-only bug.</p></div>
+        </div>
+      </div>
+    </section>
+    <footer class="foot"><p class="one-liner"></p><p class="plate-id">Plate 169 / 200</p></footer>
+  </article>
+</body>
+</html>

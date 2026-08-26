@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PLATE 216 — A socket needs a map of who is where.</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@800;900&family=Fraunces:ital,opsz,wght@1,9..144,400;1,9..144,500&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/poster.css">
+</head>
+<body>
+  <article class="poster" data-track="network">
+    <span class="mark mark--tl"></span><span class="mark mark--tr"></span><span class="mark mark--bl"></span><span class="mark mark--br"></span>
+    <p class="spine">Foundations series — software engineering mental models</p>
+    <div class="rule"></div><div class="ghost">216</div><div class="vignette"></div>
+    <svg class="grain" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="4" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(#n)"></rect></svg>
+    <header class="mast">
+      <p class="kicker"><span>Network</span><span class="dot"></span><span class="whisper">WS · sticky · pub-sub</span></p>
+      <h1 class="title">A socket needs a map <span class="title-accent">of who is where.</span></h1>
+      <p class="lede">A WebSocket is one fd on one box. Directory: <code>SET user:42 nodeC EX 30</code>. Push via <code>PUBLISH</code>; only that box writes the frame. Sticky L4 (plate 35) keeps the TCP. Linux default pipe/socket buffer is 64 KiB — history is the log (plate 202), not the kernel pipe.</p>
+    </header>
+    <section class="stage">
+      <div class="stage-inner">
+        <div class="steps">
+          <div class="step">
+            <span class="step-n">1</span>
+            <p class="step-copy">Sticky WS to the edge<span>The TCP lives on one box. Without sticky, the handshake lands where the socket isn’t. Fallback: SSE / long-poll if WS is blocked.</span></p>
+            <span class="step-meta">L4</span>
+          </div>
+          <div class="step step--hit">
+            <span class="step-n">2</span>
+            <p class="step-copy">Register the directory<span><code>SET user:42 nodeC EX 30</code> + heartbeat. Presence TTL (plate 222) is the expiry. Not a Postgres row. 1M sockets = 1M fds.</span></p>
+            <span class="step-meta">user → node</span>
+          </div>
+          <div class="step">
+            <span class="step-n">3</span>
+            <p class="step-copy">Publish on the bus<span>Worker <code>PUBLISH user:42 msg</code> (Redis / NATS). Any node may originate. Rooms: pub/sub on room id; shard the hot ones.</span></p>
+            <span class="step-meta">pub/sub</span>
+          </div>
+          <div class="step">
+            <span class="step-n">4</span>
+            <p class="step-copy">Owning box writes the frame<span>nodeC holds the fd. Kernel pipe is 64 KiB; 1M × 64 KiB = 64 GiB if full. History is the log, not this buffer.</span></p>
+            <span class="step-meta">64 KiB</span>
+          </div>
+        </div>
+        <div class="deck">
+          <div class="deck-row"><span class="deck-k">What</span><p>Connection directory + pub/sub + sticky L4. Do not store the socket in Postgres. Fan-out to a room is pub/sub on room id, not a loop of 10k writes on one node.</p></div>
+          <div class="deck-row"><span class="deck-k">Why</span><p>Chat / live comments / multiplayer. The map is the design. Without it you broadcast to every node, or you cannot find the user.</p></div>
+          <div class="deck-row deck-row--trap"><span class="deck-k">Trap</span><p>One Node process with all sockets. No sticky. Polling the DB for “messages to push.” Trusting half-open TCP — heartbeat or die. Treating the 64 KiB pipe as the conversation.</p></div>
+        </div>
+      </div>
+    </section>
+    <footer class="foot"><p class="one-liner"></p><p class="plate-id">Plate 216 / 375</p></footer>
+  </article>
+</body>
+</html>

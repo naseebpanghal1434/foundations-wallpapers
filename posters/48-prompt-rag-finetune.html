@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PLATE 48 — Prompt, RAG, or fine-tune.</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@800;900&family=Fraunces:ital,opsz,wght@1,9..144,400;1,9..144,500&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/poster.css">
+</head>
+<body>
+  <article class="poster" data-track="genai">
+    <span class="mark mark--tl"></span><span class="mark mark--tr"></span><span class="mark mark--bl"></span><span class="mark mark--br"></span>
+    <p class="spine">Foundations series — software engineering mental models</p>
+    <div class="rule"></div><div class="ghost">48</div><div class="vignette"></div>
+    <svg class="grain" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="4" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(#n)"></rect></svg>
+    <header class="mast">
+      <p class="kicker"><span>Gen AI</span><span class="dot"></span><span class="whisper">in-context · retrieve · weights</span></p>
+      <h1 class="title">Prompt, RAG, or <span class="title-accent">fine-tune.</span></h1>
+      <p class="lede">Three knobs. Prompt: instructions + few-shot in this request (minutes, window-limited). RAG: fetch top-k chunks at runtime (plate 12) so facts can change. Fine-tune: gradient updates to weights (SFT / LoRA) from hundreds+ labeled examples. Start left. Changing facts belong in the index, not the weights.</p>
+    </header>
+    <section class="stage stage--wide">
+      <div class="stage-inner">
+        <div class="trio">
+          <div class="box box--pool">
+            <p class="col-label">This request · $0 train</p>
+            <h2 class="box-title">Prompt</h2>
+            <div class="bullets">
+              <div>Tone, JSON schema, 1–20 shots.</div>
+              <div>Minutes to try. Weights frozen.</div>
+              <div>Limited by the window (plate 21).</div>
+            </div>
+            <p class="caption box-foot">“Answer as JSON. Be brief.”</p>
+          </div>
+          <div class="box">
+            <p class="col-label">This request + search</p>
+            <h2 class="box-title">RAG</h2>
+            <div class="bullets">
+              <div>Docs, tickets, prices — live facts.</div>
+              <div>Update the corpus, not the model.</div>
+              <div>Needs retrieval quality + citations.</div>
+            </div>
+            <p class="caption box-foot">“What’s our refund policy?”</p>
+          </div>
+          <div class="box">
+            <p class="col-label">Change the weights</p>
+            <h2 class="box-title">Fine-tune</h2>
+            <div class="bullets">
+              <div>Style, format, a dialect, a skill.</div>
+              <div>Hundreds–thousands of clean pairs.</div>
+              <div>Stale the day the policy changes.</div>
+            </div>
+            <p class="caption box-foot">“Always emit our XML dialect.”</p>
+          </div>
+        </div>
+        <div class="deck">
+          <div class="deck-row"><span class="deck-k">What</span><p>Prompt = in-context. RAG = retrieve then prompt. Fine-tune = gradient updates (LoRA is a small delta, plate 268). Tools (plate 47) are a fourth path: don’t memorize, call. You can combine all of them.</p></div>
+          <div class="deck-row"><span class="deck-k">Why</span><p>The default wrong answer is “we’ll fine-tune on our PDFs.” That’s GPU hours and stale facts. Interviews want the ladder: prompt → RAG/tools → fine-tune only for behavior you cannot prompt.</p></div>
+          <div class="deck-row deck-row--trap"><span class="deck-k">Trap</span><p>Fine-tuning to “teach facts.” Fine-tuning on dirty data (it copies the dirt). RAG without eval. Pasting a 200-page policy into the window (plate 21) and calling it RAG.</p></div>
+        </div>
+      </div>
+    </section>
+    <footer class="foot"><p class="one-liner"></p><p class="plate-id">Plate 48 / 375</p></footer>
+  </article>
+</body>
+</html>

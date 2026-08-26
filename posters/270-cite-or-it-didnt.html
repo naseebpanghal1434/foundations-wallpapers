@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PLATE 270 — Cite it, or it didn't happen.</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@800;900&family=Fraunces:ital,opsz,wght@1,9..144,400;1,9..144,500&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/poster.css">
+</head>
+<body>
+  <article class="poster" data-track="genai">
+    <span class="mark mark--tl"></span><span class="mark mark--tr"></span><span class="mark mark--bl"></span><span class="mark mark--br"></span>
+    <p class="spine">Foundations series — software engineering mental models</p>
+    <div class="rule"></div><div class="ghost">270</div><div class="vignette"></div>
+    <svg class="grain" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="4" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(#n)"></rect></svg>
+    <header class="mast">
+      <p class="kicker"><span>GenAI</span><span class="dot"></span><span class="whisper">Span · chunk id</span></p>
+      <h1 class="title">Cite it, or <span class="title-accent">it didn't happen.</span></h1>
+      <p class="lede">Ungrounded fluent answers are hallucinations with better manners (plate 45). Require chunk ids (plate 255) in the schema (plate 260); if the model cannot point, it must say it doesn’t know.</p>
+    </header>
+    <section class="stage">
+      <div class="stage-inner">
+        <div class="compare">
+          <div class="compare-pane">
+            <p class="pane-label">According to policy…</p>
+            <h2 class="pane-title">No link</h2>
+            <div class="codeblock">answer: fluent
+cite:    none
+id:      invented
+
+5 docs stuffed
+used:    zero</div>
+            <p class="caption">Footnotes the model invented are theater. Filename ≠ chunk.</p>
+          </div>
+          <div class="compare-vs">vs</div>
+          <div class="compare-pane compare-pane--hit">
+            <p class="pane-label">Id in the retrieved set</p>
+            <h2 class="pane-title">Membership</h2>
+            <div class="codeblock">answer
++ [{id: p12, quote}]
+UI → chunk p12
+
+id not in retrieved
+  → reject</div>
+            <p class="caption">The model can invent ids. Check membership. Highlight the span.</p>
+          </div>
+        </div>
+        <div class="deck">
+          <div class="deck-row"><span class="deck-k">What</span><p>Grounding = retrieve, constrain, verify. The citation is data, not prose. Reject ids that were never retrieved.</p></div>
+          <div class="deck-row"><span class="deck-k">Why</span><p>Support, legal, medical-adjacent, internal docs. Trust is the product. Citations you don’t verify are theater.</p></div>
+          <div class="deck-row deck-row--trap"><span class="deck-k">Trap</span><p>Invented footnotes. Citing the filename but not the chunk. Showing five docs and answering from none of them.</p></div>
+        </div>
+      </div>
+    </section>
+    <footer class="foot"><p class="one-liner"></p><p class="plate-id">Plate 270 / 286</p></footer>
+  </article>
+</body>
+</html>

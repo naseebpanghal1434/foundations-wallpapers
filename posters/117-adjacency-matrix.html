@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PLATE 117 — An edge is a cell.</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@800;900&family=Fraunces:ital,opsz,wght@1,9..144,400;1,9..144,500&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/poster.css">
+</head>
+<body>
+  <article class="poster" data-track="dsa">
+    <span class="mark mark--tl"></span><span class="mark mark--tr"></span><span class="mark mark--bl"></span><span class="mark mark--br"></span>
+    <p class="spine">Foundations series — software engineering mental models</p>
+    <div class="rule"></div><div class="ghost">117</div><div class="vignette"></div>
+    <svg class="grain" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="4" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(#n)"></rect></svg>
+    <header class="mast">
+      <p class="kicker"><span>DSA</span><span class="dot"></span><span class="whisper">Dense · O(1) query</span></p>
+      <h1 class="title">An edge <span class="title-accent">is a cell.</span></h1>
+      <p class="lede">A matrix g[n][n] has g[u][v] = 1 (or weight) if the edge exists. Query is O(1). Memory is Θ(n²) whether the graph is empty or full. Walking neighbors of u scans a whole row — O(n), even if degree is 2.</p>
+    </header>
+    <section class="stage">
+      <div class="stage-inner">
+        <div class="compare">
+          <div class="compare-pane compare-pane--hit">
+            <p class="pane-label">Same 5 nodes as plate 116</p>
+            <h2 class="pane-title">The grid</h2>
+            <div class="codeblock ok">    0 1 2 3 4
+0   0 1 1 0 0
+1   1 0 0 1 0
+2   1 0 0 1 0
+3   0 1 1 0 1
+4   0 0 0 1 0
+undirected → symmetric
+diag 0  (no loops)</div>
+            <p class="caption">0–1, 0–2, 1–3, 2–3, 3–4. Edge test <code>g[u][v]</code> is O(1). Neighbor scan is the whole row.</p>
+          </div>
+          <div class="compare-vs">vs</div>
+          <div class="compare-pane">
+            <p class="pane-label">Dense complete K4</p>
+            <h2 class="pane-title">When it wins</h2>
+            <div class="codeblock">    A B C D
+A   0 1 1 1
+B   1 0 1 1
+C   1 1 0 1
+D   1 1 1 0
+12 directed 1s
+16 cells anyway
+neighbor walk O(n)</div>
+            <p class="caption">Floyd–Warshall wants a matrix. BFS on a sparse graph does not. Image grids are a different beast (plate 118).</p>
+          </div>
+        </div>
+        <div class="deck">
+          <div class="deck-row"><span class="deck-k">What</span><p>O(1) edge test, O(n) neighbor scan, Θ(n²) space. Weighted: store the weight, use ∞ for missing. Directed: not symmetric. You pay for every cell, including the zeros.</p></div>
+          <div class="deck-row"><span class="deck-k">Why</span><p>n is tiny (≤400), or the algorithm is DP on i,j (Floyd, transitive closure). Some problems hand you the matrix already. A pixel grid is not this — plate 118.</p></div>
+          <div class="deck-row deck-row--trap"><span class="deck-k">Trap</span><p>n=10⁴ matrix: 10⁸ cells, often dead. Assuming undirected symmetry on a directed graph. Reusing <code>g[u][u]=1</code> as a visited mark vs a self-loop — don’t overwrite the matrix as visited without a plan.</p></div>
+        </div>
+      </div>
+    </section>
+    <footer class="foot"><p class="one-liner"></p><p class="plate-id">Plate 117 / 200</p></footer>
+  </article>
+</body>
+</html>

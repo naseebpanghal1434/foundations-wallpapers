@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PLATE 54 — Opposite ends, or slow and fast.</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@800;900&family=Fraunces:ital,opsz,wght@1,9..144,400;1,9..144,500&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/poster.css">
+</head>
+<body>
+  <article class="poster" data-track="dsa">
+    <span class="mark mark--tl"></span><span class="mark mark--tr"></span><span class="mark mark--bl"></span><span class="mark mark--br"></span>
+    <p class="spine">Foundations series — software engineering mental models</p>
+    <div class="rule"></div><div class="ghost">54</div><div class="vignette"></div>
+    <svg class="grain" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="4" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(#n)"></rect></svg>
+    <header class="mast">
+      <p class="kicker"><span>DSA</span><span class="dot"></span><span class="whisper">Two ends · or a chase</span></p>
+      <h1 class="title">Opposite ends, or <span class="title-accent">slow and fast.</span></h1>
+      <p class="lede">Two indices walk a sequence instead of nested loops. Opposite ends: lo++ / hi-- on a sorted array. Slow/fast: one step vs two on a list. Each index moves at most n times → O(n). The array for two-sum-from-ends has to already be sorted.</p>
+    </header>
+    <section class="stage">
+      <div class="stage-inner">
+        <div class="compare">
+          <div class="compare-pane compare-pane--hit">
+            <p class="pane-label">Sorted pair / palindrome</p>
+            <h2 class="pane-title">Opposite ends</h2>
+            <div class="codeblock ok">lo, hi = 0, n-1
+while lo &lt; hi:
+  s = a[lo] + a[hi]
+  if s == t: hit
+  if s &lt; t: lo++
+  else:     hi--</div>
+            <p class="caption">Invariant: if a pair exists, it sits in [lo, hi]. Also: container-with-most-water, in-place reverse.</p>
+          </div>
+          <div class="compare-vs">or</div>
+          <div class="compare-pane">
+            <p class="pane-label">Cycle / middle of a list</p>
+            <h2 class="pane-title">Slow / fast</h2>
+            <div class="codeblock">slow = fast = head
+while fast and fast.next:
+  slow = slow.next
+  fast = fast.next.next
+# meet → cycle (Floyd)
+# else slow is the mid</div>
+            <p class="caption">Fast hits null → no cycle. Same-direction variant: left writes, right reads (dups, partition).</p>
+          </div>
+        </div>
+        <div class="deck">
+          <div class="deck-row"><span class="deck-k">What</span><p>Replace O(n²) pair checks with a monotonic walk. Ends-in needs order (or a palindrome). Slow/fast needs a next pointer. Sliding window (plate 55) is two pointers that only move forward.</p></div>
+          <div class="deck-row"><span class="deck-k">Why</span><p>SDE-1 greatest hits: 2-sum, 3-sum after sort, linked-list cycle, middle node, remove dups in-place. Say which pointer moves, and why the other may stay.</p></div>
+          <div class="deck-row deck-row--trap"><span class="deck-k">Trap</span><p>Unsorted 2-sum with two ends. Without order, shrinking the range is a guess — you skip the pair. Unsorted 2-sum is a hash map (indices stay). Sorting first is O(n log n) and loses indices unless you store them. Moving both pointers when you should move one.</p></div>
+        </div>
+      </div>
+    </section>
+    <footer class="foot"><p class="one-liner"></p><p class="plate-id">Plate 54 / 100</p></footer>
+  </article>
+</body>
+</html>

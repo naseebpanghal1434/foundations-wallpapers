@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PLATE 345 — Partitioning is routing, not a free index.</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@800;900&family=Fraunces:ital,opsz,wght@1,9..144,400;1,9..144,500&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/poster.css">
+</head>
+<body>
+  <article class="poster" data-track="database">
+    <span class="mark mark--tl"></span><span class="mark mark--tr"></span><span class="mark mark--bl"></span><span class="mark mark--br"></span>
+    <p class="spine">Foundations series — software engineering mental models</p>
+    <div class="rule"></div><div class="ghost">345</div><div class="vignette"></div>
+    <svg class="grain" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="4" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(#n)"></rect></svg>
+    <header class="mast">
+      <p class="kicker"><span>Database</span><span class="dot"></span><span class="whisper">RANGE · LIST · HASH</span></p>
+      <h1 class="title">Partitioning is routing, <span class="title-accent">not a free index.</span></h1>
+      <p class="lede">Declarative partition: parent table, children by RANGE/LIST/HASH of a key. The planner prunes children if <code>WHERE</code> contains that key. It does not replace an index inside a partition. Attach/detach is why time-series drops old data in O(1) metadata.</p>
+    </header>
+    <section class="stage">
+      <div class="stage-inner">
+        <div class="compare">
+          <div class="compare-pane compare-pane--hit">
+            <p class="pane-label">Key is in the WHERE</p>
+            <h2 class="pane-title">Prune</h2>
+            <div class="codeblock ok">events  RANGE (ts)
+  events_2026_08
+  events_2026_09
+
+WHERE ts &gt;= '2026-08-01'
+  AND ts &lt;  '2026-09-01'
+→ one child
+
+DETACH + DROP
+  = O(1) retain</div>
+            <p class="caption">PK/unique must include the partition key. Index each child as if it were the table.</p>
+          </div>
+          <div class="compare-vs">vs</div>
+          <div class="compare-pane">
+            <p class="pane-label">Filter on the other column</p>
+            <h2 class="pane-title">All children</h2>
+            <div class="codeblock bad">WHERE user_id = 7
+  on a ts-range parent
+
+planner cannot prune
+opens every month
+planning time
+  ∝ partition count</div>
+            <p class="caption">You still need <code>INDEX (user_id)</code> on each child — or also filter <code>ts</code>.</p>
+          </div>
+        </div>
+        <div class="deck">
+          <div class="deck-row"><span class="deck-k">What</span><p>Constraint-based routing of rows to files. Pruning needs the key in the query. HASH is for shard-by-tenant, not for time drop.</p></div>
+          <div class="deck-row"><span class="deck-k">Why</span><p>Retention, huge time-series, tenant isolation. Dropping a month is detach, not <code>DELETE</code> 1e9 rows.</p></div>
+          <div class="deck-row deck-row--trap"><span class="deck-k">Trap</span><p>Thousands of partitions and no prune (planning time explodes). Unique on <code>(id)</code> without the partition key — Postgres will refuse it.</p></div>
+        </div>
+      </div>
+    </section>
+    <footer class="foot"><p class="one-liner"></p><p class="plate-id">Plate 345 / 375</p></footer>
+  </article>
+</body>
+</html>

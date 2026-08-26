@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PLATE 168 — Split? This node. Else walk that side.</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@800;900&family=Fraunces:ital,opsz,wght@1,9..144,400;1,9..144,500&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/poster.css">
+</head>
+<body>
+  <article class="poster" data-track="dsa">
+    <span class="mark mark--tl"></span><span class="mark mark--tr"></span><span class="mark mark--bl"></span><span class="mark mark--br"></span>
+    <p class="spine">Foundations series — software engineering mental models</p>
+    <div class="rule"></div><div class="ghost">168</div><div class="vignette"></div>
+    <svg class="grain" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="4" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(#n)"></rect></svg>
+    <header class="mast">
+      <p class="kicker"><span>DSA</span><span class="dot"></span><span class="whisper">BST walk or recurse both</span></p>
+      <h1 class="title">Split? This node. <span class="title-accent">Else walk that side.</span></h1>
+      <p class="lede">LCA is the deepest node that has both in its subtree — or is one of them. BST: walk until they split. General tree: recurse both sides; two non-nulls means this node.</p>
+    </header>
+    <section class="stage">
+      <div class="stage-inner">
+        <div class="compare">
+          <div class="compare-pane compare-pane--hit">
+            <p class="pane-label">Order is the map · O(h)</p>
+            <h2 class="pane-title">BST walk</h2>
+            <div class="codeblock ok">      6
+     / \
+    2   8
+   / \
+  0   4
+
+p=2 q=8  both split at 6
+p=2 q=4  6: both &lt; → left
+         2 is p → 2</div>
+            <p class="caption">A node can be an ancestor of itself. Walk until the split — no extra storage.</p>
+          </div>
+          <div class="compare-vs">or</div>
+          <div class="compare-pane">
+            <p class="pane-label">No BST · O(n)</p>
+            <h2 class="pane-title">Recurse both</h2>
+            <div class="codeblock">if node is p or q
+  return node
+L = dfs(left)
+R = dfs(right)
+if L and R: this
+else: L or R
+
+parent pointers:
+walk up with a set</div>
+            <p class="caption">Post-order. Both sides non-null → this node. Assumes p and q exist in the tree.</p>
+          </div>
+        </div>
+        <div class="deck">
+          <div class="deck-row"><span class="deck-k">What</span><p>BST O(h): paths diverge at the LCA. General O(n): return the node, not a boolean. A node may be an ancestor of itself.</p></div>
+          <div class="deck-row"><span class="deck-k">Why</span><p>LeetCode 235 / 236. They switch BST vs binary. Say which property you used.</p></div>
+          <div class="deck-row deck-row--trap"><span class="deck-k">Trap</span><p>BST walk on a non-BST. Returning true/false. Missing the “node is p or q” base case.</p></div>
+        </div>
+      </div>
+    </section>
+    <footer class="foot"><p class="one-liner"></p><p class="plate-id">Plate 168 / 200</p></footer>
+  </article>
+</body>
+</html>

@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PLATE 02 — An index is extra storage.</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@800;900&family=Fraunces:ital,opsz,wght@1,9..144,400;1,9..144,500&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/poster.css">
+</head>
+<body>
+  <article class="poster" data-track="database">
+    <span class="mark mark--tl"></span><span class="mark mark--tr"></span><span class="mark mark--bl"></span><span class="mark mark--br"></span>
+    <p class="spine">Foundations series — software engineering mental models</p>
+    <div class="rule"></div><div class="ghost">02</div><div class="vignette"></div>
+    <svg class="grain" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="4" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(#n)"></rect></svg>
+    <header class="mast">
+      <p class="kicker"><span>Database</span><span class="dot"></span><span class="whisper">B-tree · 8 KiB pages</span></p>
+      <h1 class="title">An index is <span class="title-accent">extra storage.</span></h1>
+      <p class="lede">A B-tree index is a second on-disk structure: ordered keys plus row pointers (<code>ctid</code> in Postgres). Heap pages are 8 KiB. Fanout ~100–300 keys/page, so 1e6 rows is height 3–4 — <code>O(log n)</code> seeks, not <code>O(n)</code> heap reads. Every <code>INSERT/UPDATE/DELETE</code> maintains the tree.</p>
+    </header>
+    <section class="stage">
+      <div class="stage-inner">
+        <div class="compare">
+          <div class="compare-pane">
+            <p class="pane-label">WHERE email = $1 · no index</p>
+            <h2 class="pane-title">Seq Scan</h2>
+            <div class="codeblock bad">EXPLAIN ANALYZE
+Seq Scan on users
+  rows=1e6
+  actual time=12..840 ms
+  Filter: email = 'ada@…'
+  Buffers: shared read=12500</div>
+            <p class="caption">Walk every 8 KiB heap page. 1e6 × 100 B ≈ 100 MiB. Cost grows with table size, not selectivity.</p>
+          </div>
+          <div class="compare-vs">vs</div>
+          <div class="compare-pane compare-pane--hit">
+            <p class="pane-label">CREATE INDEX ON users (email)</p>
+            <h2 class="pane-title">Index Scan</h2>
+            <div class="codeblock ok">Index Scan using users_email_idx
+  actual time=0.04..0.18 ms
+  rows=1 loops=1
+  Index Cond: email = $1
+  Buffers: shared hit=4</div>
+            <p class="caption">Descend the btree, then heap fetch by ctid. Covering index / INCLUDE → Index Only Scan, skip the heap (plate 97).</p>
+          </div>
+        </div>
+        <div class="deck">
+          <div class="deck-row"><span class="deck-k">What</span><p>Heap = the table. Index = <code>(key → ctid)</code> btree. Planner may still Seq Scan if it expects most rows. <code>EXPLAIN ANALYZE</code> (plate 98) is the proof.</p></div>
+          <div class="deck-row"><span class="deck-k">Why</span><p><code>WHERE email = $1</code> on 1e6 rows is ~800 ms sequential vs sub-ms seek. Unique indexes also enforce uniqueness.</p></div>
+          <div class="deck-row deck-row--trap"><span class="deck-k">Trap</span><p>An index per column: each btree is write amplification on every INSERT. Low-cardinality flags are ignored. <code>WHERE a AND b</code> needs a composite, not two separate trees (plate 97).</p></div>
+        </div>
+      </div>
+    </section>
+    <footer class="foot"><p class="one-liner"></p><p class="plate-id">Plate 02 / 375</p></footer>
+  </article>
+</body>
+</html>

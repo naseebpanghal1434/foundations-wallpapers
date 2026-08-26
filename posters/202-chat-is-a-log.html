@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PLATE 202 — Chat is a log, not a row.</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@800;900&family=Fraunces:ital,opsz,wght@1,9..144,400;1,9..144,500&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/poster.css">
+</head>
+<body>
+  <article class="poster" data-track="system">
+    <span class="mark mark--tl"></span><span class="mark mark--tr"></span><span class="mark mark--bl"></span><span class="mark mark--br"></span>
+    <p class="spine">Foundations series — software engineering mental models</p>
+    <div class="rule"></div><div class="ghost">202</div><div class="vignette"></div>
+    <svg class="grain" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="4" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(#n)"></rect></svg>
+    <header class="mast">
+      <p class="kicker"><span>System</span><span class="dot"></span><span class="whisper">1:1 messages · fan-in</span></p>
+      <h1 class="title">Chat is a log, <span class="title-accent">not a row.</span></h1>
+      <p class="lede">1:1 chat is an append-only log per <code>conversation_id</code> — WAL for messages (plate 95). Id is a snowflake (plate 93). Read <code>WHERE conv=? AND id&gt;? ORDER BY id LIMIT 50</code>. The socket delivers (plate 216); the log is truth.</p>
+    </header>
+    <section class="stage">
+      <div class="stage-inner">
+        <div class="steps">
+          <div class="step step--hit"><span class="step-n">1</span><p class="step-copy">Append, do not UPDATE<span>Partition by <code>conversation_id</code>. Row: <code>{id, from, to, body, ts}</code>. Edit / unsend is a new event. Media is a blob URL (plate 207), not bytes in the row.</span></p><span class="step-meta">WAL</span></div>
+          <div class="step"><span class="step-n">2</span><p class="step-copy">Unread is a watermark<span><code>last_read_id</code> per user. Presence is TTL (plate 222), not a message. Group chat is fan-out (plate 203).</span></p><span class="step-meta">offset</span></div>
+          <div class="step"><span class="step-n">3</span><p class="step-copy">Range by id, not OFFSET<span><code>id &gt; cursor ORDER BY id LIMIT 50</code> (plate 32). The kernel socket buffer is 64 KiB — history is not RAM on the WS box.</span></p><span class="step-meta">LIMIT 50</span></div>
+        </div>
+        <div class="deck">
+          <div class="deck-row"><span class="deck-k">What</span><p>Write is append. Read is a range by snowflake id. Pagination is the last id. The socket is a replica of the tail; crash recovery is the log.</p></div>
+          <div class="deck-row"><span class="deck-k">Why</span><p>WhatsApp / Messenger: conversation as a stream, total order, unread, and edit as a new event — not a mutation of the past.</p></div>
+          <div class="deck-row deck-row--trap"><span class="deck-k">Trap</span><p>One global <code>messages</code> table ordered by server <code>now()</code> — clocks skew, two rows swap. Polling every 1 s as the product. Storing the whole history in the socket process.</p></div>
+        </div>
+      </div>
+    </section>
+    <footer class="foot"><p class="one-liner"></p><p class="plate-id">Plate 202 / 375</p></footer>
+  </article>
+</body>
+</html>

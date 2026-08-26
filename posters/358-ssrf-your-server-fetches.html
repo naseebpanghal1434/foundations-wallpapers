@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PLATE 358 — SSRF is your server fetching their URL.</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@800;900&family=Fraunces:ital,opsz,wght@1,9..144,400;1,9..144,500&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/poster.css">
+</head>
+<body>
+  <article class="poster" data-track="backend">
+    <span class="mark mark--tl"></span><span class="mark mark--tr"></span><span class="mark mark--bl"></span><span class="mark mark--br"></span>
+    <p class="spine">Foundations series — software engineering mental models</p>
+    <div class="rule"></div><div class="ghost">358</div><div class="vignette"></div>
+    <svg class="grain" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="4" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(#n)"></rect></svg>
+    <header class="mast">
+      <p class="kicker"><span>Backend</span><span class="dot"></span><span class="whisper">169.254.169.254 · allowlist</span></p>
+      <h1 class="title">SSRF is your server <span class="title-accent">fetching their URL.</span></h1>
+      <p class="lede">The app does <code>GET(userUrl)</code> and returns the body. Attacker passes <code>http://169.254.169.254/latest/meta-data/</code> (cloud credentials) or <code>http://127.0.0.1:6379/</code> — you are a proxy into the VPC. Allowlist schemes+hosts; block link-local, loopback, RFC1918; do not follow redirects off-allowlist.</p>
+    </header>
+    <section class="stage">
+      <div class="stage-inner">
+        <div class="compare">
+          <div class="compare-pane">
+            <p class="pane-label">webhook URL from the user</p>
+            <h2 class="pane-title">No check</h2>
+            <div class="codeblock">GET userUrl, return body
+
+<span class="bad">169.254.169.254/latest/meta-data/</span>
+127.0.0.1:6379  Redis
+10.0.0.5:8080   admin
+
+file://  gopher://</div>
+            <p class="caption">Link-local metadata, loopback, RFC1918. The server’s network trust is the bug.</p>
+          </div>
+          <div class="compare-vs">vs</div>
+          <div class="compare-pane compare-pane--hit">
+            <p class="pane-label">scheme + host allowlist</p>
+            <h2 class="pane-title">Pinned</h2>
+            <div class="codeblock">allow https://hooks.slack.com/…
+
+resolve DNS, re-check IPs
+<span class="ok">block 169.254/16  127/8  10/8</span>
+<span class="ok">172.16/12  192.168/16  ::1</span>
+do not follow 302 off-list</div>
+            <p class="caption">DNS rebinding: resolve, then pin IPs. Decimal 2130706433 is still 127.0.0.1.</p>
+          </div>
+        </div>
+        <div class="deck">
+          <div class="deck-row"><span class="deck-k">What</span><p>Confused deputy (plate 361) on the network. The server’s trust is the bug, not the string shape of the URL.</p></div>
+          <div class="deck-row"><span class="deck-k">Why</span><p>Cloud metadata, internal admin ports, unauth Redis. One <code>fetch(userUrl)</code> becomes a VPC proxy.</p></div>
+          <div class="deck-row deck-row--trap"><span class="deck-k">Trap</span><p>Blacklisting <code>127.0.0.1</code> but not <code>2130706433</code> or <code>[::1]</code> or <code>169.254.169.254</code>. Following a 302 to an internal IP.</p></div>
+        </div>
+      </div>
+    </section>
+    <footer class="foot"><p class="one-liner"></p><p class="plate-id">Plate 358 / 375</p></footer>
+  </article>
+</body>
+</html>

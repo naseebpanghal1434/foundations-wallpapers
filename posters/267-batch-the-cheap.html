@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PLATE 267 — Batch the cheap calls.</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@800;900&family=Fraunces:ital,opsz,wght@1,9..144,400;1,9..144,500&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/poster.css">
+</head>
+<body>
+  <article class="poster" data-track="genai">
+    <span class="mark mark--tl"></span><span class="mark mark--tr"></span><span class="mark mark--bl"></span><span class="mark mark--br"></span>
+    <p class="spine">Foundations series — software engineering mental models</p>
+    <div class="rule"></div><div class="ghost">267</div><div class="vignette"></div>
+    <svg class="grain" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="4" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(#n)"></rect></svg>
+    <header class="mast">
+      <p class="kicker"><span>GenAI</span><span class="dot"></span><span class="whisper">Embeddings · throughput</span></p>
+      <h1 class="title">Batch <span class="title-accent">the cheap calls.</span></h1>
+      <p class="lede">Embeddings and classifiers love a batch: one kernel, many inputs. Decode is pickier — different lengths, different KV — so batch offline 32–256; online, a 10–50ms window so you don’t add a beat to TTFT.</p>
+    </header>
+    <section class="stage">
+      <div class="stage-inner">
+        <div class="compare">
+          <div class="compare-pane">
+            <p class="pane-label">One string, one HTTP</p>
+            <h2 class="pane-title">1-QPS saw</h2>
+            <div class="codeblock">POST /embed
+× 1000 calls
+
+same model
+same tokenizer
+1000 round trips</div>
+            <p class="caption">Ingest and evals die here. Cost graphs look like a sawtooth of 1-QPS.</p>
+          </div>
+          <div class="compare-vs">vs</div>
+          <div class="compare-pane compare-pane--hit">
+            <p class="pane-label">One POST · many strings</p>
+            <h2 class="pane-title">One kernel</h2>
+            <div class="codeblock">POST /embed
+[1000 strings]
+sort by length
+
+pad = longest
+in this batch</div>
+            <p class="caption">Huge pads waste. Don’t mix models. Don’t batch interactive chat if it delays first token.</p>
+          </div>
+        </div>
+        <div class="deck">
+          <div class="deck-row"><span class="deck-k">What</span><p>Throughput vs latency. Batch what is embarrassingly parallel. Same model, same tokenizer, sort by length.</p></div>
+          <div class="deck-row"><span class="deck-k">Why</span><p>Ingest pipelines, evals, backfills. The cheap calls are embeddings and classification, not user chat.</p></div>
+          <div class="deck-row deck-row--trap"><span class="deck-k">Trap</span><p>Batching 1. Padding a 4-token query to 8k. Mixing models in one batch.</p></div>
+        </div>
+      </div>
+    </section>
+    <footer class="foot"><p class="one-liner"></p><p class="plate-id">Plate 267 / 286</p></footer>
+  </article>
+</body>
+</html>

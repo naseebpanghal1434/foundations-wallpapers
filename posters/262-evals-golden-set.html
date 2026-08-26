@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PLATE 262 — Evals are a golden set, not a vibe.</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@800;900&family=Fraunces:ital,opsz,wght@1,9..144,400;1,9..144,500&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/poster.css">
+</head>
+<body>
+  <article class="poster" data-track="genai">
+    <span class="mark mark--tl"></span><span class="mark mark--tr"></span><span class="mark mark--bl"></span><span class="mark mark--br"></span>
+    <p class="spine">Foundations series — software engineering mental models</p>
+    <div class="rule"></div><div class="ghost">262</div><div class="vignette"></div>
+    <svg class="grain" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="4" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(#n)"></rect></svg>
+    <header class="mast">
+      <p class="kicker"><span>GenAI</span><span class="dot"></span><span class="whisper">Offline · regression</span></p>
+      <h1 class="title">Evals are a golden set, <span class="title-accent">not a vibe.</span></h1>
+      <p class="lede">You cannot ship a prompt change on “it felt better.” A frozen set of (input, acceptable facts) scored by code, retrieval metrics, and maybe a judge (plate 263) — run on every bump.</p>
+    </header>
+    <section class="stage">
+      <div class="stage-inner">
+        <div class="steps">
+          <div class="step step--hit"><span class="step-n">1</span><p class="step-copy">100 cases, versioned<span>Question, must-include facts, forbidden. Slice by topic. A/B is not correctness.</span></p><span class="step-meta">gold</span></div>
+          <div class="step"><span class="step-n">2</span><p class="step-copy">Retrieve recall@k<span>Separate retrieval eval from generation eval (plate 259).</span></p><span class="step-meta">recall</span></div>
+          <div class="step"><span class="step-n">3</span><p class="step-copy">Answer: exact / contains / JSON valid<span>Code first. A judge (plate 263) only when code cannot score.</span></p><span class="step-meta">score</span></div>
+          <div class="step"><span class="step-n">4</span><p class="step-copy">Fail the build if recall drops<span>Online thumbs and cost are extra, not instead.</span></p><span class="step-meta">gate</span></div>
+        </div>
+        <div class="deck">
+          <div class="deck-row"><span class="deck-k">What</span><p>Regression tests for models. Frozen inputs, acceptable outputs / facts, scored the same every bump.</p></div>
+          <div class="deck-row"><span class="deck-k">Why</span><p>The difference between a demo and a system. SDE-2 GenAI expects this sentence.</p></div>
+          <div class="deck-row deck-row--trap"><span class="deck-k">Trap</span><p>Tuning on the eval set until it is a training set. One-number “accuracy” on free prose. Changing the judge and the prompt in the same PR.</p></div>
+        </div>
+      </div>
+    </section>
+    <footer class="foot"><p class="one-liner"></p><p class="plate-id">Plate 262 / 286</p></footer>
+  </article>
+</body>
+</html>

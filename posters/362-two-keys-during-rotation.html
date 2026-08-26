@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PLATE 362 — Two keys live during rotation. One dies after.</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@800;900&family=Fraunces:ital,opsz,wght@1,9..144,400;1,9..144,500&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/poster.css">
+</head>
+<body>
+  <article class="poster" data-track="backend">
+    <span class="mark mark--tl"></span><span class="mark mark--tr"></span><span class="mark mark--bl"></span><span class="mark mark--br"></span>
+    <p class="spine">Foundations series — software engineering mental models</p>
+    <div class="rule"></div><div class="ghost">362</div><div class="vignette"></div>
+    <svg class="grain" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="4" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(#n)"></rect></svg>
+    <header class="mast">
+      <p class="kicker"><span>Backend</span><span class="dot"></span><span class="whisper">kid · grace</span></p>
+      <h1 class="title">Two keys live during rotation. <span class="title-accent">One dies after.</span></h1>
+      <p class="lede">Rotate a signing or encryption key: generate new, sign with new, verify with both for a grace window, then drop old. JWT <code>kid</code> header selects the key from JWKS. Dual-read, single-write; secrets in env/files need the same two-phase deploy.</p>
+    </header>
+    <section class="stage">
+      <div class="stage-inner">
+        <div class="steps">
+          <div class="step">
+            <span class="step-n">1</span>
+            <p class="step-copy">JWKS has kid A and B<span>Publish the new key before you sign with it. KMS versioned secrets are the same idea.</span></p>
+            <span class="step-meta">both</span>
+          </div>
+          <div class="step">
+            <span class="step-n">2</span>
+            <p class="step-copy">Issue with B<span>New tokens/sessions carry kid B. Dual-read, single-write. Old in-flight still has A.</span></p>
+            <span class="step-meta">sign B</span>
+          </div>
+          <div class="step step--hit">
+            <span class="step-n">3</span>
+            <p class="step-copy">Accept A or B for 24h<span>Grace ≥ remaining exp (plate 355). Verify either key. Then A is unused.</span></p>
+            <span class="step-meta">grace</span>
+          </div>
+          <div class="step">
+            <span class="step-n">4</span>
+            <p class="step-copy">JWKS only B<span>Delete A. Never log key material. Short-lived tokens shrink this window.</span></p>
+            <span class="step-meta">drop A</span>
+          </div>
+        </div>
+        <div class="deck">
+          <div class="deck-row"><span class="deck-k">What</span><p>Overlap so in-flight tokens/sessions survive. Then delete. Two keys live; one dies after the grace.</p></div>
+          <div class="deck-row"><span class="deck-k">Why</span><p>Key leak, employee offboarding, yearly crypto hygiene. Same two-phase for env secrets.</p></div>
+          <div class="deck-row deck-row--trap"><span class="deck-k">Trap</span><p>Flip the secret in one deploy — all sessions 401. Never deleting the old key. Logging the key material.</p></div>
+        </div>
+      </div>
+    </section>
+    <footer class="foot"><p class="one-liner"></p><p class="plate-id">Plate 362 / 375</p></footer>
+  </article>
+</body>
+</html>

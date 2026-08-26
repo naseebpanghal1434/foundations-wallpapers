@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PLATE 95 — Log first. Then the pages.</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@800;900&family=Fraunces:ital,opsz,wght@1,9..144,400;1,9..144,500&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/poster.css">
+</head>
+<body>
+  <article class="poster" data-track="database">
+    <span class="mark mark--tl"></span><span class="mark mark--tr"></span><span class="mark mark--bl"></span><span class="mark mark--br"></span>
+    <p class="spine">Foundations series — software engineering mental models</p>
+    <div class="rule"></div><div class="ghost">95</div><div class="vignette"></div>
+    <svg class="grain" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="4" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(#n)"></rect></svg>
+    <header class="mast">
+      <p class="kicker"><span>Database</span><span class="dot"></span><span class="whisper">How COMMIT survives a crash</span></p>
+      <h1 class="title">Log first. <span class="title-accent">Then the pages.</span></h1>
+      <p class="lede">Durability (plate 41, the D) is not “the table file is up to date.” It is: append the change to a log, <code>fsync</code> that log, then you may say COMMIT. Heap pages flush later. Crash? Replay the log from the last checkpoint. Sequential log first; random pages when you can afford them.</p>
+    </header>
+    <section class="stage">
+      <div class="stage-inner">
+        <div class="compare">
+          <div class="compare-pane">
+            <p class="pane-label">Write the table, hope</p>
+            <h2 class="pane-title">No WAL</h2>
+            <div class="codeblock bad">update heap page 4
+update heap page 9
+        crash
+page 4 new, page 9 old
+half a transaction
+on disk</div>
+            <p class="caption">Random writes, no single “this COMMIT happened” record. Power cord pull fails the D.</p>
+          </div>
+          <div class="compare-vs">vs</div>
+          <div class="compare-pane compare-pane--hit">
+            <p class="pane-label">Append, fsync, then data</p>
+            <h2 class="pane-title">WAL</h2>
+            <div class="codeblock ok">1  append records to WAL
+2  fsync WAL
+3  COMMIT returns
+4  dirty pages later
+   (checkpoint)
+
+crash → redo from
+        last checkpoint</div>
+            <p class="caption">Postgres WAL, InnoDB redo, SQLite WAL. Group commit batches many txns into one fsync.</p>
+          </div>
+        </div>
+        <div class="deck">
+          <div class="deck-row"><span class="deck-k">What</span><p>Write-ahead: the log is the source of truth for recovery. Checkpoint = “heap is caught up to here, older log can go.” Replication often ships the same log (Postgres). Atomicity (plate 07) is a rollback; D is the fsync.</p></div>
+          <div class="deck-row"><span class="deck-k">Why</span><p>Disks lie until you force them. Interviews: draw COMMIT as log+fsync, not as “UPDATE returned.” This is why a commit can be 1ms of WAL and not 1ms of rewriting a 8KB page ten times.</p></div>
+          <div class="deck-row deck-row--trap"><span class="deck-k">Trap</span><p><code>fsync=off</code> / <code>synchronous_commit=off</code> — COMMIT returns, a crash eats it. That is speed, not D. Unlogged tables skip WAL on purpose. Putting WAL on a disk that ignores flush. Confusing checkpoint with COMMIT.</p></div>
+        </div>
+      </div>
+    </section>
+    <footer class="foot"><p class="one-liner"></p><p class="plate-id">Plate 95 / 100</p></footer>
+  </article>
+</body>
+</html>

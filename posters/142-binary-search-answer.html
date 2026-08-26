@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PLATE 142 — Binary search the answer, not the array.</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@800;900&family=Fraunces:ital,opsz,wght@1,9..144,400;1,9..144,500&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/poster.css">
+</head>
+<body>
+  <article class="poster" data-track="dsa">
+    <span class="mark mark--tl"></span><span class="mark mark--tr"></span><span class="mark mark--bl"></span><span class="mark mark--br"></span>
+    <p class="spine">Foundations series — software engineering mental models</p>
+    <div class="rule"></div><div class="ghost">142</div><div class="vignette"></div>
+    <svg class="grain" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="4" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(#n)"></rect></svg>
+    <header class="mast">
+      <p class="kicker"><span>DSA</span><span class="dot"></span><span class="whisper">Monotonic predicate</span></p>
+      <h1 class="title">Binary search the answer, <span class="title-accent">not the array.</span></h1>
+      <p class="lede">The array may be unsorted. The <em>answer</em> is monotonic: “can we finish with capacity m?” flips from false to true once. Binary search m; <code>check(m)</code> is a linear scan. O(n log RANGE).</p>
+    </header>
+    <section class="stage">
+      <div class="stage-inner">
+        <div class="compare">
+          <div class="compare-pane compare-pane--hit">
+            <p class="pane-label">piles=[3,6,7,11] · h=8</p>
+            <h2 class="pane-title">First true</h2>
+            <div class="codeblock ok">lo, hi = 1, max(piles)
+mid=6
+hours = ceil 1+1+2+2 = 6 ≤ 8
+  → try smaller
+ans = 4
+
+ceil: (x + m - 1)//m
+# 11/4 = 2  (wrong)
+# (11+3)//4 = 3</div>
+            <p class="caption"><code>lo</code> lands on the first true. Init <code>hi</code> to max(piles) or sum, depending on the problem.</p>
+          </div>
+          <div class="compare-vs">trap</div>
+          <div class="compare-pane">
+            <p class="pane-label">Predicate must flip once</p>
+            <h2 class="pane-title">Monotone</h2>
+            <div class="codeblock bad">can(m): F F F T T T
+         ↑ first true
+
+can(m): F T F T
+flickers — cannot BS
+
+# trap: binary search
+# the piles — unsorted
+# trap: lo=mid with no
+# progress (plate 140)</div>
+            <p class="caption">If <code>can(mid)</code> is not monotonic, you cannot binary search it. Integer division is floor — ceil is <code>(x+m-1)//m</code>.</p>
+          </div>
+        </div>
+        <div class="deck">
+          <div class="deck-row"><span class="deck-k">What</span><p>Search the solution space. A yes/no that flips once, plus a first-true loop (plate 140). <code>check</code> is usually O(n).</p></div>
+          <div class="deck-row"><span class="deck-k">Why</span><p>Koko (LC 875), ship packages (1011), split-array largest sum (410). Say “monotonic in the guess,” then write the loop.</p></div>
+          <div class="deck-row deck-row--trap"><span class="deck-k">Trap</span><p>Binary searching the unsorted piles. Floor instead of ceil. <code>lo=mid</code> with no progress. A predicate that flickers.</p></div>
+        </div>
+      </div>
+    </section>
+    <footer class="foot"><p class="one-liner"></p><p class="plate-id">Plate 142 / 200</p></footer>
+  </article>
+</body>
+</html>

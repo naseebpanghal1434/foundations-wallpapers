@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PLATE 191 — Insert, delete, replace. Min of three.</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@800;900&family=Fraunces:ital,opsz,wght@1,9..144,400;1,9..144,500&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/poster.css">
+</head>
+<body>
+  <article class="poster" data-track="dsa">
+    <span class="mark mark--tl"></span><span class="mark mark--tr"></span><span class="mark mark--bl"></span><span class="mark mark--br"></span>
+    <p class="spine">Foundations series — software engineering mental models</p>
+    <div class="rule"></div><div class="ghost">191</div><div class="vignette"></div>
+    <svg class="grain" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="4" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(#n)"></rect></svg>
+    <header class="mast">
+      <p class="kicker"><span>DSA</span><span class="dot"></span><span class="whisper">Levenshtein</span></p>
+      <h1 class="title">Insert, delete, replace. <span class="title-accent">Min of three.</span></h1>
+      <p class="lede">Edit distance: min inserts, deletes, replaces to turn s into t. <code>dp[i][j]</code> for prefixes. If last chars match, <code>dp[i-1][j-1]</code>. Else <code>1+min(replace, delete s, insert t)</code>. <code>dp[0][j]=j</code> (insert all), <code>dp[i][0]=i</code> (delete all). O(n·m). One row if only the number.</p>
+    </header>
+    <section class="stage">
+      <div class="stage-inner">
+        <div class="compare">
+          <div class="compare-pane compare-pane--hit">
+            <p class="pane-label">Match is free · else three</p>
+            <h2 class="pane-title">Levenshtein</h2>
+            <div class="codeblock ok">if s[i-1]==t[j-1]:
+  dp[i][j] = dp[i-1][j-1]
+else:
+  dp[i][j] = 1 + min(
+    dp[i-1][j-1],  # replace
+    dp[i-1][j],    # delete s
+    dp[i][j-1])    # insert t
+
+horse → rorse → rose → ros
+= 3  (h→r, drop r, drop e)
+Empty bases:
+dp[0][j]=j  dp[i][0]=i</div>
+            <p class="caption">Spell-check, DNA. Weighted edits: put those weights in the +1. Length-only: roll one row.</p>
+          </div>
+          <div class="compare-vs">vs</div>
+          <div class="compare-pane">
+            <p class="pane-label">No replace · inserts + deletes</p>
+            <h2 class="pane-title">n+m − 2 LCS</h2>
+            <div class="codeblock">horse, ros
+LCS = os  (len 2)
+n+m−2·LCS = 5+3−4 = 4
+
+replace is cheaper:
+one op, not delete+insert.
+That's why 3, not 4.
+
+same length, only replace:
+Hamming — count mismatches</div>
+            <p class="caption">Follow-up: only insert/delete (LCS), or only replace (Hamming, equal length). Don’t mix the formulas.</p>
+          </div>
+        </div>
+        <div class="deck">
+          <div class="deck-row"><span class="deck-k">What</span><p>Three choices at a mismatch. Match is free — copy the diagonal. This is the full Levenshtein table. Prefixes are 1-based so the empty string occupies row 0 and column 0. Time O(n·m), space O(min(n,m)) for the count.</p></div>
+          <div class="deck-row"><span class="deck-k">Why</span><p>LeetCode 72. Hard DP. Interviewers swap the allowed ops. Say the three transitions and the empty-prefix bases before you fill a cell.</p></div>
+          <div class="deck-row deck-row--trap"><span class="deck-k">Trap</span><p>Forgetting the empty-prefix base (first row/col). Using the LCS formula when replace is allowed — horse/ros is 3, not 4. Recursion without memo. Off-by-one letters (<code>s[i]</code> vs <code>s[i-1]</code>).</p></div>
+        </div>
+      </div>
+    </section>
+    <footer class="foot"><p class="one-liner"></p><p class="plate-id">Plate 191 / 200</p></footer>
+  </article>
+</body>
+</html>

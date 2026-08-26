@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PLATE 29 — Idempotent means do it twice.</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@800;900&family=Fraunces:ital,opsz,wght@1,9..144,400;1,9..144,500&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/poster.css">
+</head>
+<body>
+  <article class="poster" data-track="backend">
+    <span class="mark mark--tl"></span><span class="mark mark--tr"></span><span class="mark mark--bl"></span><span class="mark mark--br"></span>
+    <p class="spine">Foundations series — software engineering mental models</p>
+    <div class="rule"></div><div class="ghost">29</div><div class="vignette"></div>
+    <svg class="grain" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="4" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(#n)"></rect></svg>
+    <header class="mast">
+      <p class="kicker"><span>Backend</span><span class="dot"></span><span class="whisper">RFC 9110 · Idempotency-Key</span></p>
+      <h1 class="title">Idempotent means <span class="title-accent">do it twice.</span></h1>
+      <p class="lede">Idempotent: 1 request or n retries leave the same stored result. RFC 9110: GET, PUT, DELETE, HEAD, OPTIONS are; POST is not. Timeouts and LB retries replay the bytes. <code>POST /charges</code> without <code>Idempotency-Key</code> inserts a second row.</p>
+    </header>
+    <section class="stage">
+      <div class="stage-inner">
+        <div class="compare">
+          <div class="compare-pane">
+            <p class="pane-label">Timeout · client retries</p>
+            <h2 class="pane-title">POST /charges</h2>
+            <div class="codeblock bad">1. POST  → INSERT charge $30
+   200 lost on the wire
+2. POST  → INSERT charge $30
+total $60  two rows</div>
+            <p class="caption">The first COMMIT likely landed. A retry without a key is a new INSERT.</p>
+          </div>
+          <div class="compare-vs">vs</div>
+          <div class="compare-pane compare-pane--hit">
+            <p class="pane-label">Same key + same body</p>
+            <h2 class="pane-title">Idempotency-Key</h2>
+            <div class="codeblock ok">Idempotency-Key: 7f3a-…
+UNIQUE (user_id, key)
+1. POST → 201  charge_id=88
+2. POST → 200  same 88
+same key, other body → 409</div>
+            <p class="caption">Store key → status + body (TTL 24h, Stripe-style). The UNIQUE insert is the mutex.</p>
+          </div>
+        </div>
+        <div class="deck">
+          <div class="deck-row"><span class="deck-k">What</span><p>HTTP’s contract is per method. You make POST idempotent with a client-generated key persisted under a unique constraint, scoped per user. Replay returns the stored response, not a second side effect.</p></div>
+          <div class="deck-row"><span class="deck-k">Why</span><p>Networks drop the 200. Users double-click Pay. LBs retry (plate 19). Payments, tickets, “send email” must survive that. Interviews: retries plus money.</p></div>
+          <div class="deck-row deck-row--trap"><span class="deck-k">Trap</span><p>Key only in RAM (restart forgets). First call charged then returned 500 — retry must return charge 88, not insert 89. <code>GET /delete?id=1</code> is a side effect pretending to be safe.</p></div>
+        </div>
+      </div>
+    </section>
+    <footer class="foot"><p class="one-liner"></p><p class="plate-id">Plate 29 / 375</p></footer>
+  </article>
+</body>
+</html>

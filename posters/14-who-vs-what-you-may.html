@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PLATE 14 — Who you are is not what you may do.</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@800;900&family=Fraunces:ital,opsz,wght@1,9..144,400;1,9..144,500&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/poster.css">
+</head>
+<body>
+  <article class="poster" data-track="backend">
+    <span class="mark mark--tl"></span><span class="mark mark--tr"></span><span class="mark mark--bl"></span><span class="mark mark--br"></span>
+    <p class="spine">Foundations series — software engineering mental models</p>
+    <div class="rule"></div><div class="ghost">14</div><div class="vignette"></div>
+    <svg class="grain" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="4" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(#n)"></rect></svg>
+    <header class="mast">
+      <p class="kicker"><span>Backend</span><span class="dot"></span><span class="whisper">401 vs 403 · IDOR</span></p>
+      <h1 class="title">Who you are is not <span class="title-accent">what you may do.</span></h1>
+      <p class="lede">Authentication binds a request to a principal (session, JWT <code>sub</code>, mTLS CN). Authorization is <code>(principal, action, resource)</code>. HTTP: <code>401</code> = no valid credentials; <code>403</code> = credentials ok, policy denied. The names are historical; 401 is not “not allowed.”</p>
+    </header>
+    <section class="stage">
+      <div class="stage-inner">
+        <div class="compare">
+          <div class="compare-pane">
+            <p class="pane-label">authn · principal</p>
+            <h2 class="pane-title">401</h2>
+            <div class="codeblock">POST /login
+Set-Cookie: sid=…; HttpOnly
+req.user = {id: 42, role: "user"}
+
+missing/invalid Cookie
+or Bearer → 401
+WWW-Authenticate: Bearer</div>
+            <div class="bullets">
+              <div>Password, OAuth, magic link, mTLS.</div>
+              <div>Result: this socket is user 42. Not permission.</div>
+            </div>
+          </div>
+          <div class="compare-vs">then</div>
+          <div class="compare-pane compare-pane--hit">
+            <p class="pane-label">authz · this row</p>
+            <h2 class="pane-title">403</h2>
+            <div class="codeblock ok">DELETE /orders/88
+SELECT user_id FROM orders
+ WHERE id = 88
+-- 42 ≠ owner and role ≠ admin
+→ 403
+
+IDOR: /orders/89 still 200
+if only isAuthenticated()</div>
+            <div class="bullets">
+              <div>Check the resource, not only “logged in.”</div>
+              <div>Hide-the-button is not a control. Clients send any URL.</div>
+            </div>
+          </div>
+        </div>
+        <div class="deck">
+          <div class="deck-row"><span class="deck-k">What</span><p>401 = unknown. 403 = known, denied. Authz is always this user, this action, this row — not a navbar flag.</p></div>
+          <div class="deck-row"><span class="deck-k">Why</span><p>The API is the enforcement point. Interviews: IDOR = change the id, get someone else’s row (OWASP A01).</p></div>
+          <div class="deck-row deck-row--trap"><span class="deck-k">Trap</span><p><code>isAuthenticated()</code> on <code>DELETE /orders/:id</code>. Trusting <code>req.body.userId</code>. Returning 404 for every deny can hide existence — that’s a choice, not a substitute for the owner check.</p></div>
+        </div>
+      </div>
+    </section>
+    <footer class="foot"><p class="one-liner"></p><p class="plate-id">Plate 14 / 375</p></footer>
+  </article>
+</body>
+</html>

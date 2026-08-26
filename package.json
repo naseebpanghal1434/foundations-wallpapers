@@ -1,0 +1,22 @@
+{
+  "name": "creative-wallpapers",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Glanceable software-engineering mental models as macOS wallpapers, rendered from HTML/CSS.",
+  "scripts": {
+    "render": "node scripts/render.mjs",
+    "wallpaper": "node scripts/set-wallpaper.mjs",
+    "next": "node scripts/set-wallpaper.mjs next",
+    "prev": "node scripts/set-wallpaper.mjs prev",
+    "preview": "node scripts/preview.mjs",
+    "tray": "node scripts/build-tray.mjs && (pkill -f 'Foundations.app/Contents/MacOS/Foundations' || true) && open \"app/Foundations.app\"",
+    "tray:build": "node scripts/build-tray.mjs"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "devDependencies": {
+    "playwright": "^1.55.0"
+  }
+}

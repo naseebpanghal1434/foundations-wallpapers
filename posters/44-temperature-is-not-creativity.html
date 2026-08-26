@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PLATE 44 — Temperature is not creativity.</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@800;900&family=Fraunces:ital,opsz,wght@1,9..144,400;1,9..144,500&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/poster.css">
+</head>
+<body>
+  <article class="poster" data-track="genai">
+    <span class="mark mark--tl"></span><span class="mark mark--tr"></span><span class="mark mark--bl"></span><span class="mark mark--br"></span>
+    <p class="spine">Foundations series — software engineering mental models</p>
+    <div class="rule"></div><div class="ghost">44</div><div class="vignette"></div>
+    <svg class="grain" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="4" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(#n)"></rect></svg>
+    <header class="mast">
+      <p class="kicker"><span>Gen AI</span><span class="dot"></span><span class="whisper">softmax(z / T) · 0–2</span></p>
+      <h1 class="title">Temperature is not <span class="title-accent">creativity.</span></h1>
+      <p class="lede">Temperature T ∈ [0, 2] on common APIs (OpenAI; default 1). Next-token: softmax(logits / T). T = 0 → argmax (greedy, near-repeatable). T = 1 → the model’s distribution. T = 2 → flatter tail. It is a sampling scale, not a creativity score.</p>
+    </header>
+    <section class="stage stage--wide">
+      <div class="stage-inner">
+        <div class="facts">
+          <div class="fact fact--hit">
+            <p class="fact-k">greedy</p>
+            <p class="fact-n">T = 0</p>
+            <p class="fact-c">Always pick the top token. JSON, SQL, tools, classification, evals. Same prompt ≈ same answer.</p>
+          </div>
+          <div class="fact">
+            <p class="fact-k">native</p>
+            <p class="fact-n">T = 1</p>
+            <p class="fact-c">Sample p = softmax(z). API default. The distribution the model actually learned.</p>
+          </div>
+          <div class="fact">
+            <p class="fact-k">OpenAI max</p>
+            <p class="fact-n">T = 2</p>
+            <p class="fact-c">Flatter. Tail tokens get mass. More variety, more nonsense (plate 45). Not “more creative.”</p>
+          </div>
+          <div class="fact">
+            <p class="fact-k">formula</p>
+            <p class="fact-n">z / T</p>
+            <p class="fact-c">Divide logits by T, then softmax. T→0 sharpens. T→∞ → uniform. top_p / top_k are other filters.</p>
+          </div>
+        </div>
+        <div class="deck">
+          <div class="deck-row"><span class="deck-k">What</span><p>Sampling, not intelligence. top_p (nucleus) keeps the smallest set whose mass ≥ p (often 0.9). Use T or top_p, not a stack of mystery sliders. Code/extract: T=0. Brainstorm: 0.7–1.0.</p></div>
+          <div class="deck-row"><span class="deck-k">Why</span><p>Evals, extraction, and function calling want T=0 so the grade is about the prompt, not the dice. Interviews: explain sampling; do not say “higher = smarter.”</p></div>
+          <div class="deck-row deck-row--trap"><span class="deck-k">Trap</span><p>T=1.5 on a RAG answer about policy. T=0 and expecting variety. Stacking T=2 + top_p=0.1. Seed is not bit-identical across providers even at T=0.</p></div>
+        </div>
+      </div>
+    </section>
+    <footer class="foot"><p class="one-liner"></p><p class="plate-id">Plate 44 / 375</p></footer>
+  </article>
+</body>
+</html>

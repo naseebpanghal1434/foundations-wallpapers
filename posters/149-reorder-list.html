@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PLATE 149 — Split. Reverse the back. Weave.</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@800;900&family=Fraunces:ital,opsz,wght@1,9..144,400;1,9..144,500&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/poster.css">
+</head>
+<body>
+  <article class="poster" data-track="dsa">
+    <span class="mark mark--tl"></span><span class="mark mark--tr"></span><span class="mark mark--bl"></span><span class="mark mark--br"></span>
+    <p class="spine">Foundations series — software engineering mental models</p>
+    <div class="rule"></div><div class="ghost">149</div><div class="vignette"></div>
+    <svg class="grain" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="4" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(#n)"></rect></svg>
+    <header class="mast">
+      <p class="kicker"><span>DSA</span><span class="dot"></span><span class="whisper">L0 Ln L1 Ln-1</span></p>
+      <h1 class="title">Split. Reverse the back. <span class="title-accent">Weave.</span></h1>
+      <p class="lede">Reorder list to L0→Ln→L1→Ln−1…. Three algorithms you already have: slow/fast finds the mid and cuts. Reverse the second half (plate 145). Merge by weaving (one from each). Palindrome list is split + reverse + compare instead of weave.</p>
+    </header>
+    <section class="stage">
+      <div class="stage-inner">
+        <div class="steps">
+          <div class="step step--hit"><span class="step-n">1</span><p class="step-copy">Cut. Mid stays in the first half<span>1-2-3-4-5. Slow at 3, <code>3.next = null</code>. Second = 4-5. Odd length: mid stays in front. Skip the cut → a cycle when you weave.</span></p><span class="step-meta">split</span></div>
+          <div class="step"><span class="step-n">2</span><p class="step-copy">Reverse the back (plate 145)<span>4-5 becomes 5-4. Save <code>nxt</code> first. Do not reverse including the mid on an odd list — the mid would point at itself.</span></p><span class="step-meta">reverse</span></div>
+          <div class="step"><span class="step-n">3</span><p class="step-copy">Weave with a temp for next<span>1-2-3 and 5-4 → 1-5-2-4-3. Palindrome (LC 234): compare first half vs reversed second, no weave. Array of nodes is O(n) space — they usually want O(1).</span></p><span class="step-meta">merge</span></div>
+        </div>
+        <div class="deck">
+          <div class="deck-row"><span class="deck-k">What</span><p>Compose primitives. O(n) time, O(1) space. Find mid, cut, reverse, weave. Even/odd: for odd, the mid stays in the first half so the two lists differ by at most one.</p></div>
+          <div class="deck-row"><span class="deck-k">Why</span><p>LeetCode 143 / 234. Interview: can you sequence three known tricks without mixing the pointers. If you can reverse and merge, this is those two plus a cut.</p></div>
+          <div class="deck-row deck-row--trap"><span class="deck-k">Trap</span><p>Not cutting the first half — a cycle. Reversing including the mid on odd lists so the mid points at itself. Weaving without a temp for <code>next</code>. Using an array of nodes after they asked O(1) space.</p></div>
+        </div>
+      </div>
+    </section>
+    <footer class="foot"><p class="one-liner"></p><p class="plate-id">Plate 149 / 200</p></footer>
+  </article>
+</body>
+</html>

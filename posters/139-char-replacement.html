@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PLATE 139 — You may flip k. That's still a window.</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@800;900&family=Fraunces:ital,opsz,wght@1,9..144,400;1,9..144,500&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/poster.css">
+</head>
+<body>
+  <article class="poster" data-track="dsa">
+    <span class="mark mark--tl"></span><span class="mark mark--tr"></span><span class="mark mark--bl"></span><span class="mark mark--br"></span>
+    <p class="spine">Foundations series — software engineering mental models</p>
+    <div class="rule"></div><div class="ghost">139</div><div class="vignette"></div>
+    <svg class="grain" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="4" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(#n)"></rect></svg>
+    <header class="mast">
+      <p class="kicker"><span>DSA</span><span class="dot"></span><span class="whisper">Longest repeating · k flips</span></p>
+      <h1 class="title">You may flip k. <span class="title-accent">That's still a window.</span></h1>
+      <p class="lede">Longest repeating character replacement: you may change up to <code>k</code> letters. In a window, keep the count of the most frequent char (<code>maxf</code>). The rest must be flipped. Valid iff <code>window_len − maxf ≤ k</code>; else shrink left. The window never needs to shrink more than one — we only want the longest.</p>
+    </header>
+    <section class="stage">
+      <div class="stage-inner">
+        <div class="steps">
+          <div class="step"><span class="step-n">1</span><p class="step-copy">s=AABABBA k=1. Walk the windows<span>AABA — maxf=3, len=4, 4−3=1 ≤k. AABAB — 5−3=2 &gt;k, shrink. Best 4 (AABA or ABBA).</span></p><span class="step-meta">example</span></div>
+          <div class="step step--hit"><span class="step-n">2</span><p class="step-copy">Valid: <code>len − maxf ≤ k</code><span>Mode of the window is the letter you keep. You do not pick the letter first — the counts do. <code>k=0</code> is just the longest run.</span></p><span class="step-meta">invariant</span></div>
+          <div class="step"><span class="step-n">3</span><p class="step-copy">Stale <code>maxf</code> on shrink is fine<span>Do not recompute it down. It may sit high; we only care about max length, and a high <code>maxf</code> still caps the answer at <code>maxf+k</code>. Cousins: fruit into baskets, at most k distinct.</span></p><span class="step-meta">maxf</span></div>
+        </div>
+        <div class="deck">
+          <div class="deck-row"><span class="deck-k">What</span><p>A variable window (plate 55) whose cost is “how many chars are not the mode.” One pass, O(n) time, 26 counts if alphabet is letters. Same bones as max consecutive 1s with k flips (LC 1004) — binary, still <code>len − maxf ≤ k</code>.</p></div>
+          <div class="deck-row"><span class="deck-k">Why</span><p>LeetCode 424. Teaches “window cost = len − best.” Interviews want the formula before the code. If they ask which letter you flip toward: the mode of the current window.</p></div>
+          <div class="deck-row deck-row--trap"><span class="deck-k">Trap</span><p>Restarting a DP / inner scan — O(n²). Forgetting <code>k=0</code>. Thinking you must choose the letter globally first. Updating <code>maxf</code> down on shrink is optional; if you skip it, still correct for the longest. Nested max over the 26 counts every step is fine; the stale shortcut is faster to write.</p></div>
+        </div>
+      </div>
+    </section>
+    <footer class="foot"><p class="one-liner"></p><p class="plate-id">Plate 139 / 200</p></footer>
+  </article>
+</body>
+</html>

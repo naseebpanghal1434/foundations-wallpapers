@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PLATE 264 — Guardrails wrap the model.</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@800;900&family=Fraunces:ital,opsz,wght@1,9..144,400;1,9..144,500&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/poster.css">
+</head>
+<body>
+  <article class="poster" data-track="genai">
+    <span class="mark mark--tl"></span><span class="mark mark--tr"></span><span class="mark mark--bl"></span><span class="mark mark--br"></span>
+    <p class="spine">Foundations series — software engineering mental models</p>
+    <div class="rule"></div><div class="ghost">264</div><div class="vignette"></div>
+    <svg class="grain" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="4" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(#n)"></rect></svg>
+    <header class="mast">
+      <p class="kicker"><span>GenAI</span><span class="dot"></span><span class="whisper">Input · output · policy</span></p>
+      <h1 class="title">Guardrails wrap <span class="title-accent">the model.</span></h1>
+      <p class="lede">The model is not your policy engine. Filter input (PII, injection — plate 46), constrain tools, filter output — fail closed on payments and PII, fail open on a copy tweak.</p>
+    </header>
+    <section class="stage">
+      <div class="stage-inner">
+        <div class="steps">
+          <div class="step"><span class="step-n">1</span><p class="step-copy">Inbound classify / redact<span>PII, jailbreak, injection. Strip before the model sees it.</span></p><span class="step-meta">in</span></div>
+          <div class="step step--hit"><span class="step-n">2</span><p class="step-copy">Model + allowlisted tools<span>Least privilege (plate 261). You execute; the model proposes (plate 47).</span></p><span class="step-meta">allow</span></div>
+          <div class="step"><span class="step-n">3</span><p class="step-copy">Outbound: regex + classifier + schema<span>Toxicity, secrets, JSON. Trip → canned refusal; do not retry into the leak.</span></p><span class="step-meta">out</span></div>
+        </div>
+        <div class="deck">
+          <div class="deck-row"><span class="deck-k">What</span><p>Layers around the LLM. Same as authZ (plate 14): the model is untrusted. Logs of blocks are how you debug without leaking (plate 271).</p></div>
+          <div class="deck-row"><span class="deck-k">Why</span><p>Production LLM. Prompt injection exists; wrap anyway. A system prompt is not a guardrail — an attacker reads it.</p></div>
+          <div class="deck-row deck-row--trap"><span class="deck-k">Trap</span><p>“The system prompt says be safe.” Echoing the user’s secrets in the refusal. Running the filter with the same untrusted tools.</p></div>
+        </div>
+      </div>
+    </section>
+    <footer class="foot"><p class="one-liner"></p><p class="plate-id">Plate 264 / 286</p></footer>
+  </article>
+</body>
+</html>

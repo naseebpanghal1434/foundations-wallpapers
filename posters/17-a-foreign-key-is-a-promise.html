@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PLATE 17 — A foreign key is a promise.</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@800;900&family=Fraunces:ital,opsz,wght@1,9..144,400;1,9..144,500&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/poster.css">
+</head>
+<body>
+  <article class="poster" data-track="database">
+    <span class="mark mark--tl"></span><span class="mark mark--tr"></span><span class="mark mark--bl"></span><span class="mark mark--br"></span>
+    <p class="spine">Foundations series — software engineering mental models</p>
+    <div class="rule"></div><div class="ghost">17</div><div class="vignette"></div>
+    <svg class="grain" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="4" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(#n)"></rect></svg>
+    <header class="mast">
+      <p class="kicker"><span>Database</span><span class="dot"></span><span class="whisper">REFERENCES · 23503</span></p>
+      <h1 class="title">A foreign key is <span class="title-accent">a promise.</span></h1>
+      <p class="lede"><code>PRIMARY KEY (id)</code> is <code>UNIQUE NOT NULL</code> — one row identity. <code>FOREIGN KEY (user_id) REFERENCES users(id)</code> is a constraint: INSERT/UPDATE of <code>user_id</code> must match an existing <code>users.id</code>, else SQLSTATE <code>23503</code>. <code>ON DELETE RESTRICT | CASCADE | SET NULL</code> is the delete policy.</p>
+    </header>
+    <section class="stage">
+      <div class="stage-inner">
+        <div class="compare">
+          <div class="compare-pane compare-pane--hit">
+            <p class="pane-label">users · identity</p>
+            <h2 class="pane-title">PRIMARY KEY</h2>
+            <div class="codeblock ok">CREATE TABLE users (
+  id bigint PRIMARY KEY,
+  email text UNIQUE NOT NULL
+);
+-- btree on id, btree on email</div>
+            <div class="rows">
+              <div class="row row--read"><span class="id">PK</span><span>id = 7</span><span>Ada</span></div>
+              <div class="row"><span class="id">PK</span><span>id = 2</span><span>Kai</span></div>
+            </div>
+            <p class="caption">This row, and only this row, is 7. Referenced side must be UNIQUE/PK.</p>
+          </div>
+          <div class="compare-vs">FK</div>
+          <div class="compare-pane">
+            <p class="pane-label">orders.user_id must exist</p>
+            <h2 class="pane-title">23503</h2>
+            <div class="codeblock">ALTER TABLE orders ADD
+  FOREIGN KEY (user_id)
+  REFERENCES users(id)
+  ON DELETE RESTRICT;
+
+INSERT … user_id=99;  -- 23503
+DELETE FROM users
+ WHERE id=7;          -- fail if orders</div>
+            <p class="caption">Index <code>orders(user_id)</code> or deletes/joins seq-scan the child. CASCADE wipes children.</p>
+          </div>
+        </div>
+        <div class="deck">
+          <div class="deck-row"><span class="deck-k">What</span><p>Referential integrity in the catalog. App <code>if</code> statements are not a substitute. The C in ACID at commit (plate 41).</p></div>
+          <div class="deck-row"><span class="deck-k">Why</span><p>Without the FK, <code>user_id = 99</code> commits and JOINs drop the row. Interviews: name 23503 and ON DELETE.</p></div>
+          <div class="deck-row deck-row--trap"><span class="deck-k">Trap</span><p>Skipping FKs “for flexibility.” ORM races, migrations, and raw SQL will write orphans. <code>ON DELETE CASCADE</code> on a user delete you thought was soft. No index on the referencing column.</p></div>
+        </div>
+      </div>
+    </section>
+    <footer class="foot"><p class="one-liner"></p><p class="plate-id">Plate 17 / 375</p></footer>
+  </article>
+</body>
+</html>

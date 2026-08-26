@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PLATE 36 — A CDN is a cache near the user.</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@800;900&family=Fraunces:ital,opsz,wght@1,9..144,400;1,9..144,500&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/poster.css">
+</head>
+<body>
+  <article class="poster" data-track="system">
+    <span class="mark mark--tl"></span><span class="mark mark--tr"></span><span class="mark mark--bl"></span><span class="mark mark--br"></span>
+    <p class="spine">Foundations series — software engineering mental models</p>
+    <div class="rule"></div><div class="ghost">36</div><div class="vignette"></div>
+    <svg class="grain" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="4" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(#n)"></rect></svg>
+    <header class="mast">
+      <p class="kicker"><span>System</span><span class="dot"></span><span class="whisper">Cache-Control · PoP</span></p>
+      <h1 class="title">A CDN is a cache <span class="title-accent">near the user.</span></h1>
+      <p class="lede">A CDN is HTTP caches at points of presence. First Mumbai GET for <code>/app.a1b2.js</code> is a miss to origin (us-east-1, ~180 ms); the next are HIT at ~20 ms. <code>Cache-Control: public, max-age=31536000, immutable</code> is the contract. You buy RTT and origin offload.</p>
+    </header>
+    <section class="stage stage--wide">
+      <div class="stage-inner">
+        <div class="facts">
+          <div class="fact fact--hit">
+            <p class="fact-k">edge HIT</p>
+            <p class="fact-n">~20 ms</p>
+            <p class="fact-c">PoP nearby. CF-Cache-Status: HIT. Age: 412. Origin never sees the request.</p>
+          </div>
+          <div class="fact">
+            <p class="fact-k">origin MISS</p>
+            <p class="fact-n">~180 ms</p>
+            <p class="fact-c">Ocean RTT + origin TTFB. Then the PoP stores the object. Hit ratio is the metric.</p>
+          </div>
+          <div class="fact">
+            <p class="fact-k">hashed asset</p>
+            <p class="fact-n">1 y</p>
+            <p class="fact-c">max-age=31536000, immutable. Filename is the version: app.a1b2.js. Purge is a fallback.</p>
+          </div>
+          <div class="fact">
+            <p class="fact-k">HTML / API</p>
+            <p class="fact-n">60 s</p>
+            <p class="fact-c">Short TTL or s-maxage. Cache-Control: private on /api/me. Vary: Cookie is often “don’t cache.”</p>
+          </div>
+        </div>
+        <div class="deck">
+          <div class="deck-row"><span class="deck-k">What</span><p>PoP = point of presence. Headers: <code>Cache-Control</code>, <code>s-maxage</code>, <code>ETag</code>, <code>Age</code>. HTML often 60s; fingerprinted JS/CSS a year. Purge / versioned URLs when you ship a new bundle.</p></div>
+          <div class="deck-row"><span class="deck-k">Why</span><p>~2e8 m/s in fiber; an ocean is ~100–200 ms. Interviews: “make a global site fast” starts here, then cache (plate 08), then SSG (plate 28).</p></div>
+          <div class="deck-row deck-row--trap"><span class="deck-k">Trap</span><p>Caching HTML that contains the user (personalization needs a cache key, or don’t). Caching <code>/api/me</code>. No hash in the filename + long TTL = users stuck on old JS until you purge every PoP.</p></div>
+        </div>
+      </div>
+    </section>
+    <footer class="foot"><p class="one-liner"></p><p class="plate-id">Plate 36 / 375</p></footer>
+  </article>
+</body>
+</html>

@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PLATE 353 — CSP lists who may run script.</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@800;900&family=Fraunces:ital,opsz,wght@1,9..144,400;1,9..144,500&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/poster.css">
+</head>
+<body>
+  <article class="poster" data-track="backend">
+    <span class="mark mark--tl"></span><span class="mark mark--tr"></span><span class="mark mark--bl"></span><span class="mark mark--br"></span>
+    <p class="spine">Foundations series — software engineering mental models</p>
+    <div class="rule"></div><div class="ghost">353</div><div class="vignette"></div>
+    <svg class="grain" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="4" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(#n)"></rect></svg>
+    <header class="mast">
+      <p class="kicker"><span>Backend</span><span class="dot"></span><span class="whisper">Content-Security-Policy · nonce</span></p>
+      <h1 class="title">CSP lists who <span class="title-accent">may run script.</span></h1>
+      <p class="lede">Content-Security-Policy is a response header: <code>script-src 'self' https://cdn.example 'nonce-abc'</code> — inline script without that nonce does not run, even if XSS injected it (plate 234). Other directives: default-src, img-src, connect-src, frame-ancestors. Start with Report-Only to measure.</p>
+    </header>
+    <section class="stage">
+      <div class="stage-inner">
+        <div class="steps">
+          <div class="step">
+            <span class="step-n">1</span>
+            <p class="step-copy">Header: script-src 'nonce-R4nd'<span>Per-request random nonce. Hashes (<code>'sha256-…'</code>) for static inline. <code>default-src</code> is the fallback.</span></p>
+            <span class="step-meta">CSP</span>
+          </div>
+          <div class="step">
+            <span class="step-n">2</span>
+            <p class="step-copy">&lt;script nonce=R4nd src=/app.js&gt;<span>Same nonce as the header. Browser allows this element. CDN host must be in script-src too.</span></p>
+            <span class="step-meta">allow</span>
+          </div>
+          <div class="step step--hit">
+            <span class="step-n">3</span>
+            <p class="step-copy">Injected &lt;script&gt;alert(1)&lt;/script&gt; blocked<span>No nonce, not 'self', not a listed host. <code>'unsafe-inline'</code> disables this win.</span></p>
+            <span class="step-meta">block</span>
+          </div>
+        </div>
+        <div class="deck">
+          <div class="deck-row"><span class="deck-k">What</span><p>An allowlist the browser enforces. Defense in depth, not a sanitizer replacement (plate 234 still applies).</p></div>
+          <div class="deck-row"><span class="deck-k">Why</span><p>XSS residual. Clickjacking via frame-ancestors. Data exfil via connect-src.</p></div>
+          <div class="deck-row deck-row--trap"><span class="deck-k">Trap</span><p><code>'unsafe-inline'</code> and <code>'unsafe-eval'</code> in production. A nonce that is static. CSP only on the homepage.</p></div>
+        </div>
+      </div>
+    </section>
+    <footer class="foot"><p class="one-liner"></p><p class="plate-id">Plate 353 / 375</p></footer>
+  </article>
+</body>
+</html>

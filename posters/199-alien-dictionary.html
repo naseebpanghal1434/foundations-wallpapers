@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PLATE 199 — Letters have order. That's a graph.</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@800;900&family=Fraunces:ital,opsz,wght@1,9..144,400;1,9..144,500&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/poster.css">
+</head>
+<body>
+  <article class="poster" data-track="dsa">
+    <span class="mark mark--tl"></span><span class="mark mark--tr"></span><span class="mark mark--bl"></span><span class="mark mark--br"></span>
+    <p class="spine">Foundations series — software engineering mental models</p>
+    <div class="rule"></div><div class="ghost">199</div><div class="vignette"></div>
+    <svg class="grain" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="4" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(#n)"></rect></svg>
+    <header class="mast">
+      <p class="kicker"><span>DSA</span><span class="dot"></span><span class="whisper">Adjacent pairs · topo</span></p>
+      <h1 class="title">Letters have order. <span class="title-accent">That's a graph.</span></h1>
+      <p class="lede">Alien dictionary: sorted words in an unknown alphabet. Compare consecutive words; the first differing letters give an edge earlier→later. If a longer word comes first and the next word is a prefix of it, invalid. Then topo sort the letters (Kahn). Unique order vs any order: if more than one letter has indegree 0 at a step, the order is not unique (return any, or '' if they demand unique).</p>
+    </header>
+    <section class="stage">
+      <div class="stage-inner">
+        <div class="steps">
+          <div class="step step--hit"><span class="step-n">1</span><p class="step-copy">First difference is an edge<span><code>wrt, wrf, er, ett, rftt</code>. wrt/wrf → t→f. wrf/er → w→e. er/ett → r→t. ett/rftt → e→r. Order <code>wertf</code>. Only consecutive pairs — transitivity is the topo.</span></p><span class="step-meta">build</span></div>
+          <div class="step"><span class="step-n">2</span><p class="step-copy">Prefix + cycle are invalid<span><code>abc</code> then <code>ab</code>: longer first, shorter is a prefix → ''. Cycle z→x→z → ''. Missing letters with no edges still appear in the alphabet (indegree 0, peel them).</span></p><span class="step-meta">invalid</span></div>
+          <div class="step"><span class="step-n">3</span><p class="step-copy">Kahn on letters<span>Queue indegree-0, peel (plate 176). If you don’t peel every letter, a cycle. Several indegree-0 at a step: order not unique — return any, or '' if they asked for unique. Heap the queue for lex-smallest.</span></p><span class="step-meta">topo</span></div>
+        </div>
+        <div class="deck">
+          <div class="deck-row"><span class="deck-k">What</span><p>Build a directed graph of letter constraints from consecutive word pairs, then plate 176. O(total chars). An edge is the first difference only — later letters in that pair are not extra edges. Isolated letters still belong in the answer.</p></div>
+          <div class="deck-row"><span class="deck-k">Why</span><p>LeetCode 269 (premium) / lintcode. Hard combo of string + topo. SDE-2 favorite. If they say “ordering with dependencies,” you already named topological sort before touching letters.</p></div>
+          <div class="deck-row deck-row--trap"><span class="deck-k">Trap</span><p>Comparing every pair of words, not consecutive (still correct, extra work, more prefix bugs). Edge on the second difference. Dropping letters that never differed. Treating the problem as sort-the-words. Missing the longer-then-prefix invalid case.</p></div>
+        </div>
+      </div>
+    </section>
+    <footer class="foot"><p class="one-liner"></p><p class="plate-id">Plate 199 / 200</p></footer>
+  </article>
+</body>
+</html>

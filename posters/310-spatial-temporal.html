@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PLATE 310 — Spatial is the next line. Temporal is reuse.</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@800;900&family=Fraunces:ital,opsz,wght@1,9..144,400;1,9..144,500&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/poster.css">
+</head>
+<body>
+  <article class="poster" data-track="arch">
+    <span class="mark mark--tl"></span><span class="mark mark--tr"></span><span class="mark mark--bl"></span><span class="mark mark--br"></span>
+    <p class="spine">Foundations series — software engineering mental models</p>
+    <div class="rule"></div><div class="ghost">310</div><div class="vignette"></div>
+    <svg class="grain" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="4" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(#n)"></rect></svg>
+    <header class="mast">
+      <p class="kicker"><span>Arch</span><span class="dot"></span><span class="whisper">prefetch · working set</span></p>
+      <h1 class="title">Spatial is the next line. <span class="title-accent">Temporal is reuse.</span></h1>
+      <p class="lede">Spatial locality: addresses near this one — arrays, sequential scan. Hardware prefetchers detect strides and pull the next 64 B line. Temporal: you will touch this line again soon (loops, stacks). Working set ≤ cache ⇒ hits. Random 10 GiB scan ⇒ DRAM ~100 ns or worse.</p>
+    </header>
+    <section class="stage">
+      <div class="stage-inner">
+        <div class="compare">
+          <div class="compare-pane compare-pane--hit">
+            <p class="pane-label">Nearby addresses</p>
+            <h2 class="pane-title">Spatial</h2>
+            <div class="codeblock">for i in 0..n
+  a[i] += 1
+
+16× int32 / 64 B line
+prefetcher runs ahead</div>
+            <p class="caption">Sequential RAM beats random. Binary search is ~log n cache-unfriendly jumps.</p>
+          </div>
+          <div class="compare-vs">vs</div>
+          <div class="compare-pane">
+            <p class="pane-label">Touch again soon</p>
+            <h2 class="pane-title">Temporal</h2>
+            <div class="codeblock">hashmap 1e8 keys
+hot keys fit L3 → ~20 ns
+else DRAM → ~100 ns
+
+working set vs cache</div>
+            <p class="caption">Prefetch helps spatial, not pointer chasing. Stack reuse is temporal + L1 ~1 ns.</p>
+          </div>
+        </div>
+        <div class="deck">
+          <div class="deck-row"><span class="deck-k">What</span><p>Layout and access order vs cache size. Prefetch helps spatial, not pointer chasing.</p></div>
+          <div class="deck-row"><span class="deck-k">Why</span><p>Sorting a huge array then scanning beats a hash if you only stream once — and hash wins for point lookups that stay in cache.</p></div>
+          <div class="deck-row deck-row--trap"><span class="deck-k">Trap</span><p>Pointer graphs as the default data model on the hot path. “Random access is O(1)” ignoring ~100 ns DRAM.</p></div>
+        </div>
+      </div>
+    </section>
+    <footer class="foot"><p class="one-liner"></p><p class="plate-id">Plate 310 / 375</p></footer>
+  </article>
+</body>
+</html>

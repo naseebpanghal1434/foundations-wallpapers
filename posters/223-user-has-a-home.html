@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PLATE 223 — The user has a home region.</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@800;900&family=Fraunces:ital,opsz,wght@1,9..144,400;1,9..144,500&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/poster.css">
+</head>
+<body>
+  <article class="poster" data-track="system">
+    <span class="mark mark--tl"></span><span class="mark mark--tr"></span><span class="mark mark--bl"></span><span class="mark mark--br"></span>
+    <p class="spine">Foundations series — software engineering mental models</p>
+    <div class="rule"></div><div class="ghost">223</div><div class="vignette"></div>
+    <svg class="grain" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="4" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(#n)"></rect></svg>
+    <header class="mast">
+      <p class="kicker"><span>System</span><span class="dot"></span><span class="whisper">Latency · residency · failover</span></p>
+      <h1 class="title">The user has <span class="title-accent">a home region.</span></h1>
+      <p class="lede">Pin writes to <code>user.home</code> (us-east / eu-west). Reads: local replica with lag (plate 99). us-east ↔ eu-west RTT is ~70–90 ms — a sync write to both regions has that floor. GDPR may force EU home. Failover: promote, or block writes until home returns.</p>
+    </header>
+    <section class="stage">
+      <div class="stage-inner">
+        <div class="compare">
+          <div class="compare-pane">
+            <p class="pane-label">Write everywhere</p>
+            <h2 class="pane-title">Sync all</h2>
+            <div class="codeblock bad">POST /profile
+  us-east AND eu-west
+  wait ~80ms RTT
+  + the farthest commit
+
+or both accept writes
+  two truths on one row
+  split brain</div>
+            <p class="caption">Latency of the slowest region, or a conflict you did not name. Active-active without a rule is hope.</p>
+          </div>
+          <div class="compare-vs">vs</div>
+          <div class="compare-pane compare-pane--hit">
+            <p class="pane-label">Pin the write</p>
+            <h2 class="pane-title">Home</h2>
+            <div class="codeblock ok">user.home = us-east
+writes → us-east
+EU reads a replica
+  lag is OK (plate 99)
+GDPR → EU home
+token carries region
+failover = runbook</div>
+            <p class="caption">Edge / DNS (plates 35, 36) routes. Failover is promote, or block writes until home returns. Pin by user id, not a sticky session across regions.</p>
+          </div>
+        </div>
+        <div class="deck">
+          <div class="deck-row"><span class="deck-k">What</span><p>Home for writes, replicas for reads, explicit failover. Global tables have conflict rules (CRDT / LWW) — say them. Session tokens include region.</p></div>
+          <div class="deck-row"><span class="deck-k">Why</span><p>SDE-2 multi-region. They want: who is the primary for this user, and what you give up (lag, or conflict).</p></div>
+          <div class="deck-row deck-row--trap"><span class="deck-k">Trap</span><p>Active-active on a row without a conflict rule. Geo-DNS to a region that doesn’t have the user’s writes. Assuming replication is 0 ms. Storing region only in the client.</p></div>
+        </div>
+      </div>
+    </section>
+    <footer class="foot"><p class="one-liner"></p><p class="plate-id">Plate 223 / 375</p></footer>
+  </article>
+</body>
+</html>

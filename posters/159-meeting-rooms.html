@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PLATE 159 — A min-heap of end times.</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@800;900&family=Fraunces:ital,opsz,wght@1,9..144,400;1,9..144,500&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/poster.css">
+</head>
+<body>
+  <article class="poster" data-track="dsa">
+    <span class="mark mark--tl"></span><span class="mark mark--tr"></span><span class="mark mark--bl"></span><span class="mark mark--br"></span>
+    <p class="spine">Foundations series — software engineering mental models</p>
+    <div class="rule"></div><div class="ghost">159</div><div class="vignette"></div>
+    <svg class="grain" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="4" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(#n)"></rect></svg>
+    <header class="mast">
+      <p class="kicker"><span>DSA</span><span class="dot"></span><span class="whisper">Sweep · rooms = heap size</span></p>
+      <h1 class="title">A min-heap <span class="title-accent">of end times.</span></h1>
+      <p class="lede">Meeting rooms II: minimum rooms so no two overlapping meetings share one. Sort by start. A min-heap holds end times of rooms currently busy. When a meeting starts, pop every room that already finished (<code>end ≤ start</code>). Push this end. The heap’s peak size is the answer. Chronological sweep: +1 at start, −1 at end, scan a max running count — same.</p>
+    </header>
+    <section class="stage">
+      <div class="stage-inner">
+        <div class="compare">
+          <div class="compare-pane compare-pane--hit">
+            <p class="pane-label">Reuse the room that frees first</p>
+            <h2 class="pane-title">Heap of ends</h2>
+            <div class="codeblock ok">[0,30] [5,10] [15,20]
+push 30           size 1
+5 &lt; 30, push 10   size 2
+10 ≤ 15, pop 10
+push 20           size 2
+max size = 2</div>
+            <p class="caption">Pop on <code>≤</code>, not <code>&lt;</code>: a meeting that ends at 10 frees the room for a 10 start.</p>
+          </div>
+          <div class="compare-vs">or</div>
+          <div class="compare-pane">
+            <p class="pane-label">+1 start · −1 end</p>
+            <h2 class="pane-title">Sweep</h2>
+            <div class="codeblock">(0,+1) (5,+1) (10,-1)
+(15,+1) (20,-1) (30,-1)
+running 1, 2, 1, 2, 1, 0
+max 2
+
+tie at t: process
+ends first (reuse)</div>
+            <p class="caption">Rooms I is easier: one person, sort-and-check no overlap. Rooms II is the count of concurrent.</p>
+          </div>
+        </div>
+        <div class="deck">
+          <div class="deck-row"><span class="deck-k">What</span><p>Greedy: reuse the room that frees first. Heap size = rooms in use. O(n log n). The heap stores ends, not starts — you need “when is the next room free?”</p></div>
+          <div class="deck-row"><span class="deck-k">Why</span><p>LeetCode 253 / lintcode. SDE-2 interval. Plate 115 is the heap; this is the meeting. “Can one person attend all?” is rooms I — no heap.</p></div>
+          <div class="deck-row deck-row--trap"><span class="deck-k">Trap</span><p>Sorting by duration. Heap of starts. Using <code>&lt;</code> vs <code>≤</code> at equal timestamps. n² “assign to first free room” without a heap. Merging intervals (plate 157) — that unions them, it does not count rooms.</p></div>
+        </div>
+      </div>
+    </section>
+    <footer class="foot"><p class="one-liner"></p><p class="plate-id">Plate 159 / 200</p></footer>
+  </article>
+</body>
+</html>

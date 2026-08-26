@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PLATE 81 — The request walks an onion.</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@800;900&family=Fraunces:ital,opsz,wght@1,9..144,400;1,9..144,500&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/poster.css">
+</head>
+<body>
+  <article class="poster" data-track="backend">
+    <span class="mark mark--tl"></span><span class="mark mark--tr"></span><span class="mark mark--bl"></span><span class="mark mark--br"></span>
+    <p class="spine">Foundations series — software engineering mental models</p>
+    <div class="rule"></div><div class="ghost">81</div><div class="vignette"></div>
+    <svg class="grain" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="4" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(#n)"></rect></svg>
+    <header class="mast">
+      <p class="kicker"><span>Backend</span><span class="dot"></span><span class="whisper">app.use · next() · 4-arity</span></p>
+      <h1 class="title">The request walks <span class="title-accent">an onion.</span></h1>
+      <p class="lede">Express middleware is <code>(req, res, next) =&gt; { … next() }</code>. <code>app.use</code> order is outside-in: first registered runs first. Koa’s <code>await next()</code> is the same pipeline — code after <code>next()</code> runs on the way out. Skip <code>next()</code> and the request hangs until the client timeout. Error handlers are <code>(err, req, res, next)</code> — four arguments, last.</p>
+    </header>
+    <section class="stage">
+      <div class="stage-inner">
+        <div class="steps">
+          <div class="step">
+            <span class="step-n">1</span>
+            <p class="step-copy">Logger<span>Start the timer. After <code>next()</code> returns, log status + ms. Runs on the way in and the way out.</span></p>
+            <span class="step-meta">app.use #1</span>
+          </div>
+          <div class="step step--hit">
+            <span class="step-n">2</span>
+            <p class="step-copy">Auth<span>No user → <code>401</code> and return (do not call <code>next()</code>). Else <code>next()</code>. A gate, not a logger.</span></p>
+            <span class="step-meta">401 or pass</span>
+          </div>
+          <div class="step">
+            <span class="step-n">3</span>
+            <p class="step-copy">Route<span><code>GET /orders</code> — the handler. <code>express.json()</code> must run before any route that reads <code>req.body</code>.</span></p>
+            <span class="step-meta">core</span>
+          </div>
+        </div>
+        <div class="deck">
+          <div class="deck-row"><span class="deck-k">What</span><p>Cross-cutting lives here — auth (plate 14), CORS (plate 15), rate limits (plate 33), body parser — not copied into every route. First <code>app.use</code> is outermost.</p></div>
+          <div class="deck-row"><span class="deck-k">Why</span><p>One place to reject, time, and parse. Interviews: draw the pipeline, say when your code runs (before vs after the handler), and what happens if you don’t call <code>next()</code>.</p></div>
+          <div class="deck-row deck-row--trap"><span class="deck-k">Trap</span><p><code>auth</code> after the route — the handler already ran unauthenticated. Forget <code>next()</code> → hung request, no 500. Error middleware with three args, or not last — Express never calls it.</p></div>
+        </div>
+      </div>
+    </section>
+    <footer class="foot"><p class="one-liner"></p><p class="plate-id">Plate 81 / 375</p></footer>
+  </article>
+</body>
+</html>

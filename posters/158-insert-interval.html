@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PLATE 158 — Left of new. Overlap. Right of new.</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@800;900&family=Fraunces:ital,opsz,wght@1,9..144,400;1,9..144,500&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/poster.css">
+</head>
+<body>
+  <article class="poster" data-track="dsa">
+    <span class="mark mark--tl"></span><span class="mark mark--tr"></span><span class="mark mark--bl"></span><span class="mark mark--br"></span>
+    <p class="spine">Foundations series — software engineering mental models</p>
+    <div class="rule"></div><div class="ghost">158</div><div class="vignette"></div>
+    <svg class="grain" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="4" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(#n)"></rect></svg>
+    <header class="mast">
+      <p class="kicker"><span>DSA</span><span class="dot"></span><span class="whisper">Already sorted · one pass</span></p>
+      <h1 class="title">Left of new. Overlap. <span class="title-accent">Right of new.</span></h1>
+      <p class="lede">Insert a new interval into a sorted, already-merged list. One pass, no full re-sort. Emit every interval that ends before new starts. Then merge all that overlap the new (expand new). Then emit the rest. O(n).</p>
+    </header>
+    <section class="stage">
+      <div class="stage-inner">
+        <div class="steps">
+          <div class="step"><span class="step-n">1</span><p class="step-copy">Strictly left<span>Intervals <code>[1,2][3,5][6,7][8,10][12,16]</code>, new <code>[4,8]</code>. Emit while <code>end &lt; new.start</code> → <code>[1,2]</code>. These cannot touch the new interval.</span></p><span class="step-meta">left</span></div>
+          <div class="step step--hit"><span class="step-n">2</span><p class="step-copy">Fold the overlap into new<span>Overlap test: not (<code>end &lt; new.start</code> or <code>start &gt; new.end</code>). <code>[3,5][6,7][8,10]</code> all hit. New becomes <code>[3,10]</code>.</span></p><span class="step-meta">merge</span></div>
+          <div class="step"><span class="step-n">3</span><p class="step-copy">Strictly right<span>Emit <code>[12,16]</code>. If new sits in a hole with no overlap, it is just inserted in order — the middle loop never fires, and you still never re-sort.</span></p><span class="step-meta">right</span></div>
+        </div>
+        <p class="caption">Three regions. Sort-and-merge (plate 157) also works; this is the O(n) write they want when the list is already clean.</p>
+        <div class="deck">
+          <div class="deck-row"><span class="deck-k">What</span><p>Three regions: strictly left, overlapping (fold into new), strictly right. You expand new in place as you eat overlaps, then append it once. Input stays sorted; output stays merged.</p></div>
+          <div class="deck-row"><span class="deck-k">Why</span><p>LeetCode 57. Tests interval algebra without hiding behind sort-and-merge. The three-region scan is the point of the problem.</p></div>
+          <div class="deck-row deck-row--trap"><span class="deck-k">Trap</span><p>Sorting the whole list again as the only idea (correct, slower to the point). Off-by-one on touching. Mutating the input list while iterating. Forgetting to append new if it belongs at the very end.</p></div>
+        </div>
+      </div>
+    </section>
+    <footer class="foot"><p class="one-liner"></p><p class="plate-id">Plate 158 / 200</p></footer>
+  </article>
+</body>
+</html>

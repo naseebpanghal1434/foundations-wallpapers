@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PLATE 218 — Comments are a tree, served as a page.</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@800;900&family=Fraunces:ital,opsz,wght@1,9..144,400;1,9..144,500&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/poster.css">
+</head>
+<body>
+  <article class="poster" data-track="system">
+    <span class="mark mark--tl"></span><span class="mark mark--tr"></span><span class="mark mark--bl"></span><span class="mark mark--br"></span>
+    <p class="spine">Foundations series — software engineering mental models</p>
+    <div class="rule"></div><div class="ghost">218</div><div class="vignette"></div>
+    <svg class="grain" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="4" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(#n)"></rect></svg>
+    <header class="mast">
+      <p class="kicker"><span>System</span><span class="dot"></span><span class="whisper">Nested · cursor · hide</span></p>
+      <h1 class="title">Comments are a tree, <span class="title-accent">served as a page.</span></h1>
+      <p class="lede">Comments are <code>parent_id</code> trees under a post. Do not <code>SELECT</code> 40k nodes for a viral thread. Serve a page: 20 roots by <code>(score, id)</code> + 3 replies; “12 more” is a cursor. Soft-delete → <code>[deleted]</code>, children stay. Adjacency insert is O(1); materialized path makes descendants cheap.</p>
+    </header>
+    <section class="stage">
+      <div class="stage-inner">
+        <div class="compare">
+          <div class="compare-pane">
+            <p class="pane-label">Viral post · 40k nodes</p>
+            <h2 class="pane-title">Whole tree</h2>
+            <div class="codeblock bad">WITH RECURSIVE t AS (
+  SELECT * FROM comments
+  WHERE post_id = 7
+  UNION ALL ...
+)
+-- 6 levels, 40k rows
+first paint: all of them</div>
+            <p class="caption">Fine when the thread is small. Recursing the forest on the request is not a page. Hard-delete orphans children.</p>
+          </div>
+          <div class="compare-vs">vs</div>
+          <div class="compare-pane compare-pane--hit">
+            <p class="pane-label">Page, then a slice</p>
+            <h2 class="pane-title">20 + 3</h2>
+            <div class="codeblock ok">20 roots
+  ORDER BY score, id
+  cursor = (score,id)
+first 3 replies each
+'12 more' is a cursor
+deleted → '[deleted]'
+children stay
+cache page 1</div>
+            <p class="caption">Votes are a counter with a rate limit (plate 201). Live new comments: socket on post id (plate 216).</p>
+          </div>
+        </div>
+        <div class="deck">
+          <div class="deck-row"><span class="deck-k">What</span><p>Tree in storage, page in the API. Cursors, not OFFSET (plate 32). Moderation is a state, not <code>DELETE … CASCADE</code>. Hot post: cache the first page.</p></div>
+          <div class="deck-row"><span class="deck-k">Why</span><p>Reddit / HN design. They want nesting + pagination + <code>[deleted]</code> — not a CASCADE wipe of the thread.</p></div>
+          <div class="deck-row deck-row--trap"><span class="deck-k">Trap</span><p>Loading 40k comments on first paint. Deep recursion in the API. Hard-delete that breaks the tree. Ranking every nested reply globally so a new child of an old thread never surfaces.</p></div>
+        </div>
+      </div>
+    </section>
+    <footer class="foot"><p class="one-liner"></p><p class="plate-id">Plate 218 / 375</p></footer>
+  </article>
+</body>
+</html>

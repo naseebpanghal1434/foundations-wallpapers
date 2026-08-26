@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PLATE 359 — memcmp returns early. Secrets must not.</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@800;900&family=Fraunces:ital,opsz,wght@1,9..144,400;1,9..144,500&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/poster.css">
+</head>
+<body>
+  <article class="poster" data-track="backend">
+    <span class="mark mark--tl"></span><span class="mark mark--tr"></span><span class="mark mark--bl"></span><span class="mark mark--br"></span>
+    <p class="spine">Foundations series — software engineering mental models</p>
+    <div class="rule"></div><div class="ghost">359</div><div class="vignette"></div>
+    <svg class="grain" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="4" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(#n)"></rect></svg>
+    <header class="mast">
+      <p class="kicker"><span>Backend</span><span class="dot"></span><span class="whisper">timing · hmac.compare_digest</span></p>
+      <h1 class="title">memcmp returns early. <span class="title-accent">Secrets must not.</span></h1>
+      <p class="lede"><code>memcmp</code> / <code>==</code> on bytes stops at the first difference: an attacker times the response to learn the secret prefix. Use a constant-time compare (<code>CRYPTO_memcmp</code>, <code>hmac.compare_digest</code>, <code>crypto.timingSafeEqual</code>). Apply to tokens, CSRF, webhook signatures — not to “admin” vs “user” usernames.</p>
+    </header>
+    <section class="stage">
+      <div class="stage-inner">
+        <div class="compare">
+          <div class="compare-pane">
+            <p class="pane-label">first mismatch returns</p>
+            <h2 class="pane-title">memcmp</h2>
+            <div class="codeblock">if (token[i] != got[i])
+  return 401;
+
+prefix match: 200 µs
+first-byte miss:  50 µs
+
+<span class="bad">time → secret[0..i]</span></div>
+            <p class="caption">Network jitter hides small leaks; still do it. Don’t early-return on length either without care.</p>
+          </div>
+          <div class="compare-vs">vs</div>
+          <div class="compare-pane compare-pane--hit">
+            <p class="pane-label">data-independent time</p>
+            <h2 class="pane-title">xor · OR</h2>
+            <div class="codeblock">acc = 0
+for i in 0..n:
+  acc |= a[i] ^ b[i]
+return acc == 0
+
+<span class="ok">CRYPTO_memcmp</span>
+hmac.compare_digest
+crypto.timingSafeEqual</div>
+            <p class="caption">Equal-length secret compares. Lengths should be public or padded. Same work on match and miss.</p>
+          </div>
+        </div>
+        <div class="deck">
+          <div class="deck-row"><span class="deck-k">What</span><p>Data-independent time for equal-length secret compares. Lengths should be public or padded.</p></div>
+          <div class="deck-row"><span class="deck-k">Why</span><p>API keys, reset tokens, HMAC headers. A local attacker with a high-resolution clock reads prefixes.</p></div>
+          <div class="deck-row deck-row--trap"><span class="deck-k">Trap</span><p><code>hash_equals</code> then a second <code>==</code>. Comparing hashes with <code>!=</code> in a high-resolution local attack. SHA256(password) without a KDF (plate 354).</p></div>
+        </div>
+      </div>
+    </section>
+    <footer class="foot"><p class="one-liner"></p><p class="plate-id">Plate 359 / 375</p></footer>
+  </article>
+</body>
+</html>

@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PLATE 222 — Presence is a TTL, not a boolean.</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@800;900&family=Fraunces:ital,opsz,wght@1,9..144,400;1,9..144,500&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/poster.css">
+</head>
+<body>
+  <article class="poster" data-track="system">
+    <span class="mark mark--tl"></span><span class="mark mark--tr"></span><span class="mark mark--bl"></span><span class="mark mark--br"></span>
+    <p class="spine">Foundations series — software engineering mental models</p>
+    <div class="rule"></div><div class="ghost">222</div><div class="vignette"></div>
+    <svg class="grain" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="4" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(#n)"></rect></svg>
+    <header class="mast">
+      <p class="kicker"><span>System</span><span class="dot"></span><span class="whisper">Heartbeat · last-seen</span></p>
+      <h1 class="title">Presence is a TTL, <span class="title-accent">not a boolean.</span></h1>
+      <p class="lede">Online is <code>SET user:42:online EX 30</code>, refreshed every 10 s — the same Redis TTL pattern as <code>INCR</code>+<code>EXPIRE</code> (plate 201). Miss 3 beats → expire → offline. <code>last_seen</code> is the stamp you show. <code>onclose</code> does not fire on lid close or half-open TCP.</p>
+    </header>
+    <section class="stage">
+      <div class="stage-inner">
+        <div class="compare">
+          <div class="compare-pane">
+            <p class="pane-label">WS close never fires</p>
+            <h2 class="pane-title">Boolean</h2>
+            <div class="codeblock bad">UPDATE users
+SET is_online = true
+  WHERE id = 42
+
+onclose →
+  is_online = false
+  -- lid, killed tab,
+  -- half-open TCP: never</div>
+            <p class="caption">A green dot that never turns off. Trusting <code>onclose</code> is the bug. The socket map (plate 216) uses the same TTL.</p>
+          </div>
+          <div class="compare-vs">vs</div>
+          <div class="compare-pane compare-pane--hit">
+            <p class="pane-label">Heartbeat · EX 30s</p>
+            <h2 class="pane-title">TTL</h2>
+            <div class="codeblock ok">SET user:42:online EX 30
+refresh every 10s
+miss 3 beats → expire
+last_seen = now
+pub online on first SET
+offline on EXPIRE</div>
+            <p class="caption">“Last seen 3m ago” beats a lying green dot. Mobile: longer TTL (45–60 s). No graceful close required. Keyspace notify or a scanner for expiry.</p>
+          </div>
+        </div>
+        <div class="deck">
+          <div class="deck-row"><span class="deck-k">What</span><p>Expiry is the source of truth: connect starts the TTL, heartbeat refreshes, expiry is offline. Presence channel: pub on first SET, offline on expire.</p></div>
+          <div class="deck-row"><span class="deck-k">Why</span><p>Chat, docs, games. Interviewers wait for you to distrust <code>onclose</code>.</p></div>
+          <div class="deck-row deck-row--trap"><span class="deck-k">Trap</span><p>Boolean column. Trusting <code>onclose</code>. Heartbeat every 50 ms × 1M users. Scanning the whole user table for <code>last_seen &lt; now()-30s</code> every second without an index / Redis.</p></div>
+        </div>
+      </div>
+    </section>
+    <footer class="foot"><p class="one-liner"></p><p class="plate-id">Plate 222 / 375</p></footer>
+  </article>
+</body>
+</html>

@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PLATE 62 — A trie is a prefix tree.</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@800;900&family=Fraunces:ital,opsz,wght@1,9..144,400;1,9..144,500&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/poster.css">
+</head>
+<body>
+  <article class="poster" data-track="dsa">
+    <span class="mark mark--tl"></span><span class="mark mark--tr"></span><span class="mark mark--bl"></span><span class="mark mark--br"></span>
+    <p class="spine">Foundations series — software engineering mental models</p>
+    <div class="rule"></div><div class="ghost">62</div><div class="vignette"></div>
+    <svg class="grain" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="4" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(#n)"></rect></svg>
+    <header class="mast">
+      <p class="kicker"><span>DSA</span><span class="dot"></span><span class="whisper">Autocomplete</span></p>
+      <h1 class="title">A trie is a <span class="title-accent">prefix tree.</span></h1>
+      <p class="lede">Each edge is a character. A word is a path; a flag on the last node says “this path is a complete word.” Search and insert cost O(length of the word), not O(dictionary size). Autocomplete: walk the prefix, then collect the subtree. That is why it exists.</p>
+    </header>
+    <section class="stage">
+      <div class="stage-inner">
+        <div class="compare">
+          <div class="compare-pane compare-pane--hit">
+            <p class="pane-label">Shared prefixes · walk letters</p>
+            <h2 class="pane-title">Trie</h2>
+            <div class="codeblock ok">      c
+      a
+     / \
+    r   t
+   /
+  t
+car  cat  cart
+
+"ca" → node a → {car, cart, cat}
+O(len + hits)</div>
+            <p class="caption">Kids: array[26] or a hashmap. <code>end</code> bit (or count) on the node. Delete is “clear the bit, prune dead branches.”</p>
+          </div>
+          <div class="compare-vs">vs</div>
+          <div class="compare-pane">
+            <p class="pane-label">Exact words only</p>
+            <h2 class="pane-title">Hash set</h2>
+            <div class="codeblock">{"car","cat","cart"}
+
+has "cat"?   O(1) avg
+starts with "ca"?
+  scan every word
+  O(n · len)</div>
+            <p class="caption">Perfect for exact membership. Prefix, “typeahead,” word-break dictionary walk — you wanted a trie (or all prefixes stored, which is a worse trie).</p>
+          </div>
+        </div>
+        <div class="deck">
+          <div class="deck-row"><span class="deck-k">What</span><p>Prefix tree. Time follows the string, not how many strings you already stored. A BST of words is O(len · log n) and still clumsy at “all keys with this prefix.” Tries also power IP routing and a cheap <code>startsWith</code>.</p></div>
+          <div class="deck-row"><span class="deck-k">Why</span><p>Search-box interviews: “design autocomplete.” Walk the query, DFS/BFS the remaining nodes, rank if you stored counts. That is O(length of what’s typed + size of the answer).</p></div>
+          <div class="deck-row deck-row--trap"><span class="deck-k">Trap</span><p>A HashSet when you need prefixes: <code>words.filter(w =&gt; w.startsWith(q))</code> on a million words. Also a trie for exact lookup only (a hash set is simpler). Forgetting the <code>end</code> flag: <code>car</code> then makes you think <code>ca</code> is a word.</p></div>
+        </div>
+      </div>
+    </section>
+    <footer class="foot"><p class="one-liner"></p><p class="plate-id">Plate 62 / 100</p></footer>
+  </article>
+</body>
+</html>

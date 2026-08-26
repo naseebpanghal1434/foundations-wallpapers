@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PLATE 40 — Isolation is what others see.</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@800;900&family=Fraunces:ital,opsz,wght@1,9..144,400;1,9..144,500&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/poster.css">
+</head>
+<body>
+  <article class="poster" data-track="database">
+    <span class="mark mark--tl"></span><span class="mark mark--tr"></span><span class="mark mark--bl"></span><span class="mark mark--br"></span>
+    <p class="spine">Foundations series — software engineering mental models</p>
+    <div class="rule"></div><div class="ghost">40</div><div class="vignette"></div>
+    <svg class="grain" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="4" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(#n)"></rect></svg>
+    <header class="mast">
+      <p class="kicker"><span>Database</span><span class="dot"></span><span class="whisper">RC · RR · 40001</span></p>
+      <h1 class="title">Isolation is <span class="title-accent">what others see.</span></h1>
+      <p class="lede">Isolation is which concurrent writes you are allowed to see. Atomicity (plate 07) is all-or-none of <em>your</em> writes. Anomalies: dirty read, non-repeatable read, phantom. Postgres default: READ COMMITTED. MySQL InnoDB default: REPEATABLE READ. PG SERIALIZABLE is SSI; conflict → SQLSTATE 40001, retry.</p>
+    </header>
+    <section class="stage stage--wide">
+      <div class="stage-inner">
+        <div class="facts">
+          <div class="fact">
+            <p class="fact-k">dirty read</p>
+            <p class="fact-n">RU</p>
+            <p class="fact-c">You read a write they have not committed. They ROLLBACK. You acted on a ghost. Postgres does not really do this.</p>
+          </div>
+          <div class="fact fact--hit">
+            <p class="fact-k">non-repeatable</p>
+            <p class="fact-n">RC</p>
+            <p class="fact-c">Read Ada 100, they COMMIT 70, you read 70 in the same txn. Postgres default. REPEATABLE READ forbids it.</p>
+          </div>
+          <div class="fact">
+            <p class="fact-k">phantom</p>
+            <p class="fact-n">RR</p>
+            <p class="fact-c"><code>COUNT(*)</code> was 4; they INSERT; you count 5. Next-key locks (InnoDB RR) or SSI stop this.</p>
+          </div>
+          <div class="fact">
+            <p class="fact-k">retry</p>
+            <p class="fact-n">40001</p>
+            <p class="fact-c">SERIALIZABLE / SSI: snapshot plus conflict detection. Abort, retry the txn. More isolation → more waits/aborts.</p>
+          </div>
+        </div>
+        <div class="deck">
+          <div class="deck-row"><span class="deck-k">What</span><p>RU &lt; RC &lt; RR &lt; serializable. MVCC (plate 96) gives a snapshot instead of many read locks. Lost update: read-modify-write under RC without <code>SELECT … FOR UPDATE</code> or a version column.</p></div>
+          <div class="deck-row"><span class="deck-k">Why</span><p>“I checked stock then sold twice” is isolation, not missing BEGIN. Interviews: name the anomaly, pick the level, mention retry.</p></div>
+          <div class="deck-row deck-row--trap"><span class="deck-k">Trap</span><p>SERIALIZABLE on every query “to be safe” (throughput dies, 40001 surprises). RC plus a read-modify-write with no lock/version — lost update, cousin of plate 43.</p></div>
+        </div>
+      </div>
+    </section>
+    <footer class="foot"><p class="one-liner"></p><p class="plate-id">Plate 40 / 375</p></footer>
+  </article>
+</body>
+</html>

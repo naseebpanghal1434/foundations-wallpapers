@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PLATE 88 — The route does not speak SQL.</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@800;900&family=Fraunces:ital,opsz,wght@1,9..144,400;1,9..144,500&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/poster.css">
+</head>
+<body>
+  <article class="poster" data-track="backend">
+    <span class="mark mark--tl"></span><span class="mark mark--tr"></span><span class="mark mark--bl"></span><span class="mark mark--br"></span>
+    <p class="spine">Foundations series — software engineering mental models</p>
+    <div class="rule"></div><div class="ghost">88</div><div class="vignette"></div>
+    <svg class="grain" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="4" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(#n)"></rect></svg>
+    <header class="mast">
+      <p class="kicker"><span>Backend</span><span class="dot"></span><span class="whisper">handler → domain → repo</span></p>
+      <h1 class="title">The route does not <span class="title-accent">speak SQL.</span></h1>
+      <p class="lede">Three layers. The handler parses HTTP and returns status codes. The domain runs <code>placeOrder()</code> with no <code>req</code> and no SQL. The repository is the only place for <code>SELECT</code> / <code>INSERT</code>. SQL in <code>app.post('/orders', …)</code> couples Express to Postgres in one function — untestable, and the next endpoint copies it.</p>
+    </header>
+    <section class="stage">
+      <div class="stage-inner">
+        <div class="stack">
+          <div class="layer layer--tls">
+            <div class="layer-name">HTTP</div>
+            <p class="layer-copy">
+              Parse the request. Status codes. Authn/authz at the edge (plate 14).
+              <span>Knows <code>req</code> / <code>res</code>. Does not know <code>SELECT</code>.</span>
+            </p>
+            <p class="layer-meta">handler</p>
+          </div>
+          <div class="layer-join">calls</div>
+          <div class="layer layer--http">
+            <div class="layer-name">Domain</div>
+            <p class="layer-copy">
+              <code>placeOrder()</code>. <code>refund()</code>. “May this user, this row, this action?”
+              <span>No Express. No <code>pg</code>. The product lives here.</span>
+            </p>
+            <p class="layer-meta">rules</p>
+          </div>
+          <div class="layer-join">calls</div>
+          <div class="layer layer--ip">
+            <div class="layer-name">Repo</div>
+            <p class="layer-copy">
+              <code>SELECT</code> / <code>INSERT</code>. Returns objects, not rows to the route.
+              <span>The only layer allowed to speak the database.</span>
+            </p>
+            <p class="layer-meta">SQL</p>
+          </div>
+        </div>
+        <div class="deck">
+          <div class="deck-row"><span class="deck-k">What</span><p>Handler → domain → repository. Dependencies point inward: HTTP knows domain, domain knows a repo interface, repo knows Postgres. This is the SDE-sized slice of hexagonal / clean architecture.</p></div>
+          <div class="deck-row"><span class="deck-k">Why</span><p>Unit-test <code>placeOrder</code> with a fake repo (plate 89). Change the URL without rewriting money rules. One place for “can this user refund?”</p></div>
+          <div class="deck-row deck-row--trap"><span class="deck-k">Trap</span><p><code>app.post('/orders', (req, res) =&gt; db.query(...))</code>. Domain importing Express. Passing <code>req</code> into the repo. A “service” that only forwards arguments.</p></div>
+        </div>
+      </div>
+    </section>
+    <footer class="foot"><p class="one-liner"></p><p class="plate-id">Plate 88 / 375</p></footer>
+  </article>
+</body>
+</html>

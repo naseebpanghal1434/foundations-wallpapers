@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PLATE 309 — A cache line is 64 bytes.</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@800;900&family=Fraunces:ital,opsz,wght@1,9..144,400;1,9..144,500&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/poster.css">
+</head>
+<body>
+  <article class="poster" data-track="arch">
+    <span class="mark mark--tl"></span><span class="mark mark--tr"></span><span class="mark mark--bl"></span><span class="mark mark--br"></span>
+    <p class="spine">Foundations series — software engineering mental models</p>
+    <div class="rule"></div><div class="ghost">309</div><div class="vignette"></div>
+    <svg class="grain" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="4" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(#n)"></rect></svg>
+    <header class="mast">
+      <p class="kicker"><span>Arch</span><span class="dot"></span><span class="whisper">64 B · fill</span></p>
+      <h1 class="title">A cache line is <span class="title-accent">64 bytes.</span></h1>
+      <p class="lede">Caches move 64-byte lines (x86; some ARM 64/128). A load of 4 bytes fills 64. Sequential int32 scan: 16 values per miss. Stride 64 bytes: a miss every element. Align hot structs to 64 if you do not want them split across two lines.</p>
+    </header>
+    <section class="stage stage--wide">
+      <div class="stage-inner">
+        <div class="facts facts-5">
+          <div class="fact fact--hit">
+            <p class="fact-k">Line</p>
+            <p class="fact-n">64 B</p>
+            <p class="fact-c">Transfer unit, not the load size.</p>
+          </div>
+          <div class="fact">
+            <p class="fact-k">4 B load</p>
+            <p class="fact-n">fills 64</p>
+            <p class="fact-c">Neighbor bytes come along.</p>
+          </div>
+          <div class="fact">
+            <p class="fact-k">int32 scan</p>
+            <p class="fact-n">16 / miss</p>
+            <p class="fact-c">Sequential. Prefetch likes this.</p>
+          </div>
+          <div class="fact">
+            <p class="fact-k">Stride 64 B</p>
+            <p class="fact-n">1 miss</p>
+            <p class="fact-c">Every element. Random-ish cost.</p>
+          </div>
+          <div class="fact">
+            <p class="fact-k">Two cores</p>
+            <p class="fact-n">1 line</p>
+            <p class="fact-c">False sharing (plate 311). Pad 64 B.</p>
+          </div>
+        </div>
+        <p class="caption">Hot <code>a</code> and <code>b</code> split across two lines → two misses. Same 64 B → one. Write-back: dirty line evicted later. <code>clflush</code> / <code>prefetchnta</code>.</p>
+        <div class="deck">
+          <div class="deck-row"><span class="deck-k">What</span><p>The transfer unit is the 64 B line, not the load size. Write-back: the dirty line is written later.</p></div>
+          <div class="deck-row"><span class="deck-k">Why</span><p>Array-of-structs vs struct-of-arrays. Packet headers. Page is 4 KiB; the line is 64 B.</p></div>
+          <div class="deck-row deck-row--trap"><span class="deck-k">Trap</span><p>Linked list of 16-byte nodes: a miss per node (~100 ns RAM). Splitting a hot counter across a line with unrelated data on another core.</p></div>
+        </div>
+      </div>
+    </section>
+    <footer class="foot"><p class="one-liner"></p><p class="plate-id">Plate 309 / 375</p></footer>
+  </article>
+</body>
+</html>

@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PLATE 32 — Offset pagination lies.</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@800;900&family=Fraunces:ital,opsz,wght@1,9..144,400;1,9..144,500&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/poster.css">
+</head>
+<body>
+  <article class="poster" data-track="backend">
+    <span class="mark mark--tl"></span><span class="mark mark--tr"></span><span class="mark mark--bl"></span><span class="mark mark--br"></span>
+    <p class="spine">Foundations series — software engineering mental models</p>
+    <div class="rule"></div><div class="ghost">32</div><div class="vignette"></div>
+    <svg class="grain" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="4" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(#n)"></rect></svg>
+    <header class="mast">
+      <p class="kicker"><span>Backend</span><span class="dot"></span><span class="whisper">LIMIT/OFFSET · keyset</span></p>
+      <h1 class="title">Offset pagination <span class="title-accent">lies.</span></h1>
+      <p class="lede"><code>LIMIT 20 OFFSET 10000</code> makes the engine walk 10,020 rows and discard 10,000. Cost is O(offset + limit), not O(limit). Inserts at the top skip and duplicate rows across pages. Keyset: continue from a unique sort key — O(log n + 20) with that index.</p>
+    </header>
+    <section class="stage">
+      <div class="stage-inner">
+        <div class="compare">
+          <div class="compare-pane">
+            <p class="pane-label">Page 501 of a feed</p>
+            <h2 class="pane-title">OFFSET</h2>
+            <div class="codeblock bad">SELECT * FROM posts
+ORDER BY created_at DESC
+LIMIT 20 OFFSET 10000
+-- still walks 10020 rows
+
+INSERT at top:
+page 2 repeats, page 3 skips</div>
+            <p class="caption">Fine for an admin UI of 50 rows. A live feed plus deep OFFSET is both slow and wrong.</p>
+          </div>
+          <div class="compare-vs">vs</div>
+          <div class="compare-pane compare-pane--hit">
+            <p class="pane-label">Seek the next key</p>
+            <h2 class="pane-title">Cursor</h2>
+            <div class="codeblock ok">WHERE (created_at, id)
+    &lt; ($t, $id)
+ORDER BY created_at DESC, id DESC
+LIMIT 20
+INDEX (created_at, id)
+next = last row’s (t, id)</div>
+            <p class="caption">Keyset pagination. GraphQL <code>after: cursor</code> is this. No skipped work. Inserts don’t shuffle pages.</p>
+          </div>
+        </div>
+        <div class="deck">
+          <div class="deck-row"><span class="deck-k">What</span><p>Offset = skip N. Cursor = bookmark on a unique sort key (tie-break with <code>id</code>). Postgres still walks OFFSET even with an index. Encode the key, not a page number, as the “cursor.”</p></div>
+          <div class="deck-row"><span class="deck-k">Why</span><p>Deep offsets get slower linearly. Live lists change under you. Every product has a list; OFFSET is what people write first. Interviews want the index and the skip/dup bug.</p></div>
+          <div class="deck-row deck-row--trap"><span class="deck-k">Trap</span><p>Cursor on a non-unique column (ties skip rows). Page number base64’d and called a cursor. <code>SELECT COUNT(*)</code> on 50M rows every page — don’t, or cache an estimate.</p></div>
+        </div>
+      </div>
+    </section>
+    <footer class="foot"><p class="one-liner"></p><p class="plate-id">Plate 32 / 375</p></footer>
+  </article>
+</body>
+</html>

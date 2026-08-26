@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PLATE 102 — Capacity doubles. Append is cheap.</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@800;900&family=Fraunces:ital,opsz,wght@1,9..144,400;1,9..144,500&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/poster.css">
+</head>
+<body>
+  <article class="poster" data-track="dsa">
+    <span class="mark mark--tl"></span><span class="mark mark--tr"></span><span class="mark mark--bl"></span><span class="mark mark--br"></span>
+    <p class="spine">Foundations series — software engineering mental models</p>
+    <div class="rule"></div><div class="ghost">102</div><div class="vignette"></div>
+    <svg class="grain" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="4" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(#n)"></rect></svg>
+    <header class="mast">
+      <p class="kicker"><span>DSA</span><span class="dot"></span><span class="whisper">Amortized O(1) push</span></p>
+      <h1 class="title">Capacity doubles. <span class="title-accent">Append is cheap.</span></h1>
+      <p class="lede">A vector is an array plus a length and a capacity. Push into a spare slot writes one cell. When it is full, allocate 2×, copy, then write. One push is O(n) on resize; n pushes are still O(n) total — amortized O(1) each. <code>pop</code> from the end is O(1) and usually does not shrink.</p>
+    </header>
+    <section class="stage">
+      <div class="stage-inner">
+        <div class="steps">
+          <div class="step"><span class="step-n">1</span><p class="step-copy">Spare slot<span><code>len=3 cap=4  [a b c _]</code> · push <code>d</code> → <code>[a b c d]</code>. One write. O(1).</span></p><span class="step-meta">spare</span></div>
+          <div class="step step--hit"><span class="step-n">2</span><p class="step-copy">Full · grow<span>push <code>e</code> → alloc 8, copy 4, write <code>e</code> → <code>[a b c d e _ _ _]</code>. This call is O(n). <code>len=5 cap=8</code>.</span></p><span class="step-meta">resize</span></div>
+          <div class="step"><span class="step-n">3</span><p class="step-copy">Geometric series<span>Copies: <code>1+2+4+…+n = 2n−1</code>. Average &lt; 2 copies per push, so n appends stay O(n). Grow by +1 instead and you pay O(n²).</span></p><span class="step-meta">amortize</span></div>
+        </div>
+        <div class="deck">
+          <div class="deck-row"><span class="deck-k">What</span><p><code>length</code> = live items. <code>capacity</code> = allocated slots. Geometric growth (×2 or ×1.5) is the trick that makes append amortized O(1). Insert at <code>i</code> still O(n) — you shift, even with spare cap.</p></div>
+          <div class="deck-row"><span class="deck-k">Why</span><p>Language “arrays” (Java <code>ArrayList</code>, Python <code>list</code>, C++ <code>vector</code>, JS <code>Array</code>) are this. Interviews: “why not grow by +1?” Because n resizes of size 1, 2, 3, … cost O(n²).</p></div>
+          <div class="deck-row deck-row--trap"><span class="deck-k">Trap</span><p>Amortized is not worst-case: a single push can stall on a copy of n. Real-time code uses a ring (plate 105) or a pre-sized array. Also: mid-insert is still O(n) after a resize.</p></div>
+        </div>
+      </div>
+    </section>
+    <footer class="foot"><p class="one-liner"></p><p class="plate-id">Plate 102 / 200</p></footer>
+  </article>
+</body>
+</html>

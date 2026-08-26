@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PLATE 259 — RAG fails at the chunk, not the prose.</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@800;900&family=Fraunces:ital,opsz,wght@1,9..144,400;1,9..144,500&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/poster.css">
+</head>
+<body>
+  <article class="poster" data-track="genai">
+    <span class="mark mark--tl"></span><span class="mark mark--tr"></span><span class="mark mark--bl"></span><span class="mark mark--br"></span>
+    <p class="spine">Foundations series — software engineering mental models</p>
+    <div class="rule"></div><div class="ghost">259</div><div class="vignette"></div>
+    <svg class="grain" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="4" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(#n)"></rect></svg>
+    <header class="mast">
+      <p class="kicker"><span>GenAI</span><span class="dot"></span><span class="whisper">Miss · stale · conflict</span></p>
+      <h1 class="title">RAG fails at the chunk, <span class="title-accent">not the prose.</span></h1>
+      <p class="lede">A fluent RAG lie is often a miss, a stale chunk, or two chunks that disagree (plate 45). If the right paragraph never entered the window, no temperature will save you (plate 44).</p>
+    </header>
+    <section class="stage stage--wide">
+      <div class="stage-inner">
+        <div class="trio">
+          <div class="box box--pool">
+            <p class="col-label">Never retrieved</p>
+            <h2 class="box-title">Miss</h2>
+            <div class="codeblock">query ≠ chunk
+language</div>
+            <p class="caption">Hybrid (plate 256). Debug the index before the prompt.</p>
+          </div>
+          <div class="box">
+            <p class="col-label">Index lag</p>
+            <h2 class="box-title">Stale</h2>
+            <div class="codeblock">doc updated
+index not</div>
+            <p class="caption">The generator cannot know a page you did not reindex.</p>
+          </div>
+          <div class="box">
+            <p class="col-label">Two truths</p>
+            <h2 class="box-title">Conflict</h2>
+            <div class="codeblock">policy v3 and v1
+both retrieved</div>
+            <p class="caption">Cite dates. The model reconciles in a fluent lie.</p>
+          </div>
+        </div>
+        <div class="deck">
+          <div class="deck-row"><span class="deck-k">What</span><p>Failure modes: miss, junk, stale, conflict, citation gap. The generator is last. Eval recall@k apart from answer quality (plate 262).</p></div>
+          <div class="deck-row"><span class="deck-k">Why</span><p>“Just add RAG” postmortems. Interviews: how you know it retrieved the right thing.</p></div>
+          <div class="deck-row deck-row--trap"><span class="deck-k">Trap</span><p>Only reading the final sentence. Re-chunking in the prompt instead of the index. Never checking the retrieved set when the answer is wrong.</p></div>
+        </div>
+      </div>
+    </section>
+    <footer class="foot"><p class="one-liner"></p><p class="plate-id">Plate 259 / 286</p></footer>
+  </article>
+</body>
+</html>

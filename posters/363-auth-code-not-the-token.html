@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PLATE 363 — The auth code is not the token.</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@800;900&family=Fraunces:ital,opsz,wght@1,9..144,400;1,9..144,500&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/poster.css">
+</head>
+<body>
+  <article class="poster" data-track="backend">
+    <span class="mark mark--tl"></span><span class="mark mark--tr"></span><span class="mark mark--bl"></span><span class="mark mark--br"></span>
+    <p class="spine">Foundations series — software engineering mental models</p>
+    <div class="rule"></div><div class="ghost">363</div><div class="vignette"></div>
+    <svg class="grain" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="4" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(#n)"></rect></svg>
+    <header class="mast">
+      <p class="kicker"><span>Backend</span><span class="dot"></span><span class="whisper">OAuth 2 · PKCE</span></p>
+      <h1 class="title">The auth code is not <span class="title-accent">the token.</span></h1>
+      <p class="lede">OAuth authorization code flow: the browser gets a short-lived code at the redirect. The backend (client secret or PKCE) exchanges that code at the token endpoint for access (+ refresh). The SPA should not be a confidential client; the access token stays off URL logs.</p>
+    </header>
+    <section class="stage">
+      <div class="stage-inner">
+        <div class="steps">
+          <div class="step">
+            <span class="step-n">1</span>
+            <p class="step-copy">GET /authorize?client_id&amp;redirect&amp;code_challenge<span>PKCE: S256 of the verifier. Browser never sees the access token here. Implicit flow is deprecated.</span></p>
+            <span class="step-meta">authorize</span>
+          </div>
+          <div class="step">
+            <span class="step-n">2</span>
+            <p class="step-copy">Redirect ?code=<span>One-time ticket, seconds of life, bound to redirect_uri. Not a bearer key. Referrer/logs may see it — that’s why it is short.</span></p>
+            <span class="step-meta">code</span>
+          </div>
+          <div class="step step--hit">
+            <span class="step-n">3</span>
+            <p class="step-copy">POST /token  code + verifier → access_token<span>Confidential client: secret on the server. Public/SPA: PKCE, no secret. OpenID adds id_token (validate aud).</span></p>
+            <span class="step-meta">token</span>
+          </div>
+        </div>
+        <div class="deck">
+          <div class="deck-row"><span class="deck-k">What</span><p>Delegation protocol. Code is a one-time ticket. Bearer token is the key (TLS + storage, plate 232).</p></div>
+          <div class="deck-row"><span class="deck-k">Why</span><p>Login with Google/GitHub. Why the secret is on the server, not in the SPA bundle.</p></div>
+          <div class="deck-row deck-row--trap"><span class="deck-k">Trap</span><p>Putting the access token in the redirect fragment and calling it modern. Skipping PKCE on public clients. Using the id_token as an API key at your backend without validating aud.</p></div>
+        </div>
+      </div>
+    </section>
+    <footer class="foot"><p class="one-liner"></p><p class="plate-id">Plate 363 / 375</p></footer>
+  </article>
+</body>
+</html>

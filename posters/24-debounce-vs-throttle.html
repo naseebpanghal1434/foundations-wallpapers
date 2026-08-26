@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PLATE 24 — Debounce waits. Throttle caps.</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@800;900&family=Fraunces:ital,opsz,wght@1,9..144,400;1,9..144,500&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/poster.css">
+</head>
+<body>
+  <article class="poster" data-track="frontend">
+    <span class="mark mark--tl"></span><span class="mark mark--tr"></span><span class="mark mark--bl"></span><span class="mark mark--br"></span>
+    <p class="spine">Foundations series — software engineering mental models</p>
+    <div class="rule"></div><div class="ghost">24</div><div class="vignette"></div>
+    <svg class="grain" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="4" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(#n)"></rect></svg>
+    <header class="mast">
+      <p class="kicker"><span>Frontend</span><span class="dot"></span><span class="whisper">Search box vs scroll</span></p>
+      <h1 class="title">Debounce waits. <span class="title-accent">Throttle caps.</span></h1>
+      <p class="lede">Both cut down how often a function runs. Debounce: run once the events have <em>stopped</em>. Throttle: run at most once per time window, even if events keep coming.</p>
+    </header>
+    <section class="stage">
+      <div class="stage-inner">
+        <div class="compare">
+          <div class="compare-pane compare-pane--hit">
+            <p class="pane-label">Typing in search</p>
+            <h2 class="pane-title">Debounce</h2>
+            <div class="codeblock">keys:  a a a a a a a
+fire:                    ■
+         wait 300ms quiet</div>
+            <div class="bullets">
+              <div>Reset the timer on every keystroke.</div>
+              <div>One request after they pause.</div>
+              <div>Use for search, resize-end, save-draft.</div>
+            </div>
+          </div>
+          <div class="compare-vs">vs</div>
+          <div class="compare-pane">
+            <p class="pane-label">Scroll / mousemove</p>
+            <h2 class="pane-title">Throttle</h2>
+            <div class="codeblock">scroll: ■ ■ ■ ■ ■ ■ ■ ■
+fire:   ■     ■     ■
+        at most every 100ms</div>
+            <div class="bullets">
+              <div>First (or last) event in each window.</div>
+              <div>Still updates while they keep scrolling.</div>
+              <div>Use for scroll, pointer, infinite list.</div>
+            </div>
+          </div>
+        </div>
+        <div class="deck">
+          <div class="deck-row"><span class="deck-k">What</span><p>Debounce = “wait until quiet.” Throttle = “at most once per N ms.” Both need <code>leading</code>/<code>trailing</code> choices (fire at start, end, or both).</p></div>
+          <div class="deck-row"><span class="deck-k">Why</span><p>A search box that fetches on every key hammers the API. A scroll handler that computes layout 60 times/frame janks. These are the two standard answers.</p></div>
+          <div class="deck-row deck-row--trap"><span class="deck-k">Trap</span><p>Using debounce on scroll (the UI freezes until you stop). Using throttle on search (you search for “a”, “ap”, “app”…). Also: forgetting to cancel on unmount.</p></div>
+        </div>
+      </div>
+    </section>
+    <footer class="foot"><p class="one-liner"></p><p class="plate-id">Plate 24 / 100</p></footer>
+  </article>
+</body>
+</html>

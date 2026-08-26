@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PLATE 375 — #! is the kernel's interpreter line.</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@800;900&family=Fraunces:ital,opsz,wght@1,9..144,400;1,9..144,500&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/poster.css">
+</head>
+<body>
+  <article class="poster" data-track="tools">
+    <span class="mark mark--tl"></span><span class="mark mark--tr"></span><span class="mark mark--bl"></span><span class="mark mark--br"></span>
+    <p class="spine">Foundations series — software engineering mental models</p>
+    <div class="rule"></div><div class="ghost">375</div><div class="vignette"></div>
+    <svg class="grain" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="4" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(#n)"></rect></svg>
+    <header class="mast">
+      <p class="kicker"><span>Tools</span><span class="dot"></span><span class="whisper">execve · /usr/bin/env</span></p>
+      <h1 class="title">#! is the kernel's <span class="title-accent">interpreter line.</span></h1>
+      <p class="lede"><code>execve</code> on a file starting <code>#!/usr/bin/python3</code> rewrites to <code>execve("/usr/bin/python3", ["python3", script, args])</code> — the kernel does this, not the shell. <code>#!/usr/bin/env python3</code> looks up PATH; the file needs <code>chmod +x</code>. A CRLF after <code>python3</code> yields “interpreter not found.”</p>
+    </header>
+    <section class="stage">
+      <div class="stage-inner">
+        <div class="compare">
+          <div class="compare-pane compare-pane--hit">
+            <p class="pane-label">./app.py · kernel rewrite</p>
+            <h2 class="pane-title">shebang</h2>
+            <div class="codeblock">#!/usr/bin/env python3
+chmod +x ./app.py
+./app.py a b
+
+execve env → python3
+  argv: python3 ./app.py a b</div>
+            <p class="caption">Linux shebang length cap ~127–256 bytes. <code>env -S</code> splits extra args on some systems.</p>
+          </div>
+          <div class="compare-vs">vs</div>
+          <div class="compare-pane">
+            <p class="pane-label">python3 app.py · comment</p>
+            <h2 class="pane-title">skipped</h2>
+            <div class="codeblock">python3 app.py a b
+#! is a Python comment
+no +x required
+no PATH lookup of env
+
+works here, fails as ./</div>
+            <p class="caption">Portable scripts use env. Nix/Guix often pin an absolute interpreter path.</p>
+          </div>
+        </div>
+        <div class="deck">
+          <div class="deck-row"><span class="deck-k">What</span><p>A tiny exec protocol: first line names the interpreter. The kernel, not bash, performs the rewrite.</p></div>
+          <div class="deck-row"><span class="deck-k">Why</span><p>CLI tools, Docker ENTRYPOINT. Why it “works as <code>python3 x.py</code>” and not as <code>./x.py</code>.</p></div>
+          <div class="deck-row deck-row--trap"><span class="deck-k">Trap</span><p>Windows CRLF (<code>python3\r</code> is ENOENT). Spaces in the interpreter path. Relying on <code>python</code> not <code>python3</code>.</p></div>
+        </div>
+      </div>
+    </section>
+    <footer class="foot"><p class="one-liner"></p><p class="plate-id">Plate 375 / 375</p></footer>
+  </article>
+</body>
+</html>

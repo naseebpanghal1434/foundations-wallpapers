@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PLATE 164 — Two heaps. Balanced sizes.</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@800;900&family=Fraunces:ital,opsz,wght@1,9..144,400;1,9..144,500&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/poster.css">
+</head>
+<body>
+  <article class="poster" data-track="dsa">
+    <span class="mark mark--tl"></span><span class="mark mark--tr"></span><span class="mark mark--bl"></span><span class="mark mark--br"></span>
+    <p class="spine">Foundations series — software engineering mental models</p>
+    <div class="rule"></div><div class="ghost">164</div><div class="vignette"></div>
+    <svg class="grain" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="4" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(#n)"></rect></svg>
+    <header class="mast">
+      <p class="kicker"><span>DSA</span><span class="dot"></span><span class="whisper">Max-low · min-high</span></p>
+      <h1 class="title">Two heaps. <span class="title-accent">Balanced sizes.</span></h1>
+      <p class="lede">Running median: a max-heap of the lower half, a min-heap of the upper half. Invariant: every low ≤ every high, and the sizes differ by at most 1. Insert: push to low, move low.top to high if needed, then rebalance sizes. Median is low.top (odd) or the average of both tops (even).</p>
+    </header>
+    <section class="stage">
+      <div class="stage-inner">
+        <div class="steps">
+          <div class="step step--hit"><span class="step-n">1</span><p class="step-copy">Invariant<span>LOW = max-heap, HIGH = min-heap. Every low ≤ every high. |sizeL − sizeH| ≤ 1. Odd: extra lives on LOW, median = LOW.top.</span></p><span class="step-meta">low ≤ high</span></div>
+          <div class="step"><span class="step-n">2</span><p class="step-copy">Add 1, 2, 3<span>Push to LOW, dump top to HIGH (order), dump back if HIGH is bigger (size). Ends LOW={1,2} (top 2), HIGH={3}. Median 2.</span></p><span class="step-meta">odd · 2</span></div>
+          <div class="step"><span class="step-n">3</span><p class="step-copy">Add 4<span>4 belongs on HIGH. Sizes 2 and 2. Median (2+3)/2 = 2.5. Python: LOW stores negatives. Java: reverse comparator on the max-heap.</span></p><span class="step-meta">(2+3)/2</span></div>
+        </div>
+        <p class="caption">Don’t sort the stream each time. Sliding-window median needs lazy deletion or a balanced BST (plate 125) — two heaps alone don’t evict the leaving index.</p>
+        <div class="deck">
+          <div class="deck-row"><span class="deck-k">What</span><p>O(log n) insert, O(1) median. Two priority queues, not a sorted list. The extra element on odd counts sits on the max-heap so the middle is always LOW.top. Rebalance after every insert; never let LOW.top sneak past HIGH.top.</p></div>
+          <div class="deck-row"><span class="deck-k">Why</span><p>LeetCode 295. Hard design. They are testing the invariant, not whether you can <code>sort</code> on <code>findMedian</code>. Follow-up is a window, not a stream — different structure.</p></div>
+          <div class="deck-row deck-row--trap"><span class="deck-k">Trap</span><p>Both min-heaps. Allowing LOW.top &gt; HIGH.top. Even/odd size rule flipped so you average the wrong pair. Integer vs float average. Inserting always into the same heap and hoping.</p></div>
+        </div>
+      </div>
+    </section>
+    <footer class="foot"><p class="one-liner"></p><p class="plate-id">Plate 164 / 200</p></footer>
+  </article>
+</body>
+</html>

@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PLATE 79 — The address is not the RAM.</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@800;900&family=Fraunces:ital,opsz,wght@1,9..144,400;1,9..144,500&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/poster.css">
+</head>
+<body>
+  <article class="poster" data-track="system">
+    <span class="mark mark--tl"></span><span class="mark mark--tr"></span><span class="mark mark--bl"></span><span class="mark mark--br"></span>
+    <p class="spine">Foundations series — software engineering mental models</p>
+    <div class="rule"></div><div class="ghost">79</div><div class="vignette"></div>
+    <svg class="grain" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="4" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(#n)"></rect></svg>
+    <header class="mast">
+      <p class="kicker"><span>System</span><span class="dot"></span><span class="whisper">4 KiB pages · 48-bit VA</span></p>
+      <h1 class="title">The address is <span class="title-accent">not the RAM.</span></h1>
+      <p class="lede">A pointer is a virtual address, not a DRAM pin. The MMU walks a page table — x86-64: 4 KiB pages, 4-level, 48-bit canonical VA — to a physical frame. A miss is <code>#PF</code>: the kernel fills from file, swap, or a zero page. Two processes can both have <code>0x400000</code>. Huge pages are 2 MiB / 1 GiB.</p>
+    </header>
+    <section class="stage stage--wide">
+      <div class="stage-inner">
+        <div class="facts">
+          <div class="fact fact--hit">
+            <p class="fact-k">Page</p>
+            <p class="fact-n">4 KiB</p>
+            <p class="fact-c">VA bits: VPN | offset. PTE: present? writable? PFN. 2 MiB huge pages skip a level.</p>
+          </div>
+          <div class="fact">
+            <p class="fact-k">Walk</p>
+            <p class="fact-n">4-level</p>
+            <p class="fact-c">CR3 → PML4 → PDPT → PD → PT. TLB caches the translation. Process switch may flush it (plate 80).</p>
+          </div>
+          <div class="fact">
+            <p class="fact-k">Resident</p>
+            <p class="fact-n">RSS vs VSZ</p>
+            <p class="fact-c">VSZ = the virtual map (can be huge). RSS = pages in RAM. <code>mmap</code> 4 GiB without using 4 GiB until you touch it.</p>
+          </div>
+          <div class="fact">
+            <p class="fact-k">Miss</p>
+            <p class="fact-n">#PF</p>
+            <p class="fact-c">Minor: already in RAM, just map. Major: disk / swap. Overcommit: <code>malloc</code> succeeds, later fault is OOM SIGKILL.</p>
+          </div>
+        </div>
+        <div class="deck">
+          <div class="deck-row"><span class="deck-k">What</span><p>Isolation (plate 75) is this map. Swap is overflow; thrash is working set &gt; RAM and the CPU idle in iowait. OOM is the kernel picking a victim.</p></div>
+          <div class="deck-row"><span class="deck-k">Why</span><p>Interviews: page, fault, swap, thrash, RSS vs virtual. “Why did it die after malloc succeeded?” lives here. Linux overcommits by default.</p></div>
+          <div class="deck-row deck-row--trap"><span class="deck-k">Trap</span><p>Only thinking “malloc returned NULL.” You get a pointer; the later page fault is <code>SIGKILL</code> from the OOM killer. Also: ignoring thrash because CPU looks idle — it is waiting on disk.</p></div>
+        </div>
+      </div>
+    </section>
+    <footer class="foot"><p class="one-liner"></p><p class="plate-id">Plate 79 / 375</p></footer>
+  </article>
+</body>
+</html>

@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PLATE 225 — Idempotency is a key you store.</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@800;900&family=Fraunces:ital,opsz,wght@1,9..144,400;1,9..144,500&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/poster.css">
+</head>
+<body>
+  <article class="poster" data-track="backend">
+    <span class="mark mark--tl"></span><span class="mark mark--tr"></span><span class="mark mark--bl"></span><span class="mark mark--br"></span>
+    <p class="spine">Foundations series — software engineering mental models</p>
+    <div class="rule"></div><div class="ghost">225</div><div class="vignette"></div>
+    <svg class="grain" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="4" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(#n)"></rect></svg>
+    <header class="mast">
+      <p class="kicker"><span>Backend</span><span class="dot"></span><span class="whisper">Idempotency-Key · 24h</span></p>
+      <h1 class="title">Idempotency is a key <span class="title-accent">you store.</span></h1>
+      <p class="lede">At-least-once delivery (plate 92) plus a double-click is one bug. Client sends <code>Idempotency-Key</code>. Server <code>INSERT (key, user_id, body_hash)</code> UNIQUE, stores the response 24 h. Same key + same body → replay; same key + different body → <code>409</code>. GET needs no key.</p>
+    </header>
+    <section class="stage">
+      <div class="stage-inner">
+        <div class="steps">
+          <div class="step"><span class="step-n">1</span><p class="step-copy">Client sends a key<span>Header <code>Idempotency-Key: uuid</code>. Scope per user. GET / PUT / DELETE are already idempotent by HTTP. <code>POST /charge</code> is not, unless you make it so.</span></p><span class="step-meta">header</span></div>
+          <div class="step step--hit"><span class="step-n">2</span><p class="step-copy">UNIQUE key + hash of body<span><code>INSERT keys(k, user_id, sha256(body))</code> UNIQUE. Conflict: same hash → stored response; different body → <code>409</code>. The insert is the mutex (no TOCTOU).</span></p><span class="step-meta">UNIQUE</span></div>
+          <div class="step"><span class="step-n">3</span><p class="step-copy">Do the work on the winner<span>Charge, store status + body, TTL 24 h. Two workers racing: only the unique insert proceeds. Replay returns the same <code>payment_id</code>, not a second charge.</span></p><span class="step-meta">24 h</span></div>
+        </div>
+        <div class="deck">
+          <div class="deck-row"><span class="deck-k">What</span><p>A uniqueness constraint is the lock. Same key + same body = replay; same key + different body = 409. Hash the body, not only the URL. Stripe’s pattern.</p></div>
+          <div class="deck-row"><span class="deck-k">Why</span><p>Payments, jobs, webhooks (plate 82). You cannot have exactly-once delivery; you can have exactly-once effects.</p></div>
+          <div class="deck-row deck-row--trap"><span class="deck-k">Trap</span><p>Hashing only the URL, not the body. Keys without a unique index (TOCTOU). Reusing keys across users. No TTL so the table grows forever. Treating GET as if it needed a key.</p></div>
+        </div>
+      </div>
+    </section>
+    <footer class="foot"><p class="one-liner"></p><p class="plate-id">Plate 225 / 375</p></footer>
+  </article>
+</body>
+</html>

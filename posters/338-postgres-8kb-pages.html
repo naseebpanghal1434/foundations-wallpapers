@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PLATE 338 — Postgres reads 8 KiB pages, not rows.</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@800;900&family=Fraunces:ital,opsz,wght@1,9..144,400;1,9..144,500&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/poster.css">
+</head>
+<body>
+  <article class="poster" data-track="database">
+    <span class="mark mark--tl"></span><span class="mark mark--tr"></span><span class="mark mark--bl"></span><span class="mark mark--br"></span>
+    <p class="spine">Foundations series — software engineering mental models</p>
+    <div class="rule"></div><div class="ghost">338</div><div class="vignette"></div>
+    <svg class="grain" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="4" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(#n)"></rect></svg>
+    <header class="mast">
+      <p class="kicker"><span>Database</span><span class="dot"></span><span class="whisper">BLCKSZ · shared_buffers</span></p>
+      <h1 class="title">Postgres reads 8 KiB pages, <span class="title-accent">not rows.</span></h1>
+      <p class="lede">Heap and indexes are arrays of 8192-byte pages (<code>BLCKSZ</code>). A seq scan is page I/O. <code>shared_buffers</code> caches those pages (often ~25% of RAM). A row lives in a page behind an ItemId; an UPDATE leaves a new tuple version (plate 96, 351).</p>
+    </header>
+    <section class="stage">
+      <div class="stage-inner">
+        <div class="facts">
+          <div class="fact fact--hit">
+            <p class="fact-k">BLCKSZ</p>
+            <p class="fact-n">8 KiB</p>
+            <p class="fact-c">I/O unit. Header + ItemId[] + free + tuples. Not “a row.”</p>
+          </div>
+          <div class="fact">
+            <p class="fact-k">TOAST</p>
+            <p class="fact-n">~2 KiB</p>
+            <p class="fact-c">Wider values leave the page. The heap keeps a pointer.</p>
+          </div>
+          <div class="fact">
+            <p class="fact-k">shared_buffers</p>
+            <p class="fact-n">~25% RAM</p>
+            <p class="fact-c">Postgres page cache. Leave RAM for the OS cache too.</p>
+          </div>
+          <div class="fact">
+            <p class="fact-k">work_mem</p>
+            <p class="fact-n">per sort</p>
+            <p class="fact-c">Each backend × each sort/hash. Not a global budget.</p>
+          </div>
+        </div>
+        <p class="caption"><code>EXPLAIN (ANALYZE, BUFFERS)</code> counts hits/reads (plate 98). Fillfactor leaves air on the page for HOT (plate 350).</p>
+        <div class="deck">
+          <div class="deck-row"><span class="deck-k">What</span><p>The I/O unit is the page. Row count is a consequence of packing. Random updates dirty many pages; appends dirty the right edge.</p></div>
+          <div class="deck-row"><span class="deck-k">Why</span><p>Tuning, bloat, why a 1-byte SET still writes 8 KiB. Shared buffers vs OS cache is the RAM split.</p></div>
+          <div class="deck-row deck-row--trap"><span class="deck-k">Trap</span><p><code>shared_buffers</code> = all RAM (no OS cache, no connections). Counting rows as I/O. Ignoring TOAST on wide JSON.</p></div>
+        </div>
+      </div>
+    </section>
+    <footer class="foot"><p class="one-liner"></p><p class="plate-id">Plate 338 / 375</p></footer>
+  </article>
+</body>
+</html>

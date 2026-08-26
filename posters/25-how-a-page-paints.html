@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PLATE 25 — How a page paints.</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@800;900&family=Fraunces:ital,opsz,wght@1,9..144,400;1,9..144,500&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/poster.css">
+</head>
+<body>
+  <article class="poster" data-track="frontend">
+    <span class="mark mark--tl"></span><span class="mark mark--tr"></span><span class="mark mark--bl"></span><span class="mark mark--br"></span>
+    <p class="spine">Foundations series — software engineering mental models</p>
+    <div class="rule"></div><div class="ghost">25</div><div class="vignette"></div>
+    <svg class="grain" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="4" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(#n)"></rect></svg>
+    <header class="mast">
+      <p class="kicker"><span>Frontend</span><span class="dot"></span><span class="whisper">Critical rendering path</span></p>
+      <h1 class="title">How a page <span class="title-accent">paints.</span></h1>
+      <p class="lede">The browser does not “show HTML.” It builds trees, then figures out geometry, then paints pixels. CSS and JS in the <code>&lt;head&gt;</code> can hold up first paint. Layout is the expensive geometry pass (reflow). Paint is coloring. Composite is layers on the GPU.</p>
+    </header>
+    <section class="stage stage--wide">
+      <div class="stage-inner">
+        <div class="hops hops-5">
+          <div class="hop"><p class="hop-n">1</p><h2 class="hop-name">Parse</h2><p class="hop-copy">HTML → DOM. CSS → CSSOM. JS can block parsing.</p></div>
+          <div class="hop"><p class="hop-n">2</p><h2 class="hop-name">Render tree</h2><p class="hop-copy">Visible nodes only. <code>display:none</code> is out.</p></div>
+          <div class="hop hop--here"><p class="hop-n">3</p><h2 class="hop-name">Layout</h2><p class="hop-copy">Reflow. Size and position of every box.</p></div>
+          <div class="hop"><p class="hop-n">4</p><h2 class="hop-name">Paint</h2><p class="hop-copy">Fill pixels: text, colors, shadows, images.</p></div>
+          <div class="hop"><p class="hop-n">5</p><h2 class="hop-name">Composite</h2><p class="hop-copy">Layers to the screen. <code>transform</code> can skip layout.</p></div>
+        </div>
+        <div class="deck">
+          <div class="deck-row"><span class="deck-k">What</span><p>DOM + CSSOM → render tree → layout → paint → composite. Changing width/height/font forces layout. Changing <code>transform</code>/<code>opacity</code> can stay on the compositor.</p></div>
+          <div class="deck-row"><span class="deck-k">Why</span><p>Slow first paint is usually blocking CSS/JS or a huge HTML. Jank on scroll is usually layout in a loop (reading <code>offsetHeight</code> after writing styles).</p></div>
+          <div class="deck-row deck-row--trap"><span class="deck-k">Trap</span><p>Animating <code>top</code>/<code>left</code>/<code>width</code> (layout every frame). Or measuring in a loop: write, read, write, read — forced reflow. Prefer <code>transform</code>. Put <code>defer</code> on scripts; CSS still blocks paint.</p></div>
+        </div>
+      </div>
+    </section>
+    <footer class="foot"><p class="one-liner"></p><p class="plate-id">Plate 25 / 100</p></footer>
+  </article>
+</body>
+</html>

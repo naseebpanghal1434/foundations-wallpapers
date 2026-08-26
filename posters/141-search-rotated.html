@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PLATE 141 — One half is sorted. Search there.</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@800;900&family=Fraunces:ital,opsz,wght@1,9..144,400;1,9..144,500&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/poster.css">
+</head>
+<body>
+  <article class="poster" data-track="dsa">
+    <span class="mark mark--tl"></span><span class="mark mark--tr"></span><span class="mark mark--bl"></span><span class="mark mark--br"></span>
+    <p class="spine">Foundations series — software engineering mental models</p>
+    <div class="rule"></div><div class="ghost">141</div><div class="vignette"></div>
+    <svg class="grain" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="4" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(#n)"></rect></svg>
+    <header class="mast">
+      <p class="kicker"><span>DSA</span><span class="dot"></span><span class="whisper">Rotated · pivot</span></p>
+      <h1 class="title">One half is sorted. <span class="title-accent">Search there.</span></h1>
+      <p class="lede">Rotated sorted array: <code>[4,5,6,7,0,1,2]</code>. Still O(log n). At <code>mid</code>, at least one half is sorted (unless duplicates blur it). If the left half is sorted and the target sits in it, drop the right; else drop the left. Mirror for a sorted right half.</p>
+    </header>
+    <section class="stage">
+      <div class="stage-inner">
+        <div class="steps">
+          <div class="step step--hit"><span class="step-n">1</span><p class="step-copy">Which half is sorted?<span><code>[4,5,6,7,0,1,2]</code> t=0. lo=0 hi=6 mid=3 val=7. Left 4..7 sorted. 0 not in [4,7] → <code>lo=mid+1</code>.</span></p><span class="step-meta">half</span></div>
+          <div class="step"><span class="step-n">2</span><p class="step-copy">Now the range is ordinary<span><code>[0,1,2]</code> — binary search as usual (plate 53). Rotation 0 (already sorted): the “left half” is the whole range; the same test still works.</span></p><span class="step-meta">search</span></div>
+          <div class="step"><span class="step-n">3</span><p class="step-copy">Min (pivot), and duplicates<span>If <code>a[mid] &gt; a[hi]</code>, min is to the right; else <code>hi=mid</code>. With dups (LC 81): when <code>a[lo]==a[mid]==a[hi]</code> you can only <code>lo++</code> / <code>hi--</code> — worst O(n).</span></p><span class="step-meta">pivot</span></div>
+        </div>
+        <div class="deck">
+          <div class="deck-row"><span class="deck-k">What</span><p>Still a binary search with an extra sorted-half test. Finding the rotation index then ordinary search is two log n passes — also correct. Unique elements: O(log n). Duplicates: you may have to shrink by one.</p></div>
+          <div class="deck-row"><span class="deck-k">Why</span><p>LeetCode 33 / 81 / 153. Interview favorite because the invariant is easy to get almost right. Draw the two halves and point at the sorted one before you move <code>lo</code>/<code>hi</code>.</p></div>
+          <div class="deck-row deck-row--trap"><span class="deck-k">Trap</span><p>Assuming both halves are sorted. Using <code>a[0]</code> as the split when there are duplicates. Off-by-one on inclusive ranges. Not handling already-sorted (rotation 0). On <code>a[lo]==a[mid]==a[hi]</code>, guessing a half instead of shrinking by 1.</p></div>
+        </div>
+      </div>
+    </section>
+    <footer class="foot"><p class="one-liner"></p><p class="plate-id">Plate 141 / 200</p></footer>
+  </article>
+</body>
+</html>

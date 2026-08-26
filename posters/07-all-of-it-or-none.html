@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PLATE 07 — All of it, or none.</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@800;900&family=Fraunces:ital,opsz,wght@1,9..144,400;1,9..144,500&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/poster.css">
+</head>
+<body>
+  <article class="poster" data-track="database">
+    <span class="mark mark--tl"></span><span class="mark mark--tr"></span><span class="mark mark--bl"></span><span class="mark mark--br"></span>
+    <p class="spine">Foundations series — software engineering mental models</p>
+    <div class="rule"></div><div class="ghost">07</div><div class="vignette"></div>
+    <svg class="grain" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="4" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(#n)"></rect></svg>
+    <header class="mast">
+      <p class="kicker"><span>Database</span><span class="dot"></span><span class="whisper">BEGIN · COMMIT · WAL</span></p>
+      <h1 class="title">All of it, <span class="title-accent">or none.</span></h1>
+      <p class="lede">Atomicity: <code>BEGIN … COMMIT</code> is one unit. Postgres appends WAL (plate 95); <code>COMMIT</code> is durable after flush (<code>synchronous_commit</code>, ~0.1 ms NVMe, 1–10 ms HDD). Crash mid-transaction → <code>ROLLBACK</code>, both rows unchanged. Isolation is a different axis (plate 40).</p>
+    </header>
+    <section class="stage">
+      <div class="stage-inner">
+        <div class="compare">
+          <div class="compare-pane compare-pane--hit">
+            <p class="pane-label">Transfer 30 · both writes</p>
+            <h2 class="pane-title">COMMIT</h2>
+            <div class="codeblock ok">BEGIN;
+UPDATE accounts SET bal = bal - 30 WHERE id='A';
+UPDATE accounts SET bal = bal + 30 WHERE id='B';
+COMMIT;  -- WAL flush, ~0.1 ms NVMe</div>
+            <div class="tx">
+              <div class="tx-h"><span>id</span><span>was</span><span>now</span></div>
+              <div class="tx-line tx-line--debit"><span>A</span><span>100</span><span>70</span></div>
+              <div class="tx-line tx-line--credit"><span>B</span><span>10</span><span>40</span></div>
+            </div>
+            <p class="caption">Outsiders see both rows change together. Autocommit = one statement per txn.</p>
+          </div>
+          <div class="compare-vs">vs</div>
+          <div class="compare-pane">
+            <p class="pane-label">Second UPDATE fails</p>
+            <h2 class="pane-title">ROLLBACK</h2>
+            <div class="codeblock bad">BEGIN;
+UPDATE … A −30;   -- ok
+UPDATE … B +30;   -- ERROR 23503
+ROLLBACK;         -- else stays ABORTED</div>
+            <div class="tx">
+              <div class="tx-h"><span>id</span><span>was</span><span>now</span></div>
+              <div class="tx-line"><span>A</span><span>100</span><span>100</span></div>
+              <div class="tx-line"><span>B</span><span>10</span><span>10</span></div>
+            </div>
+            <p class="caption">Partial success is not stored. After an error Postgres stays ABORTED until ROLLBACK.</p>
+          </div>
+        </div>
+        <div class="deck">
+          <div class="deck-row"><span class="deck-k">What</span><p>Several statements, one commit record. The A in ACID (plate 41). Constraints fail the whole unit (SQLSTATE 23503/23505).</p></div>
+          <div class="deck-row"><span class="deck-k">Why</span><p>Debit/credit, insert user + profile. A crash after the first INSERT without a txn leaves an orphan row.</p></div>
+          <div class="deck-row deck-row--trap"><span class="deck-k">Trap</span><p>HTTP inside the txn (holds row locks and a pool slot, plate 03). Catching an error and running more SQL without ROLLBACK. Confusing atomicity with isolation (dirty reads, plate 40).</p></div>
+        </div>
+      </div>
+    </section>
+    <footer class="foot"><p class="one-liner"></p><p class="plate-id">Plate 07 / 375</p></footer>
+  </article>
+</body>
+</html>

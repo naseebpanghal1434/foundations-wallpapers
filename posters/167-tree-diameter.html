@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PLATE 167 — Height of left plus height of right.</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@800;900&family=Fraunces:ital,opsz,wght@1,9..144,400;1,9..144,500&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/poster.css">
+</head>
+<body>
+  <article class="poster" data-track="dsa">
+    <span class="mark mark--tl"></span><span class="mark mark--tr"></span><span class="mark mark--bl"></span><span class="mark mark--br"></span>
+    <p class="spine">Foundations series — software engineering mental models</p>
+    <div class="rule"></div><div class="ghost">167</div><div class="vignette"></div>
+    <svg class="grain" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="4" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(#n)"></rect></svg>
+    <header class="mast">
+      <p class="kicker"><span>DSA</span><span class="dot"></span><span class="whisper">Longest path through a node</span></p>
+      <h1 class="title">Height of left plus <span class="title-accent">height of right.</span></h1>
+      <p class="lede">Diameter of a binary tree: longest path between any two nodes, measured in <em>edges</em>. It may not pass through the root. DFS returns height. At each node, candidate = hL+hR, then a global max. Return 1+max(hL, hR) to the parent — never the bend. O(n). One extra global, or a pair return.</p>
+    </header>
+    <section class="stage">
+      <div class="stage-inner">
+        <div class="compare">
+          <div class="compare-pane compare-pane--hit">
+            <p class="pane-label">Candidate at every node</p>
+            <h2 class="pane-title">hL + hR</h2>
+            <div class="codeblock ok">      1
+     / \
+    2   3
+   / \
+  4   5
+
+null → 0  leaf → 1
+at 2: 1+1 = 2   (4-2-5)
+at 1: 2+1 = 3   (4-2-1-3)
+diameter 3</div>
+            <p class="caption">Return height up. Track the best bend globally. Path-sum-through-a-node is the cousin (plate 171).</p>
+          </div>
+          <div class="compare-vs">vs</div>
+          <div class="compare-pane">
+            <p class="pane-label">Root only · or a stick</p>
+            <h2 class="pane-title">Not enough</h2>
+            <div class="codeblock">1-2-3-4     n=4
+height n-1 = 3
+diameter 3 edges
+not 2 × height
+
+root-only hL+hR
+misses a fat child</div>
+            <p class="caption">You must visit all nodes. Graph diameter of a tree is two BFS (any node → farthest → farthest) — not this recursion.</p>
+          </div>
+        </div>
+        <div class="deck">
+          <div class="deck-row"><span class="deck-k">What</span><p>Combine: best path <em>through me</em> vs best already found in a child. Height down is what the parent needs; the fork is only a candidate. Null returns 0 so a leaf’s hL+hR is 0 (diameter of a single node is 0).</p></div>
+          <div class="deck-row"><span class="deck-k">Why</span><p>LeetCode 543. The height DP. Interviews: “does it have to go through the root?” No. Say edges, say global, say you return height. N-ary / undirected tree: two BFS, not this.</p></div>
+          <div class="deck-row deck-row--trap"><span class="deck-k">Trap</span><p>Returning the height as the diameter. Only computing at the root. Counting nodes not edges (off-by-one). Returning hL+hR to the parent — that is a bend the parent cannot use.</p></div>
+        </div>
+      </div>
+    </section>
+    <footer class="foot"><p class="one-liner"></p><p class="plate-id">Plate 167 / 200</p></footer>
+  </article>
+</body>
+</html>

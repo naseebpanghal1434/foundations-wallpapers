@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PLATE 22 — Meaning as a point in space.</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@800;900&family=Fraunces:ital,opsz,wght@1,9..144,400;1,9..144,500&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/poster.css">
+</head>
+<body>
+  <article class="poster" data-track="genai">
+    <span class="mark mark--tl"></span><span class="mark mark--tr"></span><span class="mark mark--bl"></span><span class="mark mark--br"></span>
+    <p class="spine">Foundations series — software engineering mental models</p>
+    <div class="rule"></div><div class="ghost">22</div><div class="vignette"></div>
+    <svg class="grain" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="4" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(#n)"></rect></svg>
+    <header class="mast">
+      <p class="kicker"><span>Gen AI</span><span class="dot"></span><span class="whisper">Embeddings</span></p>
+      <h1 class="title">Meaning as <span class="title-accent">a point in space.</span></h1>
+      <p class="lede">An embedding turns a sentence into a list of numbers — a point. Sentences with similar meaning sit near each other. RAG search is “nearest neighbors,” not <code>Ctrl+F</code>. “How do I reset my password?” can match “account recovery steps.”</p>
+    </header>
+    <section class="stage">
+      <div class="stage-inner">
+        <div class="compare">
+          <div class="compare-pane">
+            <p class="pane-label">Keyword search</p>
+            <h2 class="pane-title">Ctrl+F</h2>
+            <div class="codeblock">query: "reset password"
+misses: "account recovery"
+misses: "forgot login"</div>
+            <p class="caption">Needs the same words. Synonyms fail. Typos fail. Meaning is ignored.</p>
+          </div>
+          <div class="compare-vs">vs</div>
+          <div class="compare-pane compare-pane--hit">
+            <p class="pane-label">Vector search</p>
+            <h2 class="pane-title">Near</h2>
+            <div class="codeblock">"reset password"     · ·
+"account recovery"   · ·   close
+"forgot login"       ·
+"shipping rates"           far</div>
+            <p class="caption">Same embedding model for docs and query. Distance ≈ meaning.</p>
+          </div>
+        </div>
+        <div class="deck">
+          <div class="deck-row"><span class="deck-k">What</span><p>A model maps text → a vector (e.g. 768 or 1536 numbers). You store vectors in a vector DB. At query time you embed the question and take the closest chunks, then paste them into the LLM prompt (plate 12).</p></div>
+          <div class="deck-row"><span class="deck-k">Why</span><p>Users don’t type your docs’ headings. Semantic search finds “the bit about refunds” even when they said “I want my money back.” That’s the retrieval in RAG.</p></div>
+          <div class="deck-row deck-row--trap"><span class="deck-k">Trap</span><p>Embedding with model A and querying with model B — the spaces don’t match. Or embedding 50-page blobs; retrieve small chunks (a heading + a paragraph), not whole PDFs.</p></div>
+        </div>
+      </div>
+    </section>
+    <footer class="foot">
+      <p class="one-liner">Search by meaning, not by matching letters. <strong>Near in space ≈ near in sense.</strong></p>
+      <p class="plate-id">Plate 22 / 100</p>
+    </footer>
+  </article>
+</body>
+</html>

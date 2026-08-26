@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PLATE 125 — Keys stay sorted.</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@800;900&family=Fraunces:ital,opsz,wght@1,9..144,400;1,9..144,500&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/poster.css">
+</head>
+<body>
+  <article class="poster" data-track="dsa">
+    <span class="mark mark--tl"></span><span class="mark mark--tr"></span><span class="mark mark--bl"></span><span class="mark mark--br"></span>
+    <p class="spine">Foundations series — software engineering mental models</p>
+    <div class="rule"></div><div class="ghost">125</div><div class="vignette"></div>
+    <svg class="grain" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="4" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(#n)"></rect></svg>
+    <header class="mast">
+      <p class="kicker"><span>DSA</span><span class="dot"></span><span class="whisper">TreeMap · floor · ceiling</span></p>
+      <h1 class="title">Keys <span class="title-accent">stay sorted.</span></h1>
+      <p class="lede">An ordered map keeps keys in sorted order. Lookup is O(log n), not O(1). You gain predecessor, successor, range. Java TreeMap, C++ map, Python SortedDict — usually a balanced BST (plate 113) or a skip list (plate 124). A HashMap has none of the order ops.</p>
+    </header>
+    <section class="stage stage--wide">
+      <div class="stage-inner">
+        <div class="trio">
+          <div class="box">
+            <p class="col-label">Exact key only</p>
+            <h2 class="box-title">HashMap</h2>
+            <div class="codeblock">get / put  O(1) avg
+no floor
+no ceiling
+no in-order walk</div>
+            <p class="caption">Two-sum, counting, “have I seen this?” Plate 51. Order is not the job.</p>
+          </div>
+          <div class="box box--pool">
+            <p class="col-label">Nearest key · range</p>
+            <h2 class="box-title">TreeMap</h2>
+            <div class="codeblock">floor(x)  greatest ≤ x
+ceiling   least ≥ x
+first / last
+submap [a, b]</div>
+            <p class="caption">Insert / erase / get O(log n). Range iterate O(log n + k).</p>
+          </div>
+          <div class="box">
+            <p class="col-label">Same idea, list of ts</p>
+            <h2 class="box-title">Timestamps</h2>
+            <div class="codeblock">key → sorted ts
+binary search the
+time (plate 198)
+floor = last ≤ t</div>
+            <p class="caption">Iterate keys in order without a separate sort. Nearest, not exact.</p>
+          </div>
+        </div>
+        <div class="deck">
+          <div class="deck-row"><span class="deck-k">What</span><p>floor = greatest key ≤ x. ceiling = least key ≥ x. Insert/erase/get O(log n). Range iterate O(log n + k). The keys stay sorted because the tree (or skip list) maintains that invariant on every write.</p></div>
+          <div class="deck-row"><span class="deck-k">Why</span><p>Leaderboards, time-based KV, “next interval,” sliding-window medians with two trees, exam room / flowers at t. When the problem says nearest key, not exact key — that is the fork from HashMap.</p></div>
+          <div class="deck-row deck-row--trap"><span class="deck-k">Trap</span><p>Using TreeMap for two-sum — log n for no reason. Assuming Python <code>dict</code> is ordered by key (it is insertion-ordered, not sorted). Mutating a key that participates in compare — it sits in the wrong place, same class of bug as a mutable hashmap key (plate 51).</p></div>
+        </div>
+      </div>
+    </section>
+    <footer class="foot"><p class="one-liner"></p><p class="plate-id">Plate 125 / 200</p></footer>
+  </article>
+</body>
+</html>

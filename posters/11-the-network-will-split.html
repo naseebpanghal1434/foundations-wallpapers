@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PLATE 11 — The network will split.</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@800;900&family=Fraunces:ital,opsz,wght@1,9..144,400;1,9..144,500&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/poster.css">
+</head>
+<body>
+  <article class="poster" data-track="system">
+    <span class="mark mark--tl"></span><span class="mark mark--tr"></span><span class="mark mark--bl"></span><span class="mark mark--br"></span>
+    <p class="spine">Foundations series — software engineering mental models</p>
+    <div class="rule"></div><div class="ghost">11</div><div class="vignette"></div>
+    <svg class="grain" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="4" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(#n)"></rect></svg>
+    <header class="mast">
+      <p class="kicker"><span>System</span><span class="dot"></span><span class="whisper">CAP · quorum · PACELC</span></p>
+      <h1 class="title">The network <span class="title-accent">will split.</span></h1>
+      <p class="lede">A partition is packet loss, a dead switch, or a GC pause that looks like death (timeout 1–5 s). During that split a replica can wait/error to stay linearizable (CP) or answer with a stale or divergent value (AP). Both for the same object is impossible. PACELC: even without a split you still trade latency vs consistency.</p>
+    </header>
+    <section class="stage">
+      <div class="stage-inner">
+        <div class="compare">
+          <div class="compare-pane compare-pane--hit">
+            <p class="pane-label">Majority or error</p>
+            <h2 class="pane-title">CP</h2>
+            <div class="codeblock ok">etcd / ZooKeeper / Raft
+write if n/2+1 ack
+else timeout / 503
+
+Postgres sync replica:
+COMMIT waits for flush
+or fails the write
+
+linearizable read:
+quorum, not the nearest</div>
+            <p class="caption">Some clients get errors. One value for key k. Raft election ~1 s.</p>
+          </div>
+          <div class="compare-vs">vs</div>
+          <div class="compare-pane">
+            <p class="pane-label">Answer, reconcile later</p>
+            <h2 class="pane-title">AP</h2>
+            <div class="codeblock">Cassandra / Dynamo / DNS
+W=1 R=1: always a reply
+may read a stale version
+
+LWW or vector clocks
+on the way back
+
+DNS TTL (plate 278):
+wrong for minutes</div>
+            <p class="caption">Some answers conflict. DNS is the everyday AP system.</p>
+          </div>
+        </div>
+        <div class="deck">
+          <div class="deck-row"><span class="deck-k">What</span><p>P is given. C = every read sees the latest committed write. A = every request gets a non-error. During P, C and A cannot both hold.</p></div>
+          <div class="deck-row"><span class="deck-k">Why</span><p>Multi-AZ writer: fail the write (RDS Multi-AZ) or accept on both sides (multi-master) and merge. Interviews: name a CP system and an AP system.</p></div>
+          <div class="deck-row deck-row--trap"><span class="deck-k">Trap</span><p>“We’ll pick CA and skip P.” Two nodes, no quorum, both accept writes → two values for k (split-brain). Replicas of a primary are not AP — writes still need the primary.</p></div>
+        </div>
+      </div>
+    </section>
+    <footer class="foot"><p class="one-liner"></p><p class="plate-id">Plate 11 / 375</p></footer>
+  </article>
+</body>
+</html>

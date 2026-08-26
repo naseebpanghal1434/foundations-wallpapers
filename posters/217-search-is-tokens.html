@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PLATE 217 — Search is tokens pointing at docs.</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@800;900&family=Fraunces:ital,opsz,wght@1,9..144,400;1,9..144,500&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/poster.css">
+</head>
+<body>
+  <article class="poster" data-track="system">
+    <span class="mark mark--tl"></span><span class="mark mark--tr"></span><span class="mark mark--bl"></span><span class="mark mark--br"></span>
+    <p class="spine">Foundations series — software engineering mental models</p>
+    <div class="rule"></div><div class="ghost">217</div><div class="vignette"></div>
+    <svg class="grain" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="4" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(#n)"></rect></svg>
+    <header class="mast">
+      <p class="kicker"><span>System</span><span class="dot"></span><span class="whisper">Inverted index · rank</span></p>
+      <h1 class="title">Search is tokens <span class="title-accent">pointing at docs.</span></h1>
+      <p class="lede">Full-text is an inverted index: token → posting list of doc ids. Analyze: lowercase, stem, drop stopwords. Query: intersect lists, rank BM25. Not <code>LIKE '%red shoe%'</code> on 50M rows. Page with <code>search_after</code>, not <code>OFFSET</code>. Typeahead is plate 206; this is documents.</p>
+    </header>
+    <section class="stage">
+      <div class="stage-inner">
+        <div class="compare">
+          <div class="compare-pane">
+            <p class="pane-label">50M rows · seq scan</p>
+            <h2 class="pane-title">LIKE</h2>
+            <div class="codeblock bad">SELECT * FROM docs
+WHERE body LIKE '%red shoe%'
+
+no token list
+no BM25
+OFFSET 10000 still
+walks every row</div>
+            <p class="caption">A leading wildcard cannot use the B-tree (plate 2). ILIKE is the same scan. Reindex is not <code>UPDATE</code> in place.</p>
+          </div>
+          <div class="compare-vs">vs</div>
+          <div class="compare-pane compare-pane--hit">
+            <p class="pane-label">token → postings</p>
+            <h2 class="pane-title">Invert</h2>
+            <div class="codeblock ok">doc 9  red running shoe
+→ red, run, shoe
+shoe: 9, 17, 80
+red:  9, 22
+intersect, then BM25
+search_after (score,id)</div>
+            <p class="caption">Elasticsearch / Lucene is this. The DB is source of truth; the index is a derived view (lag is OK if you say it). Filters are bitsets / doc values.</p>
+          </div>
+        </div>
+        <div class="deck">
+          <div class="deck-row"><span class="deck-k">What</span><p>Analyze → invert → query → rank → page. Updates are reindex. Pagination is <code>search_after</code>, not <code>OFFSET 10000</code>.</p></div>
+          <div class="deck-row"><span class="deck-k">Why</span><p>Design search. They want inverted index + BM25, not Postgres ILIKE. Mention lag and that the cluster is not the system of record.</p></div>
+          <div class="deck-row deck-row--trap"><span class="deck-k">Trap</span><p><code>LIKE '%term%'</code>. Reindexing on every keystroke of a doc. <code>OFFSET 10000</code> on a ranked list. Treating the search cluster as the source of truth.</p></div>
+        </div>
+      </div>
+    </section>
+    <footer class="foot"><p class="one-liner"></p><p class="plate-id">Plate 217 / 375</p></footer>
+  </article>
+</body>
+</html>

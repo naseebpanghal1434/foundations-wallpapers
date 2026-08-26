@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PLATE 43 — Deadlock is a cycle of waits.</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@800;900&family=Fraunces:ital,opsz,wght@1,9..144,400;1,9..144,500&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/poster.css">
+</head>
+<body>
+  <article class="poster" data-track="database">
+    <span class="mark mark--tl"></span><span class="mark mark--tr"></span><span class="mark mark--bl"></span><span class="mark mark--br"></span>
+    <p class="spine">Foundations series — software engineering mental models</p>
+    <div class="rule"></div><div class="ghost">43</div><div class="vignette"></div>
+    <svg class="grain" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="4" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(#n)"></rect></svg>
+    <header class="mast">
+      <p class="kicker"><span>Database</span><span class="dot"></span><span class="whisper">40P01 · lock order</span></p>
+      <h1 class="title">Deadlock is a <span class="title-accent">cycle of waits.</span></h1>
+      <p class="lede">Deadlock is a cycle in the wait-for graph. Txn A holds row 1, wants row 2; B holds 2, wants 1. Postgres aborts a victim: <code>40P01 deadlock_detected</code>. Retry the victim. Prevent it by locking rows in one order (<code>ORDER BY id</code>) and keeping transactions short — no HTTP while holding a row lock.</p>
+    </header>
+    <section class="stage">
+      <div class="stage-inner">
+        <div class="compare">
+          <div class="compare-pane">
+            <p class="pane-label">Transfer both ways at once</p>
+            <h2 class="pane-title">Cycle</h2>
+            <div class="codeblock bad">A: SELECT FOR UPDATE Ada
+   then Kai
+B: SELECT FOR UPDATE Kai
+   then Ada
+wait → wait → wait
+ERROR: 40P01
+deadlock_detected</div>
+            <p class="caption">The abort is a feature. Catch 40P01, backoff, retry B. innodb_deadlock vs lock wait timeout are different.</p>
+          </div>
+          <div class="compare-vs">fix</div>
+          <div class="compare-pane compare-pane--hit">
+            <p class="pane-label">Always smaller id first</p>
+            <h2 class="pane-title">One order</h2>
+            <div class="codeblock ok">ids = sorted(Ada.id, Kai.id)
+LOCK min then max
+
+A and B take Ada first
+B waits on Ada
+no cycle
+SET lock_timeout = '2s'</div>
+            <p class="caption">Same rule in every code path. Short txns. Don’t wait on Stripe while holding locks.</p>
+          </div>
+        </div>
+        <div class="deck">
+          <div class="deck-row"><span class="deck-k">What</span><p>Wait-for cycle on row or relation locks. Detection is graph-based; lock timeout is the dumb cousin. Also: two advisory locks, or FK checks locking parent rows in opposite order.</p></div>
+          <div class="deck-row"><span class="deck-k">Why</span><p>Any app that updates two rows in different orders will hit this in production. Interviews want: detect, abort, retry, lock order, keep txns short.</p></div>
+          <div class="deck-row deck-row--trap"><span class="deck-k">Trap</span><p>Treating deadlock as a crash. Catch and retry with jitter. Don’t hold <code>FOR UPDATE</code> across a network call. Don’t mix lock orders across services.</p></div>
+        </div>
+      </div>
+    </section>
+    <footer class="foot"><p class="one-liner"></p><p class="plate-id">Plate 43 / 375</p></footer>
+  </article>
+</body>
+</html>

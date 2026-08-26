@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PLATE 206 — Typeahead is a trie at the edge.</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@800;900&family=Fraunces:ital,opsz,wght@1,9..144,400;1,9..144,500&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/poster.css">
+</head>
+<body>
+  <article class="poster" data-track="system">
+    <span class="mark mark--tl"></span><span class="mark mark--tr"></span><span class="mark mark--bl"></span><span class="mark mark--br"></span>
+    <p class="spine">Foundations series — software engineering mental models</p>
+    <div class="rule"></div><div class="ghost">206</div><div class="vignette"></div>
+    <svg class="grain" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="4" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(#n)"></rect></svg>
+    <header class="mast">
+      <p class="kicker"><span>System</span><span class="dot"></span><span class="whisper">Prefix · cache · 50ms</span></p>
+      <h1 class="title">Typeahead is a trie <span class="title-accent">at the edge.</span></h1>
+      <p class="lede">Autocomplete is prefix lookup with p99 ≤ 50 ms. A trie (plate 62) or completion index, cached at the edge (CDN / Redis) — not Postgres on every keystroke. Debounce 30–50 ms (plate 24). Rank top 10 by popularity; personalize is a rerank of those 10.</p>
+    </header>
+    <section class="stage">
+      <div class="stage-inner">
+        <div class="compare">
+          <div class="compare-pane">
+            <p class="pane-label">Origin per key</p>
+            <h2 class="pane-title">LIKE</h2>
+            <div class="codeblock bad">SELECT name
+WHERE name LIKE 'jo%'
+-- every keystroke
+origin 80–120ms
+10 keys = 10 hits
+p99 &gt; 50ms</div>
+            <p class="caption">Prefix <code>jo%</code> can use a B-tree. The crime is the RTT. Leading <code>%jo%</code> cannot use the index (plate 02).</p>
+          </div>
+          <div class="compare-vs">vs</div>
+          <div class="compare-pane compare-pane--hit">
+            <p class="pane-label">Hot prefixes nearby</p>
+            <h2 class="pane-title">Edge + trie</h2>
+            <div class="codeblock ok">debounce 40ms
+GET prefix:jo
+CDN / Redis → 10
+MISS → trie / ES
+off-peak rebuild
+budget 50ms</div>
+            <p class="caption"><code>jo</code> is a tiny keyspace — cache it. A new famous name refreshes that prefix, not the world. This is not a search page (plate 217).</p>
+          </div>
+        </div>
+        <div class="deck">
+          <div class="deck-row"><span class="deck-k">What</span><p>Prefix data structure + aggressive cache + client debounce. Results are 8–10 hits. Invalidation is per-prefix, not a global flush.</p></div>
+          <div class="deck-row"><span class="deck-k">Why</span><p>Typeahead / search-as-you-type. Latency is the product. They want a trie or completion suggester, p99 ≤ 50 ms, not <code>LIKE</code>.</p></div>
+          <div class="deck-row deck-row--trap"><span class="deck-k">Trap</span><p><code>LIKE '%jo%'</code> (leading wildcard). Hitting origin on every key. Returning 1000 hits. No debounce so 10 requests per word.</p></div>
+        </div>
+      </div>
+    </section>
+    <footer class="foot"><p class="one-liner"></p><p class="plate-id">Plate 206 / 375</p></footer>
+  </article>
+</body>
+</html>

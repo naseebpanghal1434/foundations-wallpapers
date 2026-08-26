@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PLATE 103 — A dummy node saves the empty case.</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@800;900&family=Fraunces:ital,opsz,wght@1,9..144,400;1,9..144,500&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/poster.css">
+</head>
+<body>
+  <article class="poster" data-track="dsa">
+    <span class="mark mark--tl"></span><span class="mark mark--tr"></span><span class="mark mark--bl"></span><span class="mark mark--br"></span>
+    <p class="spine">Foundations series — software engineering mental models</p>
+    <div class="rule"></div><div class="ghost">103</div><div class="vignette"></div>
+    <svg class="grain" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="4" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(#n)"></rect></svg>
+    <header class="mast">
+      <p class="kicker"><span>DSA</span><span class="dot"></span><span class="whisper">next only · reverse</span></p>
+      <h1 class="title">A dummy node <span class="title-accent">saves the empty case.</span></h1>
+      <p class="lede">Each node holds a value and <code>next</code>. You do not have index <code>i</code>. You have a pointer. Reverse, merge, unlink: three pointers and a dummy head so you never special-case “the list was empty” or “we replaced head.”</p>
+    </header>
+    <section class="stage">
+      <div class="stage-inner">
+        <div class="compare">
+          <div class="compare-pane compare-pane--hit">
+            <p class="pane-label">Sentinel before head</p>
+            <h2 class="pane-title">Dummy</h2>
+            <div class="codeblock ok">dummy → 1 → 2 → 3
+insert 0 after dummy:
+dummy → 0 → 1 → 2 → 3
+delete after p:
+p.next = p.next.next
+return dummy.next</div>
+            <p class="caption">One code path if the list was empty. <code>dummy.next</code> is the real head — never return <code>dummy</code>.</p>
+          </div>
+          <div class="compare-vs">then</div>
+          <div class="compare-pane">
+            <p class="pane-label">Three pointers</p>
+            <h2 class="pane-title">Reverse</h2>
+            <div class="codeblock">prev, cur = null, head
+while cur:
+  nxt = cur.next
+  cur.next = prev
+  prev = cur
+  cur = nxt
+# prev is the new head
+1→2→3  becomes  3→2→1</div>
+            <p class="caption">Save <code>nxt</code> first. O(n) time, O(1) space. Iterate — do not recurse n=10⁵.</p>
+          </div>
+        </div>
+        <div class="deck">
+          <div class="deck-row"><span class="deck-k">What</span><p>Singly: one pointer forward. Head is the only entry. Tail append is O(n) unless you store tail. Dummy (sentinel) is a fake node before head — insert and delete use the same lines for empty, one-node, and many-node lists.</p></div>
+          <div class="deck-row"><span class="deck-k">Why</span><p>SDE-1: reverse list, merge two sorted, remove nth from end (two pointers + dummy), palindrome list. Draw the boxes. Then write the three lines.</p></div>
+          <div class="deck-row deck-row--trap"><span class="deck-k">Trap</span><p><code>cur = cur.next</code> after you already set <code>cur.next = prev</code> — you lost the rest. Save <code>nxt</code> first. Also: <code>dummy.next</code> is the real head; returning <code>dummy</code> is a bug. Recursing n=10⁵ blows the stack — iterate.</p></div>
+        </div>
+      </div>
+    </section>
+    <footer class="foot"><p class="one-liner"></p><p class="plate-id">Plate 103 / 200</p></footer>
+  </article>
+</body>
+</html>

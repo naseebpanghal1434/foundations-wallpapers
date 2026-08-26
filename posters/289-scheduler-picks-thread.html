@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PLATE 289 — The scheduler picks the next thread.</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@800;900&family=Fraunces:ital,opsz,wght@1,9..144,400;1,9..144,500&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/poster.css">
+</head>
+<body>
+  <article class="poster" data-track="os">
+    <span class="mark mark--tl"></span><span class="mark mark--tr"></span><span class="mark mark--bl"></span><span class="mark mark--br"></span>
+    <p class="spine">Foundations series — software engineering mental models</p>
+    <div class="rule"></div><div class="ghost">289</div><div class="vignette"></div>
+    <svg class="grain" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="4" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(#n)"></rect></svg>
+    <header class="mast">
+      <p class="kicker"><span>OS</span><span class="dot"></span><span class="whisper">CFS · rq · timeslice</span></p>
+      <h1 class="title">The scheduler picks <span class="title-accent">the next thread.</span></h1>
+      <p class="lede">On each timer tick (~1–4 ms HZ) or a blocking syscall, the CPU’s runqueue picks a TASK_RUNNING thread. Linux CFS: vruntime, red-black tree, not a fixed slice. SCHED_FIFO/RR are realtime: they preempt CFS until they block. Idle is the swapper thread.</p>
+    </header>
+    <section class="stage">
+      <div class="stage-inner">
+        <div class="compare">
+          <div class="compare-pane compare-pane--hit">
+            <p class="pane-label">Weighted fair · default</p>
+            <h2 class="pane-title">CFS</h2>
+            <div class="codeblock">pick lowest vruntime
+nice 0    weight 1024
+nice +10  weight 110
+~0.11× CPU vs one nice-0
+SCHED_OTHER</div>
+          </div>
+          <div class="compare-vs">vs</div>
+          <div class="compare-pane">
+            <p class="pane-label">Priority · until block/yield</p>
+            <h2 class="pane-title">FIFO</h2>
+            <div class="codeblock">rtprio 1–99
+preempts all CFS
+no timeslice
+RR = FIFO + slice</div>
+          </div>
+        </div>
+        <p class="caption">You schedule a thread, not a process. RT for audio, not HTTP. chrt(1).</p>
+        <div class="facts facts-3">
+          <div class="fact fact--hit"><p class="fact-k">Context switch</p><p class="fact-n">1–5 µs</p><p class="fact-c">Plus a cold cache (plate 80).</p></div>
+          <div class="fact"><p class="fact-k">Timer tick</p><p class="fact-n">1–4 ms</p><p class="fact-c">HZ. Preemption’s usual pulse.</p></div>
+          <div class="fact"><p class="fact-k">Idle thread</p><p class="fact-n">swapper</p><p class="fact-c">Runs when the rq is empty.</p></div>
+        </div>
+        <div class="deck">
+          <div class="deck-row"><span class="deck-k">What</span><p>Runnable vs sleeping (TASK_INTERRUPTIBLE). Blocking I/O takes you off the rq.</p></div>
+          <div class="deck-row"><span class="deck-k">Why</span><p>Latency vs throughput. A CPU hog starves others until the tick. RT for audio, not for HTTP.</p></div>
+          <div class="deck-row deck-row--trap"><span class="deck-k">Trap</span><p>Busy-wait instead of futex/park. SCHED_FIFO at 99 on a production box — it can starve ksoftirqd and lock the machine.</p></div>
+        </div>
+      </div>
+    </section>
+    <footer class="foot"><p class="one-liner"></p><p class="plate-id">Plate 289 / 375</p></footer>
+  </article>
+</body>
+</html>

@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PLATE 320 — Unaligned access splits the load.</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@800;900&family=Fraunces:ital,opsz,wght@1,9..144,400;1,9..144,500&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/poster.css">
+</head>
+<body>
+  <article class="poster" data-track="arch">
+    <span class="mark mark--tl"></span><span class="mark mark--tr"></span><span class="mark mark--bl"></span><span class="mark mark--br"></span>
+    <p class="spine">Foundations series — software engineering mental models</p>
+    <div class="rule"></div><div class="ghost">320</div><div class="vignette"></div>
+    <svg class="grain" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="4" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(#n)"></rect></svg>
+    <header class="mast">
+      <p class="kicker"><span>Arch</span><span class="dot"></span><span class="whisper">alignas · packed</span></p>
+      <h1 class="title">Unaligned access splits <span class="title-accent">the load.</span></h1>
+      <p class="lede">A 4-byte load at address 2 crosses a 4-byte (and maybe 64 B line) boundary: two loads + merge, or a fault on strict ISAs (classic SPARC, some ARM). x86 allows it and charges you. Packed structs (<code>__attribute__((packed))</code>) create this on purpose.</p>
+    </header>
+    <section class="stage">
+      <div class="stage-inner">
+        <div class="compare">
+          <div class="compare-pane">
+            <p class="pane-label">packed {u8, u32}</p>
+            <h2 class="pane-title">Offset 1</h2>
+            <div class="codeblock">u8  at 0
+u32 at 1  ← split
+may cross 64 B line
+
+strict ISA: fault
+x86: two loads + merge</div>
+            <p class="caption">Casting a byte buffer to <code>uint64_t*</code> at offset 3 is this.</p>
+          </div>
+          <div class="compare-vs">vs</div>
+          <div class="compare-pane compare-pane--hit">
+            <p class="pane-label">Natural alignment</p>
+            <h2 class="pane-title">Pad to 4</h2>
+            <div class="codeblock">u8  at 0
+pad 3 bytes
+u32 at 4
+
+alignof(double)=8
+malloc ≥ 16  (64-bit glibc)</div>
+            <p class="caption">SIMD wants 16/32-byte align. Padding is the compiler buying cheap loads.</p>
+          </div>
+        </div>
+        <div class="deck">
+          <div class="deck-row"><span class="deck-k">What</span><p>Natural alignment = size. Padding is the compiler buying cheap loads.</p></div>
+          <div class="deck-row"><span class="deck-k">Why</span><p>ABI, serialization vs in-memory structs, mmap of on-disk packed formats.</p></div>
+          <div class="deck-row deck-row--trap"><span class="deck-k">Trap</span><p>Casting a byte buffer to <code>uint64_t*</code> at offset 3. <code>packed</code> plus taking addresses of members and passing them to APIs that assume align.</p></div>
+        </div>
+      </div>
+    </section>
+    <footer class="foot"><p class="one-liner"></p><p class="plate-id">Plate 320 / 375</p></footer>
+  </article>
+</body>
+</html>

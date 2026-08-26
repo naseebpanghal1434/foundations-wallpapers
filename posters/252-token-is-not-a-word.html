@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PLATE 252 — A token is not a word.</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@800;900&family=Fraunces:ital,opsz,wght@1,9..144,400;1,9..144,500&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/poster.css">
+</head>
+<body>
+  <article class="poster" data-track="genai">
+    <span class="mark mark--tl"></span><span class="mark mark--tr"></span><span class="mark mark--bl"></span><span class="mark mark--br"></span>
+    <p class="spine">Foundations series — software engineering mental models</p>
+    <div class="rule"></div><div class="ghost">252</div><div class="vignette"></div>
+    <svg class="grain" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="4" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(#n)"></rect></svg>
+    <header class="mast">
+      <p class="kicker"><span>GenAI</span><span class="dot"></span><span class="whisper">BPE · subwords</span></p>
+      <h1 class="title">A token is not <span class="title-accent">a word.</span></h1>
+      <p class="lede">Models read tokens, not English. BPE splits rare strings — the bill and the window (plate 253) count those pieces; mix tokenizers and you lie.</p>
+    </header>
+    <section class="stage">
+      <div class="stage-inner">
+        <div class="compare">
+          <div class="compare-pane">
+            <p class="pane-label">You count words</p>
+            <h2 class="pane-title">4 words</h2>
+            <div class="codeblock">ChatGPT is
+undefined here</div>
+            <p class="caption">Spaces are not a tokenizer. ‘unhappiness’ might be un + happiness; 🚀 can be several tokens.</p>
+          </div>
+          <div class="compare-vs">vs</div>
+          <div class="compare-pane compare-pane--hit">
+            <p class="pane-label">The model counts tokens</p>
+            <h2 class="pane-title">7+ tokens</h2>
+            <div class="codeblock">ChatGPT     2–3
+undefined   1
+a UUID      many</div>
+            <p class="caption">tiktoken / SentencePiece. Count before you ship a 12k-word paste.</p>
+          </div>
+        </div>
+        <div class="deck">
+          <div class="deck-row"><span class="deck-k">What</span><p>Subword units from a fixed vocab. Encode in, decode out. Whitespace and code tokenize densely.</p></div>
+          <div class="deck-row"><span class="deck-k">Why</span><p>“It ignored the end of my prompt” is often a token window, not words. Also: cost.</p></div>
+          <div class="deck-row deck-row--trap"><span class="deck-k">Trap</span><p>Splitting on spaces. Budgeting Llama with GPT-4’s tokenizer. Treating 1 token ≈ 1 word as law (0.75 words is a thumb, not a fact).</p></div>
+        </div>
+      </div>
+    </section>
+    <footer class="foot"><p class="one-liner"></p><p class="plate-id">Plate 252 / 286</p></footer>
+  </article>
+</body>
+</html>

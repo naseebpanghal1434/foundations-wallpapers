@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PLATE 161 — A heap of k heads.</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@800;900&family=Fraunces:ital,opsz,wght@1,9..144,400;1,9..144,500&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/poster.css">
+</head>
+<body>
+  <article class="poster" data-track="dsa">
+    <span class="mark mark--tl"></span><span class="mark mark--tr"></span><span class="mark mark--bl"></span><span class="mark mark--br"></span>
+    <p class="spine">Foundations series — software engineering mental models</p>
+    <div class="rule"></div><div class="ghost">161</div><div class="vignette"></div>
+    <svg class="grain" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="4" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(#n)"></rect></svg>
+    <header class="mast">
+      <p class="kicker"><span>DSA</span><span class="dot"></span><span class="whisper">k-way merge</span></p>
+      <h1 class="title">A heap of <span class="title-accent">k heads.</span></h1>
+      <p class="lede">Merge k sorted lists: a min-heap of the current heads. Pop smallest, push its next. n nodes, heap size k → O(n log k). Sequential merge is O(kn).</p>
+    </header>
+    <section class="stage">
+      <div class="stage-inner">
+        <div class="compare">
+          <div class="compare-pane compare-pane--hit">
+            <p class="pane-label">n pops · heap size k</p>
+            <h2 class="pane-title">Heap of k</h2>
+            <div class="codeblock ok">1→4→5
+1→3→4
+2→6
+heap {1, 1, 2}
+pop 1, push 4
+pop 1, push 3
+… 1-1-2-3-4-4-5-6
+O(n log k)</div>
+            <p class="caption">Entry is <code>(val, list id, node)</code> — nodes are not comparable. Dummy head for the result. Arrays: heap of (value, list-id, index).</p>
+          </div>
+          <div class="compare-vs">vs</div>
+          <div class="compare-pane">
+            <p class="pane-label">k-1 sequential merges</p>
+            <h2 class="pane-title">One by one</h2>
+            <div class="codeblock bad">acc = lists[0]
+for each other list:
+  acc = mergeTwo(acc, L)
+# lengths grow
+# cost ~ n + 2n + … + kn
+O(kn)
+
+push all nodes:
+O(n log n)
+wastes sortedness</div>
+            <p class="caption">Divide-and-conquer <code>mergeTwo(merge(first half), merge(second))</code> is also O(n log k). Merge two is plate 146.</p>
+          </div>
+        </div>
+        <div class="deck">
+          <div class="deck-row"><span class="deck-k">What</span><p>k-way merge. Heap of k heads, not n nodes. Pairwise tournament is the same O(n log k).</p></div>
+          <div class="deck-row"><span class="deck-k">Why</span><p>LeetCode 23. External sort’s merge step. Plate 63 was “keep k”; this is k sorted streams.</p></div>
+          <div class="deck-row deck-row--trap"><span class="deck-k">Trap</span><p>Comparing nodes, not vals. Pushing all n nodes (wastes sortedness). Sequential merge O(kn). Empty lists / k=0.</p></div>
+        </div>
+      </div>
+    </section>
+    <footer class="foot"><p class="one-liner"></p><p class="plate-id">Plate 161 / 200</p></footer>
+  </article>
+</body>
+</html>

@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PLATE 352 — Origin is scheme, host, and port.</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@800;900&family=Fraunces:ital,opsz,wght@1,9..144,400;1,9..144,500&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/poster.css">
+</head>
+<body>
+  <article class="poster" data-track="backend">
+    <span class="mark mark--tl"></span><span class="mark mark--tr"></span><span class="mark mark--bl"></span><span class="mark mark--br"></span>
+    <p class="spine">Foundations series — software engineering mental models</p>
+    <div class="rule"></div><div class="ghost">352</div><div class="vignette"></div>
+    <svg class="grain" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="4" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(#n)"></rect></svg>
+    <header class="mast">
+      <p class="kicker"><span>Backend</span><span class="dot"></span><span class="whisper">SOP · https://a:443</span></p>
+      <h1 class="title">Origin is scheme, host, <span class="title-accent">and port.</span></h1>
+      <p class="lede">Same-origin policy: two pages share an origin iff scheme, host, and port all match. <code>https://app.com</code> ≠ <code>http://app.com</code> ≠ <code>https://app.com:4443</code> ≠ <code>https://api.app.com</code>. Cookies use site (eTLD+1, plate 233), which is coarser; CORS (plate 15) is the browser asking the other origin for permission.</p>
+    </header>
+    <section class="stage">
+      <div class="stage-inner">
+        <div class="compare">
+          <div class="compare-pane compare-pane--hit">
+            <p class="pane-label">scheme + host + port</p>
+            <h2 class="pane-title">Same origin</h2>
+            <div class="codeblock">https://a.com/x
+https://a.com/y
+https://a.com:443/z
+
+<span class="ok">https ≡ port 443</span>
+<span class="ok">http  ≡ port 80</span></div>
+            <p class="caption">Path and query are not in the origin. DOM, localStorage, and JS reads share this unit.</p>
+          </div>
+          <div class="compare-vs">vs</div>
+          <div class="compare-pane">
+            <p class="pane-label">one field differs</p>
+            <h2 class="pane-title">Different</h2>
+            <div class="codeblock">http://a.com          scheme
+https://a.com:4443    port
+https://api.a.com     host
+
+<span class="dim">api.a.com is same-site</span>
+<span class="dim">file:// is opaque; iframe sandbox → null</span></div>
+            <p class="caption">Same-site (eTLD+1) is not same-origin. Subdomains do not share origin.</p>
+          </div>
+        </div>
+        <div class="deck">
+          <div class="deck-row"><span class="deck-k">What</span><p>The browser’s isolation unit for DOM, storage, and the cousin rules around cookies. Triple: scheme, host, port — nothing else.</p></div>
+          <div class="deck-row"><span class="deck-k">Why</span><p>XSS is same-origin execution (plate 234). Fetch to another origin is CORS (plate 15), not a firewall.</p></div>
+          <div class="deck-row deck-row--trap"><span class="deck-k">Trap</span><p>Thinking subdomains share origin. <code>document.domain</code> hacks. Comparing origin to hostname only, or treating <code>https://a.com</code> and <code>https://a.com:4443</code> as one.</p></div>
+        </div>
+      </div>
+    </section>
+    <footer class="foot"><p class="one-liner"></p><p class="plate-id">Plate 352 / 375</p></footer>
+  </article>
+</body>
+</html>

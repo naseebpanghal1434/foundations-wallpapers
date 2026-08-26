@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PLATE 75 — Processes isolate. Threads share.</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@800;900&family=Fraunces:ital,opsz,wght@1,9..144,400;1,9..144,500&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/poster.css">
+</head>
+<body>
+  <article class="poster" data-track="backend">
+    <span class="mark mark--tl"></span><span class="mark mark--tr"></span><span class="mark mark--bl"></span><span class="mark mark--br"></span>
+    <p class="spine">Foundations series — software engineering mental models</p>
+    <div class="rule"></div><div class="ghost">75</div><div class="vignette"></div>
+    <svg class="grain" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="4" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(#n)"></rect></svg>
+    <header class="mast">
+      <p class="kicker"><span>Backend</span><span class="dot"></span><span class="whisper">fork vs clone(CLONE_VM)</span></p>
+      <h1 class="title">Processes isolate. <span class="title-accent">Threads share.</span></h1>
+      <p class="lede">A process has its own address space (<code>mm_struct</code>, page tables, heap, fd table) and a PID. <code>fork</code> is copy-on-write, not a full copy. A thread is <code>clone(CLONE_VM|CLONE_FILES|CLONE_SIGHAND)</code> — <code>pthread_create</code>: same heap, own stack (~8 MiB), own registers. <code>SIGSEGV</code> kills the process, not one thread.</p>
+    </header>
+    <section class="stage">
+      <div class="stage-inner">
+        <div class="compare">
+          <div class="compare-pane compare-pane--hit">
+            <p class="pane-label">Own page tables</p>
+            <h2 class="pane-title">Process</h2>
+            <div class="codeblock ok">pid 4412
+fork() / posix_spawn
+own mm, own heap, own fds
+crash → this pid exits
+IPC: pipe, socket, mmap
+      MAP_SHARED</div>
+            <p class="caption">Chrome: one renderer per site. A kill here does not take the parent. Two processes do not share a global.</p>
+          </div>
+          <div class="compare-vs">vs</div>
+          <div class="compare-pane">
+            <p class="pane-label">Same mm, many stacks</p>
+            <h2 class="pane-title">Thread</h2>
+            <div class="codeblock">pid 4412  tid 7
+pthread_create
+same heap, same fds
+own stack, own TLS
+crash → the process dies
+talk: just memory</div>
+            <p class="caption">Cheaper spawn, cheaper switch (plate 80). Shared <code>HashMap</code> is a race (plate 73). CPython GIL: threads don’t parallelize CPU.</p>
+          </div>
+        </div>
+        <div class="deck">
+          <div class="deck-row"><span class="deck-k">What</span><p>Process = isolated virtual memory (plate 79) plus a PID. Thread = a scheduled stack inside that map. Heap is shared; stacks are not. Mutexes (plate 74) are how threads pretend they don’t share.</p></div>
+          <div class="deck-row"><span class="deck-k">Why</span><p>Pick processes (workers, Chrome tabs, containers) when a crash must not take the house down. Pick threads when requests share a cache and you will lock it.</p></div>
+          <div class="deck-row deck-row--trap"><span class="deck-k">Trap</span><p>Threads because they’re “faster,” then racing on shared memory. Or two processes and a global variable — there isn’t one. Use a socket, a queue, or explicit <code>MAP_SHARED</code>.</p></div>
+        </div>
+      </div>
+    </section>
+    <footer class="foot"><p class="one-liner"></p><p class="plate-id">Plate 75 / 375</p></footer>
+  </article>
+</body>
+</html>

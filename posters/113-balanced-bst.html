@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PLATE 113 — Height must stay log n.</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@800;900&family=Fraunces:ital,opsz,wght@1,9..144,400;1,9..144,500&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/poster.css">
+</head>
+<body>
+  <article class="poster" data-track="dsa">
+    <span class="mark mark--tl"></span><span class="mark mark--tr"></span><span class="mark mark--bl"></span><span class="mark mark--br"></span>
+    <p class="spine">Foundations series — software engineering mental models</p>
+    <div class="rule"></div><div class="ghost">113</div><div class="vignette"></div>
+    <svg class="grain" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="4" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(#n)"></rect></svg>
+    <header class="mast">
+      <p class="kicker"><span>DSA</span><span class="dot"></span><span class="whisper">AVL · rotations</span></p>
+      <h1 class="title">Height must <span class="title-accent">stay log n.</span></h1>
+      <p class="lede">A balanced BST rewrites the tree on insert/delete so height stays Θ(log n). AVL: each node keeps |hL − hR| ≤ 1, then rotates. Red-black: color invariants, same big-O, fewer rotations. TreeMap / std::map are this, not a hashmap.</p>
+    </header>
+    <section class="stage">
+      <div class="stage-inner">
+        <div class="steps">
+          <div class="step"><span class="step-n">1</span><p class="step-copy">No balance · a stick<span>Insert 1, 2, 3: <code>1 → 2 → 3</code>, height 3. Search is linear. Sorted inserts into a raw BST are how you accidentally build a list.</span></p><span class="step-meta">stick</span></div>
+          <div class="step step--hit"><span class="step-n">2</span><p class="step-copy">Right-right · rotate left<span>AVL insert 3 into <code>1-2</code> is RR on 1. Left-rotate(1) → <code>2 / \ 1 3</code>. Inorder still 1,2,3 — still a BST. Every node keeps |hL − hR| ≤ 1.</span></p><span class="step-meta">rotate</span></div>
+          <div class="step"><span class="step-n">3</span><p class="step-copy">Four cases<span>LL: right-rotate node. RR: left-rotate node. LR: left-rotate the child, then right-rotate the node. RL is the mirror. Local pointer surgery restores height.</span></p><span class="step-meta">LL LR RR RL</span></div>
+        </div>
+        <div class="deck">
+          <div class="deck-row"><span class="deck-k">What</span><p>Search/insert/delete O(log n) worst-case. Rotation is local pointer surgery that preserves inorder (so it stays a BST) and restores height. AVL is strict; red-black is looser, same class.</p></div>
+          <div class="deck-row"><span class="deck-k">Why</span><p>Why TreeMap beats a HashMap when you need ordered keys, range, floor/ceiling. Why a hashmap is still faster for pure lookup. Interviews: “how does a balanced tree stay log n?” Rotations.</p></div>
+          <div class="deck-row deck-row--trap"><span class="deck-k">Trap</span><p>Calling HashMap balanced. Implementing AVL in a screen — they usually want the idea and a rotation diagram, not 80 lines. Also: heap is balanced-as-complete, but not a search tree (plate 58, 114).</p></div>
+        </div>
+      </div>
+    </section>
+    <footer class="foot"><p class="one-liner"></p><p class="plate-id">Plate 113 / 200</p></footer>
+  </article>
+</body>
+</html>

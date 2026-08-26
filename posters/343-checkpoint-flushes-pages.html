@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PLATE 343 — Checkpoint flushes dirty pages. WAL already is durable.</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@800;900&family=Fraunces:ital,opsz,wght@1,9..144,400;1,9..144,500&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/poster.css">
+</head>
+<body>
+  <article class="poster" data-track="database">
+    <span class="mark mark--tl"></span><span class="mark mark--tr"></span><span class="mark mark--bl"></span><span class="mark mark--br"></span>
+    <p class="spine">Foundations series — software engineering mental models</p>
+    <div class="rule"></div><div class="ghost">343</div><div class="vignette"></div>
+    <svg class="grain" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="4" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(#n)"></rect></svg>
+    <header class="mast">
+      <p class="kicker"><span>Database</span><span class="dot"></span><span class="whisper">checkpoint_timeout · spread</span></p>
+      <h1 class="title">Checkpoint flushes dirty pages. <span class="title-accent">WAL already is durable.</span></h1>
+      <p class="lede">WAL (plate 95) is the durability path: COMMIT = fsync the log. Dirty 8 KiB heap pages sit in <code>shared_buffers</code> until a checkpoint writes them; then older WAL can be recycled. <code>checkpoint_timeout</code> 5 min, <code>max_wal_size</code>. A spike of heap writes at checkpoint hurts.</p>
+    </header>
+    <section class="stage">
+      <div class="stage-inner">
+        <div class="compare">
+          <div class="compare-pane">
+            <p class="pane-label">Fsync the heap on COMMIT</p>
+            <h2 class="pane-title">Death</h2>
+            <div class="codeblock bad">COMMIT
+  fsync page 4
+  fsync page 9
+  fsync page 18
+  …
+
+random 8 KiB writes
+on the hot path</div>
+            <p class="caption">That is not how Postgres COMMITs. The log is sequential; the heap waits.</p>
+          </div>
+          <div class="compare-vs">vs</div>
+          <div class="compare-pane compare-pane--hit">
+            <p class="pane-label">Two clocks</p>
+            <h2 class="pane-title">Checkpoint</h2>
+            <div class="codeblock ok">COMMIT  fsync WAL
+dirty pages later
+checkpoint_timeout 5min
+completion_target 0.9
+  spread the heap I/O
+
+crash → redo WAL
+  from last checkpoint
+full_page_writes after it</div>
+            <p class="caption">Redo LSN vs WAL insert. Confusing checkpoint with COMMIT is the interview miss.</p>
+          </div>
+        </div>
+        <div class="deck">
+          <div class="deck-row"><span class="deck-k">What</span><p>Checkpoint = heap caught up to here; older WAL recyclable. First change to a page after a checkpoint logs a full 8 KiB image (<code>full_page_writes</code>) against torn pages.</p></div>
+          <div class="deck-row"><span class="deck-k">Why</span><p>Latency spikes every five minutes. Tune <code>max_wal_size</code> vs timeout so checkpoints spread, not slam.</p></div>
+          <div class="deck-row deck-row--trap"><span class="deck-k">Trap</span><p><code>checkpoint_completion_target</code> 0 and a 30s I/O storm. Disabling <code>full_page_writes</code> on a filesystem without torn-page protection.</p></div>
+        </div>
+      </div>
+    </section>
+    <footer class="foot"><p class="one-liner"></p><p class="plate-id">Plate 343 / 375</p></footer>
+  </article>
+</body>
+</html>

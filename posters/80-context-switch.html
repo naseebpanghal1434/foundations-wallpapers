@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PLATE 80 — Save the registers. Restore later.</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@800;900&family=Fraunces:ital,opsz,wght@1,9..144,400;1,9..144,500&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/poster.css">
+</head>
+<body>
+  <article class="poster" data-track="system">
+    <span class="mark mark--tl"></span><span class="mark mark--tr"></span><span class="mark mark--bl"></span><span class="mark mark--br"></span>
+    <p class="spine">Foundations series — software engineering mental models</p>
+    <div class="rule"></div><div class="ghost">80</div><div class="vignette"></div>
+    <svg class="grain" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="4" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(#n)"></rect></svg>
+    <header class="mast">
+      <p class="kicker"><span>System</span><span class="dot"></span><span class="whisper">~1–3 µs · CR3 · TLB</span></p>
+      <h1 class="title">Save the registers. <span class="title-accent">Restore later.</span></h1>
+      <p class="lede">A context switch parks one thread and runs another: save GPRs, RIP, RSP, RFLAGS (and FPU). Same <code>mm_struct</code>: about 1–3 µs. Different process: also load <code>CR3</code>, TLB shootdown (plate 79). 10 000 kernel threads with 8 MiB stacks is 80 GiB of virtual memory and a cold cache. Linux CFS picks the next runnable.</p>
+    </header>
+    <section class="stage">
+      <div class="stage-inner">
+        <div class="compare">
+          <div class="compare-pane compare-pane--hit">
+            <p class="pane-label">Workers ≈ cores · many fds</p>
+            <h2 class="pane-title">A pool</h2>
+            <div class="codeblock ok">8 workers  ·  8 cores
+10_000 connections
+wait on epoll / kqueue
+run queue ≈ 8
+
+stack: 8 × ~8 MiB
+switch when a worker blocks</div>
+            <p class="caption">Blockers (disk, DNS, a mutex) still need extra threads. The number is a budget, not “one per client.”</p>
+          </div>
+          <div class="compare-vs">vs</div>
+          <div class="compare-pane">
+            <p class="pane-label">One OS thread per connection</p>
+            <h2 class="pane-title">10k threads</h2>
+            <div class="codeblock bad">10_000 threads
+10_000 × 8 MiB stacks
+run queue: thousands
+mostly save / restore
+
+cache cold, TLB cold
+CPU busy, little work</div>
+            <p class="caption">Direct cost is microseconds. Indirect cost is the 64 B cache lines you just threw away.</p>
+          </div>
+        </div>
+        <div class="deck">
+          <div class="deck-row"><span class="deck-k">What</span><p>Scheduler picks a new thread. Voluntary (blocking I/O, <code>futex</code> wait) or preemptive (timeslice). Same process is cheaper than a process switch. User-space fibers still yield; they just skip the kernel path.</p></div>
+          <div class="deck-row"><span class="deck-k">Why</span><p>You need switches to share a core. You do not need one kernel thread per connection. Interviews: name what is saved, say the cache tax, size the pool to cores plus blocking.</p></div>
+          <div class="deck-row deck-row--trap"><span class="deck-k">Trap</span><p>10k threads for 10k connections — thread-per-request until the machine spends its time switching. More threads is not more throughput once the run queue is the product.</p></div>
+        </div>
+      </div>
+    </section>
+    <footer class="foot"><p class="one-liner"></p><p class="plate-id">Plate 80 / 375</p></footer>
+  </article>
+</body>
+</html>

@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PLATE 247 — The URL is a state, not always a file.</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@800;900&family=Fraunces:ital,opsz,wght@1,9..144,400;1,9..144,500&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/poster.css">
+</head>
+<body>
+  <article class="poster" data-track="frontend">
+    <span class="mark mark--tl"></span><span class="mark mark--tr"></span><span class="mark mark--bl"></span><span class="mark mark--br"></span>
+    <p class="spine">Foundations series — software engineering mental models</p>
+    <div class="rule"></div><div class="ghost">247</div><div class="vignette"></div>
+    <svg class="grain" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="4" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(#n)"></rect></svg>
+    <header class="mast">
+      <p class="kicker"><span>Frontend</span><span class="dot"></span><span class="whisper">history.pushState · SSR</span></p>
+      <h1 class="title">The URL is a state, <span class="title-accent">not always a file.</span></h1>
+      <p class="lede">An SPA changes the path with <code>history.pushState</code> and renders a component. The server still must answer that path on refresh — same HTML shell, or real SSR (plate 28).</p>
+    </header>
+    <section class="stage">
+      <div class="stage-inner">
+        <div class="compare">
+          <div class="compare-pane">
+            <p class="pane-label">Client-only path</p>
+            <h2 class="pane-title">Refresh 404</h2>
+            <div class="codeblock bad">history.pushState({}, '', '/settings')
+// render &lt;Settings /&gt;
+// user hits refresh
+// nginx: 404</div>
+            <p class="caption">The server never heard of <code>/settings</code>. Hash routes (<code>#/app</code>) never hit the server.</p>
+          </div>
+          <div class="compare-vs">trap</div>
+          <div class="compare-pane compare-pane--hit">
+            <p class="pane-label">Server fallback</p>
+            <h2 class="pane-title">Same shell</h2>
+            <div class="codeblock ok">location / {
+  try_files $uri /index.html;
+}
+// or SSR the route</div>
+            <p class="caption">Back is <code>popstate</code>. <code>replaceState</code> for query tweaks you don’t want in history.</p>
+          </div>
+        </div>
+        <div class="deck">
+          <div class="deck-row"><span class="deck-k">What</span><p>Client router + a server fallback. Deep links are a server problem. Search params are state you can share.</p></div>
+          <div class="deck-row"><span class="deck-k">Why</span><p>The classic SPA refresh 404. Interviews: how routing works with a CDN.</p></div>
+          <div class="deck-row deck-row--trap"><span class="deck-k">Trap</span><p>Ignoring refresh. <code>pushState</code> in a loop. Putting secrets in the query string (logs, Referer).</p></div>
+        </div>
+      </div>
+    </section>
+    <footer class="foot"><p class="one-liner"></p><p class="plate-id">Plate 247 / 286</p></footer>
+  </article>
+</body>
+</html>

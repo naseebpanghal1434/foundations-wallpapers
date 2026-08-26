@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PLATE 116 — Name the neighbors.</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@800;900&family=Fraunces:ital,opsz,wght@1,9..144,400;1,9..144,500&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/poster.css">
+</head>
+<body>
+  <article class="poster" data-track="dsa">
+    <span class="mark mark--tl"></span><span class="mark mark--tr"></span><span class="mark mark--bl"></span><span class="mark mark--br"></span>
+    <p class="spine">Foundations series — software engineering mental models</p>
+    <div class="rule"></div><div class="ghost">116</div><div class="vignette"></div>
+    <svg class="grain" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="4" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(#n)"></rect></svg>
+    <header class="mast">
+      <p class="kicker"><span>DSA</span><span class="dot"></span><span class="whisper">Sparse graph · default</span></p>
+      <h1 class="title">Name the <span class="title-accent">neighbors.</span></h1>
+      <p class="lede">An adjacency list stores, for each node, the edges out of it. Sparse graph: n nodes, m edges, memory Θ(n+m). Walk neighbors of u in degree(u) time. This is the default. A matrix (plate 117) wins only when the graph is dense or you need O(1) “is uv an edge?”</p>
+    </header>
+    <section class="stage">
+      <div class="stage-inner">
+        <div class="compare">
+          <div class="compare-pane compare-pane--hit">
+            <p class="pane-label">Undirected · both ways</p>
+            <h2 class="pane-title">Adj list</h2>
+            <div class="codeblock ok">edges 0-1, 0-2, 1-3, 2-3, 3-4
+0: [1, 2]
+1: [0, 3]
+2: [0, 3]
+3: [1, 2, 4]
+4: [3]
+space Θ(n + m)</div>
+            <p class="caption">BFS/DFS/Dijkstra iterate <code>g[u]</code>. Weighted: store <code>(v, w)</code> pairs.</p>
+          </div>
+          <div class="compare-vs">vs</div>
+          <div class="compare-pane">
+            <p class="pane-label">Directed · one way</p>
+            <h2 class="pane-title">Arrows</h2>
+            <div class="codeblock">0 → 1 → 2
+0 → 2
+0: [1, 2]
+1: [2]
+2: []
+
+2 still has a slot
+so n is known</div>
+            <p class="caption">Isolated nodes need an empty list. Undirected: add both directions or you never come back.</p>
+          </div>
+        </div>
+        <div class="deck">
+          <div class="deck-row"><span class="deck-k">What</span><p>Undirected: add both ways. Directed: one way. Weights on the pair. Isolated nodes still get an empty list so n is known. Neighbor walk is O(degree), not O(n).</p></div>
+          <div class="deck-row"><span class="deck-k">Why</span><p>Course schedule, islands-as-graph, clone graph, word ladder (implicit list: the other words). Interview: build the list first, then BFS. That is the whole opening.</p></div>
+          <div class="deck-row deck-row--trap"><span class="deck-k">Trap</span><p>Forgetting the reverse edge on undirected. A matrix on n=10⁵, m=10⁵ — memory dies (plate 117). Iterating all n to find neighbors of u when you already have <code>g[u]</code>.</p></div>
+        </div>
+      </div>
+    </section>
+    <footer class="foot"><p class="one-liner"></p><p class="plate-id">Plate 116 / 200</p></footer>
+  </article>
+</body>
+</html>

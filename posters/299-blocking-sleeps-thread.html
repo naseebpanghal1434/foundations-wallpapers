@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PLATE 299 — Blocking I/O sleeps the thread.</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@800;900&family=Fraunces:ital,opsz,wght@1,9..144,400;1,9..144,500&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/poster.css">
+</head>
+<body>
+  <article class="poster" data-track="os">
+    <span class="mark mark--tl"></span><span class="mark mark--tr"></span><span class="mark mark--bl"></span><span class="mark mark--br"></span>
+    <p class="spine">Foundations series — software engineering mental models</p>
+    <div class="rule"></div><div class="ghost">299</div><div class="vignette"></div>
+    <svg class="grain" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="4" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(#n)"></rect></svg>
+    <header class="mast">
+      <p class="kicker"><span>OS</span><span class="dot"></span><span class="whisper">TASK_UNINTERRUPTIBLE · EAGAIN</span></p>
+      <h1 class="title">Blocking I/O sleeps <span class="title-accent">the thread.</span></h1>
+      <p class="lede"><code>read()</code> on an empty socket: the thread leaves the runqueue (sleeps) until data or a signal. The CPU runs someone else. O_NONBLOCK: return EAGAIN/EWOULDBLOCK instead. Async: epoll/io_uring so one thread waits on many fds (plate 300).</p>
+    </header>
+    <section class="stage">
+      <div class="stage-inner">
+        <div class="compare">
+          <div class="compare-pane">
+            <p class="pane-label">One thread per connection</p>
+            <h2 class="pane-title">Blocking</h2>
+            <div class="codeblock">200 threads × 1 conn
+each sleeps in read
+stack VA × 200
+simple code
+stuck NFS → D-state</div>
+          </div>
+          <div class="compare-vs">vs</div>
+          <div class="compare-pane compare-pane--hit">
+            <p class="pane-label">One thread, many fds</p>
+            <h2 class="pane-title">Evented</h2>
+            <div class="codeblock">1 thread
+epoll_wait  10k fds
+EAGAIN → next fd
+state machine</div>
+          </div>
+        </div>
+        <p class="caption">D-state (TASK_UNINTERRUPTIBLE) ignores signals. Node/nginx = nonblocking + event loop (plate 4).</p>
+        <div class="facts facts-3">
+          <div class="fact fact--hit"><p class="fact-k">pthread stack</p><p class="fact-n">8 MiB</p><p class="fact-c">Reserved VA, lazy pages. ulimit -s.</p></div>
+          <div class="fact"><p class="fact-k">O_NONBLOCK</p><p class="fact-n">EAGAIN</p><p class="fact-c">Or EWOULDBLOCK. Same on Linux.</p></div>
+          <div class="fact"><p class="fact-k">10k threads</p><p class="fact-n">80 GiB VA</p><p class="fact-c">Not a C10k plan (plate 301).</p></div>
+        </div>
+        <div class="deck">
+          <div class="deck-row"><span class="deck-k">What</span><p>Sleep is the cost of simple code. Nonblocking is the cost of state machines. Neither is “faster” without the metric: connections per RAM vs latency.</p></div>
+          <div class="deck-row"><span class="deck-k">Why</span><p>Thread-per-connection vs evented servers. Why a stuck NFS is D-state (uninterruptible).</p></div>
+          <div class="deck-row deck-row--trap"><span class="deck-k">Trap</span><p>Blocking in an event-loop thread (janks everyone). 10k threads as a “simple” C10k solution.</p></div>
+        </div>
+      </div>
+    </section>
+    <footer class="foot"><p class="one-liner"></p><p class="plate-id">Plate 299 / 375</p></footer>
+  </article>
+</body>
+</html>

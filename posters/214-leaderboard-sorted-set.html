@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PLATE 214 — A leaderboard is a sorted set.</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@800;900&family=Fraunces:ital,opsz,wght@1,9..144,400;1,9..144,500&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/poster.css">
+</head>
+<body>
+  <article class="poster" data-track="system">
+    <span class="mark mark--tl"></span><span class="mark mark--tr"></span><span class="mark mark--bl"></span><span class="mark mark--br"></span>
+    <p class="spine">Foundations series — software engineering mental models</p>
+    <div class="rule"></div><div class="ghost">214</div><div class="vignette"></div>
+    <svg class="grain" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="4" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(#n)"></rect></svg>
+    <header class="mast">
+      <p class="kicker"><span>System</span><span class="dot"></span><span class="whisper">ZADD · rank · window</span></p>
+      <h1 class="title">A leaderboard is <span class="title-accent">a sorted set.</span></h1>
+      <p class="lede">Top 100 is a Redis sorted set, not <code>ORDER BY score DESC</code> per view. <code>ZADD lb:global 1840 ada</code> is O(log n). <code>ZREVRANGE 0 99 WITHSCORES</code> is the page. <code>ZREVRANK</code> is one user’s rank. Daily board = <code>lb:2026-08-26</code>.</p>
+    </header>
+    <section class="stage">
+      <div class="stage-inner">
+        <div class="compare">
+          <div class="compare-pane">
+            <p class="pane-label">Sort at read</p>
+            <h2 class="pane-title">ORDER BY</h2>
+            <div class="codeblock bad">SELECT * FROM users
+ORDER BY score DESC
+LIMIT 100
+-- every profile hit
+
+ties scramble
+n log n on the request
+1e8 rows: table scan</div>
+            <p class="caption">Fine for a cold weekly recap. Fatal as the live play path. Cron-every-5-min is the same design with a delay.</p>
+          </div>
+          <div class="compare-vs">vs</div>
+          <div class="compare-pane compare-pane--hit">
+            <p class="pane-label">Ordered index</p>
+            <h2 class="pane-title">ZSET</h2>
+            <div class="codeblock ok">ZADD lb:global 1840 ada
+ZREVRANGE 0 99 WITHSCORES
+ZREVRANK lb:global ada
+key = lb:2026-08-26
+tie = (score, userId)
+prune below top-k</div>
+            <p class="caption">Stable ties: score then userId. Millions of users: shard by game. Do not one-key 1e8 members.</p>
+          </div>
+        </div>
+        <div class="deck">
+          <div class="deck-row"><span class="deck-k">What</span><p>Ordered index, not a sort at read. Time windows are extra keys. Writes update the set; the profile row can lag. Top-k only? Drop members below the cutoff.</p></div>
+          <div class="deck-row"><span class="deck-k">Why</span><p>Game / sales leaderboard. They want O(log n) update + O(k) range, not a table scan.</p></div>
+          <div class="deck-row deck-row--trap"><span class="deck-k">Trap</span><p>Sorting n users in the API. One giant ZSET of the whole company forever. Unstable ties. Cron recompute every 5 minutes as the only live path.</p></div>
+        </div>
+      </div>
+    </section>
+    <footer class="foot"><p class="one-liner"></p><p class="plate-id">Plate 214 / 375</p></footer>
+  </article>
+</body>
+</html>

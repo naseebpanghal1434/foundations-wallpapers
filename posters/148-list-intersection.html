@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PLATE 148 — Same leftover length. Then they meet.</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@800;900&family=Fraunces:ital,opsz,wght@1,9..144,400;1,9..144,500&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/poster.css">
+</head>
+<body>
+  <article class="poster" data-track="dsa">
+    <span class="mark mark--tl"></span><span class="mark mark--tr"></span><span class="mark mark--bl"></span><span class="mark mark--br"></span>
+    <p class="spine">Foundations series — software engineering mental models</p>
+    <div class="rule"></div><div class="ghost">148</div><div class="vignette"></div>
+    <svg class="grain" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="4" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(#n)"></rect></svg>
+    <header class="mast">
+      <p class="kicker"><span>DSA</span><span class="dot"></span><span class="whisper">Two walkers · switch heads</span></p>
+      <h1 class="title">Same leftover length. <span class="title-accent">Then they meet.</span></h1>
+      <p class="lede">They share a suffix by <em>pointer</em>, not value. A walks list A then B; B walks B then A. Second halves have equal length, so they hit the join — or both hit null.</p>
+    </header>
+    <section class="stage">
+      <div class="stage-inner">
+        <div class="compare">
+          <div class="compare-pane compare-pane--hit">
+            <p class="pane-label">Switch heads · equal remaining</p>
+            <h2 class="pane-title">A then B</h2>
+            <div class="codeblock ok">A  1-2-3-4-5     n=5
+B      9-4-5     n=3
+join = same node 4
+
+A walks A then B
+B walks B then A
+5+3 = 3+5
+meet at 4
+
+no join: both null
+after n+m</div>
+            <p class="caption">Count lengths and skip <code>|nA−nB|</code> on the longer — same idea, two explicit passes.</p>
+          </div>
+          <div class="compare-vs">trap</div>
+          <div class="compare-pane">
+            <p class="pane-label">Identity, not val==val</p>
+            <h2 class="pane-title">Same node</h2>
+            <div class="codeblock bad"># two 4s, different nodes
+a.val == b.val   # wrong
+
+# set of A's nodes
+works, uses O(n)
+
+# cutting next to
+# splice them — mutates</div>
+            <p class="caption">Equality is node identity (<code>is</code>), not equal values. A set of A is correct and uses extra memory.</p>
+          </div>
+        </div>
+        <div class="deck">
+          <div class="deck-row"><span class="deck-k">What</span><p>O(n+m) time, O(1) space. Hit null → continue at the other head. No join: both finish at null. Or skip <code>|nA−nB|</code> on the longer, then walk together.</p></div>
+          <div class="deck-row"><span class="deck-k">Why</span><p>LeetCode 160. Say “same node” first. If values matter, it is a different problem.</p></div>
+          <div class="deck-row deck-row--trap"><span class="deck-k">Trap</span><p>Comparing values. A set of A works but uses O(n). Starting both at the heads and expecting them to meet despite the length gap.</p></div>
+        </div>
+      </div>
+    </section>
+    <footer class="foot"><p class="one-liner"></p><p class="plate-id">Plate 148 / 200</p></footer>
+  </article>
+</body>
+</html>

@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PLATE 231 — Cookies travel. Storage stays.</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@800;900&family=Fraunces:ital,opsz,wght@1,9..144,400;1,9..144,500&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/poster.css">
+</head>
+<body>
+  <article class="poster" data-track="frontend">
+    <span class="mark mark--tl"></span><span class="mark mark--tr"></span><span class="mark mark--bl"></span><span class="mark mark--br"></span>
+    <p class="spine">Foundations series — software engineering mental models</p>
+    <div class="rule"></div><div class="ghost">231</div><div class="vignette"></div>
+    <svg class="grain" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="4" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(#n)"></rect></svg>
+    <header class="mast">
+      <p class="kicker"><span>Frontend</span><span class="dot"></span><span class="whisper">Cookie · localStorage · session</span></p>
+      <h1 class="title">Cookies travel. <span class="title-accent">Storage stays.</span></h1>
+      <p class="lede">A cookie is sent on matching HTTP requests — that is the point and the cost. localStorage stays in the origin; sessionStorage dies with the tab. If the server must receive it, it is a cookie (or a header you set).</p>
+    </header>
+    <section class="stage stage--wide">
+      <div class="stage-inner">
+        <div class="trio">
+          <div class="box box--pool">
+            <p class="col-label">Sent on the request</p>
+            <h2 class="box-title">Cookie</h2>
+            <div class="codeblock">Cookie: sid=…
+every GET /api
+~4KB, auto-sent</div>
+            <p class="caption">httpOnly (plate 232) is the session default. Cost: bytes on every matching request, including images.</p>
+          </div>
+          <div class="box">
+            <p class="col-label">Origin, no auto send</p>
+            <h2 class="box-title">localStorage</h2>
+            <div class="codeblock">origin, 5MB+
+JS read/write
+server never sees it</div>
+            <p class="caption">Drafts, prefs, caches. JWT here is XSS-bait (plate 234). Survives tab close.</p>
+          </div>
+          <div class="box">
+            <p class="col-label">Dies with the tab</p>
+            <h2 class="box-title">sessionStorage</h2>
+            <div class="codeblock">per tab
+same origin
+gone on close</div>
+            <p class="caption">A duplicate tab is a new bag. Not a session cookie. IndexedDB is structured and async.</p>
+          </div>
+        </div>
+        <div class="deck">
+          <div class="deck-row"><span class="deck-k">What</span><p>Cookie = request-scoped credentials. Web storage = client cache. IndexedDB is structured and async.</p></div>
+          <div class="deck-row"><span class="deck-k">Why</span><p>“Where do I put the token?” If the API needs it, prefer a cookie. If it is a draft document, storage.</p></div>
+          <div class="deck-row deck-row--trap"><span class="deck-k">Trap</span><p>Auth JWT in localStorage. Stuffing 4KB of prefs into cookies so every image request carries them. Assuming sessionStorage survives a new tab.</p></div>
+        </div>
+      </div>
+    </section>
+    <footer class="foot"><p class="one-liner"></p><p class="plate-id">Plate 231 / 286</p></footer>
+  </article>
+</body>
+</html>

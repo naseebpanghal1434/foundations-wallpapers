@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PLATE 371 — A .so is relocated at load. A .a is copied in.</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@800;900&family=Fraunces:ital,opsz,wght@1,9..144,400;1,9..144,500&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/poster.css">
+</head>
+<body>
+  <article class="poster" data-track="tools">
+    <span class="mark mark--tl"></span><span class="mark mark--tr"></span><span class="mark mark--bl"></span><span class="mark mark--br"></span>
+    <p class="spine">Foundations series — software engineering mental models</p>
+    <div class="rule"></div><div class="ghost">371</div><div class="vignette"></div>
+    <svg class="grain" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="4" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(#n)"></rect></svg>
+    <header class="mast">
+      <p class="kicker"><span>Tools</span><span class="dot"></span><span class="whisper">PIC · PLT · GOT</span></p>
+      <h1 class="title">A .so is relocated at load. <span class="title-accent">A .a is copied in.</span></h1>
+      <p class="lede">A static <code>.a</code> is an archive of <code>.o</code> files: <code>ld</code> copies needed objects into your binary (plate 325). A shared <code>.so</code>/<code>.dll</code> is mapped at load; PIC + PLT/GOT resolve symbols, and one text segment is shared among processes. <code>ldd</code> prints <code>DT_NEEDED</code>; <code>RPATH</code>/<code>RUNPATH</code> vs <code>LD_LIBRARY_PATH</code> pick the file.</p>
+    </header>
+    <section class="stage">
+      <div class="stage-inner">
+        <div class="compare">
+          <div class="compare-pane">
+            <p class="pane-label">Link time · bytes inside</p>
+            <h2 class="pane-title">.a</h2>
+            <div class="codeblock">ar  rcs libfoo.a a.o b.o
+ld  copies used .o in
+
+huge binary
+no runtime dep on foo
+patch foo → relink</div>
+            <p class="caption">The archive is a pile of objects, not a mapped library. Unused <code>.o</code> stay out.</p>
+          </div>
+          <div class="compare-vs">vs</div>
+          <div class="compare-pane compare-pane--hit">
+            <p class="pane-label">Load time · one mapping</p>
+            <h2 class="pane-title">.so</h2>
+            <div class="codeblock">libc.so.6  DT_NEEDED
+ld-linux maps ET_DYN
+PIC text shared
+PLT lazy / GOT patched
+
+ldd ./app
+RUNPATH vs LD_LIBRARY_PATH</div>
+            <p class="caption">Windows DLL search order is a CVE magnet. Dynamic needs ABI stability (plate 326).</p>
+          </div>
+        </div>
+        <div class="deck">
+          <div class="deck-row"><span class="deck-k">What</span><p>When the bytes join your address space. Static: copied by <code>ld</code>. Dynamic: relocated by the loader.</p></div>
+          <div class="deck-row"><span class="deck-k">Why</span><p>Disk, RSS, updates — patch libc without relinking the world. One <code>.so</code> text segment, many processes.</p></div>
+          <div class="deck-row deck-row--trap"><span class="deck-k">Trap</span><p><code>LD_LIBRARY_PATH</code> in prod as architecture. Mixing two <code>libstdc++.so</code>. Undeclared indirect deps that only work because something else loaded them.</p></div>
+        </div>
+      </div>
+    </section>
+    <footer class="foot"><p class="one-liner"></p><p class="plate-id">Plate 371 / 375</p></footer>
+  </article>
+</body>
+</html>

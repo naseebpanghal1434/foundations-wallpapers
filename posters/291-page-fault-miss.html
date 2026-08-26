@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PLATE 291 — A page fault is a miss in the map.</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@800;900&family=Fraunces:ital,opsz,wght@1,9..144,400;1,9..144,500&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/poster.css">
+</head>
+<body>
+  <article class="poster" data-track="os">
+    <span class="mark mark--tl"></span><span class="mark mark--tr"></span><span class="mark mark--bl"></span><span class="mark mark--br"></span>
+    <p class="spine">Foundations series — software engineering mental models</p>
+    <div class="rule"></div><div class="ghost">291</div><div class="vignette"></div>
+    <svg class="grain" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="4" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(#n)"></rect></svg>
+    <header class="mast">
+      <p class="kicker"><span>OS</span><span class="dot"></span><span class="whisper">#PF · major · minor</span></p>
+      <h1 class="title">A page fault is a miss <span class="title-accent">in the map.</span></h1>
+      <p class="lede">Access a VA with no valid PTE → #PF. Minor fault: the page is already in RAM (CoW, lazy alloc) — just install a PTE. Major: disk/SSD (demand from file or swap). SIGSEGV if the map does not allow it (NULL, NX on a jump).</p>
+    </header>
+    <section class="stage">
+      <div class="stage-inner">
+        <div class="compare">
+          <div class="compare-pane compare-pane--hit">
+            <p class="pane-label">Already in RAM</p>
+            <h2 class="pane-title">Minor</h2>
+            <div class="codeblock">mmap anonymous
+first touch
+→ zero page, then private
+CoW write (plate 292)
+rss += 4 KiB</div>
+          </div>
+          <div class="compare-vs">vs</div>
+          <div class="compare-pane">
+            <p class="pane-label">Not in RAM · I/O</p>
+            <h2 class="pane-title">Major</h2>
+            <div class="codeblock">file mmap, miss
+page cache or swap
+100 µs–10 ms
+pgmajfault</div>
+          </div>
+        </div>
+        <p class="caption">rss grows on touch, not mmap. Stack growth is a guarded fault. SIGSEGV is “not in the map.”</p>
+        <div class="facts facts-3">
+          <div class="fact"><p class="fact-k">Minor</p><p class="fact-n">µs</p><p class="fact-c">PTE install. pgfault in vmstat.</p></div>
+          <div class="fact fact--hit"><p class="fact-k">Major</p><p class="fact-n">100 µs–10 ms</p><p class="fact-c">SSD vs HDD/swap. pgmajfault.</p></div>
+          <div class="fact"><p class="fact-k">Illegal map</p><p class="fact-n">SIGSEGV</p><p class="fact-c">NULL, NX execute, wrong prot.</p></div>
+        </div>
+        <div class="deck">
+          <div class="deck-row"><span class="deck-k">What</span><p>The fault handler is the lazy mapper. rss grows on touch, not on mmap.</p></div>
+          <div class="deck-row"><span class="deck-k">Why</span><p>Why startup “allocates” 1 GiB instantly (virtual) then faults in. Why swap destroys tail latency.</p></div>
+          <div class="deck-row deck-row--trap"><span class="deck-k">Trap</span><p>mmap 1 TB and thinking RAM is gone. Touching every page at once (<code>memset</code> warmup) as a stampede of majors.</p></div>
+        </div>
+      </div>
+    </section>
+    <footer class="foot"><p class="one-liner"></p><p class="plate-id">Plate 291 / 375</p></footer>
+  </article>
+</body>
+</html>

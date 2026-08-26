@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PLATE 203 — Fan-out on write, or on read.</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@800;900&family=Fraunces:ital,opsz,wght@1,9..144,400;1,9..144,500&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/poster.css">
+</head>
+<body>
+  <article class="poster" data-track="system">
+    <span class="mark mark--tl"></span><span class="mark mark--tr"></span><span class="mark mark--bl"></span><span class="mark mark--br"></span>
+    <p class="spine">Foundations series — software engineering mental models</p>
+    <div class="rule"></div><div class="ghost">203</div><div class="vignette"></div>
+    <svg class="grain" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="4" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(#n)"></rect></svg>
+    <header class="mast">
+      <p class="kicker"><span>System</span><span class="dot"></span><span class="whisper">Followers · celebrity problem</span></p>
+      <h1 class="title">Fan-out on write, <span class="title-accent">or on read.</span></h1>
+      <p class="lede">A post with N followers is N inbox writes at post time, or a fan-in of followees at read time. A celebrity with 80M followers is 80M Redis <code>LPUSH</code>es — a stampede (plate 94). Hybrid: push if N &lt; 100k, pull the famous.</p>
+    </header>
+    <section class="stage">
+      <div class="stage-inner">
+        <div class="compare">
+          <div class="compare-pane">
+            <p class="pane-label">Precompute every inbox</p>
+            <h2 class="pane-title">Fan-out write</h2>
+            <div class="codeblock bad">POST /tweet
+worker:
+  LPUSH tl:u  tweetId
+  × N followers
+
+home = LRANGE 0 49
+80M fans
+= 80M writes
+on one post</div>
+            <p class="caption">Fine for a 200-follower account. One celebrity post is 80M Redis ops. Never on the POST thread.</p>
+          </div>
+          <div class="compare-vs">vs</div>
+          <div class="compare-pane compare-pane--hit">
+            <p class="pane-label">Push small · pull famous</p>
+            <h2 class="pane-title">Hybrid</h2>
+            <div class="codeblock ok">N &lt; 100_000
+  queue LPUSH inbox
+N ≥ 100_000
+  celeb’s own store
+home = mix (plate 204)
+
+POST commits the row
+fan-out is a job</div>
+            <p class="caption">Notifications are the same fork (plate 205). Backpressure the worker; do not 80M-write the request.</p>
+          </div>
+        </div>
+        <div class="deck">
+          <div class="deck-row"><span class="deck-k">What</span><p>Write-fanout precomputes the feed. Read-fanout computes it on request (fan-in from followees). Hybrid is the answer at Twitter scale: queue the fan-out.</p></div>
+          <div class="deck-row"><span class="deck-k">Why</span><p>Twitter / Instagram design. The celebrity problem is the interview — say hybrid in the first minute, with the 80M write cost.</p></div>
+          <div class="deck-row deck-row--trap"><span class="deck-k">Trap</span><p>Always fan-out on write. 80M <code>LPUSH</code> on the request with no worker. No backpressure. Treating followers as a SQL <code>IN</code> at read with no cache.</p></div>
+        </div>
+      </div>
+    </section>
+    <footer class="foot"><p class="one-liner"></p><p class="plate-id">Plate 203 / 375</p></footer>
+  </article>
+</body>
+</html>

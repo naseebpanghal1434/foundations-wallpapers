@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PLATE 170 — Preorder plus nulls. That's enough.</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@800;900&family=Fraunces:ital,opsz,wght@1,9..144,400;1,9..144,500&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/poster.css">
+</head>
+<body>
+  <article class="poster" data-track="dsa">
+    <span class="mark mark--tl"></span><span class="mark mark--tr"></span><span class="mark mark--bl"></span><span class="mark mark--br"></span>
+    <p class="spine">Foundations series — software engineering mental models</p>
+    <div class="rule"></div><div class="ghost">170</div><div class="vignette"></div>
+    <svg class="grain" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="4" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(#n)"></rect></svg>
+    <header class="mast">
+      <p class="kicker"><span>DSA</span><span class="dot"></span><span class="whisper">Encode · decode</span></p>
+      <h1 class="title">Preorder plus nulls. <span class="title-accent">That's enough.</span></h1>
+      <p class="lede">Serialize a binary tree to a string and back. Preorder with explicit nulls uniquely reconstructs: 1,2,#,#,3,4,#,#,5,#,#. Decode: consume tokens with an iterator; if null return; else new node, left=decode(), right=decode(). BFS with nulls also works (level order). A BST can omit nulls if you use bounds (or preorder + BST insert).</p>
+    </header>
+    <section class="stage">
+      <div class="stage-inner">
+        <div class="steps">
+          <div class="step step--hit"><span class="step-n">1</span><p class="step-copy">Preorder + sentinels<span>Root 1, left 2 (leaf), right 3 with 4 and 5 → <code>1,2,#,#,3,4,#,#,5,#,#</code>. The <code>#</code>s restore shape. Without them, 1-left-2 and 1-right-2 are the same string.</span></p><span class="step-meta">1,2,#,#,3,…</span></div>
+          <div class="step"><span class="step-n">2</span><p class="step-copy">Decode is consume<span>Split on commas. One pointer <code>i</code> walks the list once. <code>#</code> → null and return. Else node, then left=decode(), right=decode(). Advance every call.</span></p><span class="step-meta">iterator</span></div>
+          <div class="step"><span class="step-n">3</span><p class="step-copy">The other writes<span>BFS: queue, emit children including nulls, stop on a level of all null. JSON of nested objects is correct and heavy. Inorder alone is not unique — don’t.</span></p><span class="step-meta">not inorder</span></div>
+        </div>
+        <p class="caption">Need structure, not just values. O(n) tokens. Codec pair: serialize / deserialize. LC 449 (BST) can drop the nulls because bounds rebuild the shape.</p>
+        <div class="deck">
+          <div class="deck-row"><span class="deck-k">What</span><p>Null markers restore the shape. Preorder names roots in time, same as plate 172. The decoder is the recursive constructor driven by a stream, not by scanning.</p></div>
+          <div class="deck-row"><span class="deck-k">Why</span><p>LeetCode 297 / 449. Design. Also: how you’d send a tree over the wire. They want a reversible codec, not a pretty print. Say “preorder with nulls” in the first sentence.</p></div>
+          <div class="deck-row deck-row--trap"><span class="deck-k">Trap</span><p>Inorder only. Forgetting nulls so 1-left-2 vs 1-right-2 collide. Recursing decode on a shared index without advancing. Using <code>eval()</code> on the string.</p></div>
+        </div>
+      </div>
+    </section>
+    <footer class="foot"><p class="one-liner"></p><p class="plate-id">Plate 170 / 200</p></footer>
+  </article>
+</body>
+</html>

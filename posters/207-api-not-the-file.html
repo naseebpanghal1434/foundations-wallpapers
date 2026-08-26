@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PLATE 207 — The API does not hold the file.</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@800;900&family=Fraunces:ital,opsz,wght@1,9..144,400;1,9..144,500&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/poster.css">
+</head>
+<body>
+  <article class="poster" data-track="system">
+    <span class="mark mark--tl"></span><span class="mark mark--tr"></span><span class="mark mark--bl"></span><span class="mark mark--br"></span>
+    <p class="spine">Foundations series — software engineering mental models</p>
+    <div class="rule"></div><div class="ghost">207</div><div class="vignette"></div>
+    <svg class="grain" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="4" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(#n)"></rect></svg>
+    <header class="mast">
+      <p class="kicker"><span>System</span><span class="dot"></span><span class="whisper">Signed URL · object store</span></p>
+      <h1 class="title">The API does not <span class="title-accent">hold the file.</span></h1>
+      <p class="lede">Bytes never stream through API RAM. <code>POST /uploads</code> mints a signed PUT to S3/GCS (<code>X-Amz-Expires=900</code> — 15 min). Client PUTs; you store key, size, hash. Download: sign GET at read (<code>Expires=300</code>) or a CDN — never persist the signed URL as the permalink.</p>
+    </header>
+    <section class="stage">
+      <div class="stage-inner">
+        <div class="steps">
+          <div class="step step--hit"><span class="step-n">1</span><p class="step-copy">Mint a time-boxed PUT<span><code>POST /uploads</code> → <code>{putUrl, objectKey, expires=900}</code>. Auth is the signature. Bytes never touch the API. Cap Content-Length server-side.</span></p><span class="step-meta">15 min</span></div>
+          <div class="step"><span class="step-n">2</span><p class="step-copy">Client PUT to the blob<span>S3/GCS checks Content-Type. Multipart for &gt;100 MB (parts ≥5 MB). Virus scan and thumbnails are workers on the object, not the request.</span></p><span class="step-meta">PUT</span></div>
+          <div class="step"><span class="step-n">3</span><p class="step-copy">Commit metadata; sign at read<span>Webhook / complete → DB: key, size, sha256, CDN path. GET: mint <code>Expires=300</code> (5 min). Eternal signed URLs are a leak.</span></p><span class="step-meta">300 s</span></div>
+        </div>
+        <div class="deck">
+          <div class="deck-row"><span class="deck-k">What</span><p>Metadata in the DB, bytes in object storage, hot reads on a CDN (plate 36). The signature is auth and a TTL. Sign again at read; the URL is not the public id.</p></div>
+          <div class="deck-row"><span class="deck-k">Why</span><p>Dropbox / YouTube-upload / avatar. They want: your RAM is not a disk. Direct-to-blob plus a 15-minute PUT expiry is the move.</p></div>
+          <div class="deck-row deck-row--trap"><span class="deck-k">Trap</span><p><code>multipart/form-data</code> through Node into <code>/tmp</code>. Files on the app instance. Eternal signed URLs. Trusting client <code>Content-Length</code> with no cap.</p></div>
+        </div>
+      </div>
+    </section>
+    <footer class="foot"><p class="one-liner"></p><p class="plate-id">Plate 207 / 375</p></footer>
+  </article>
+</body>
+</html>

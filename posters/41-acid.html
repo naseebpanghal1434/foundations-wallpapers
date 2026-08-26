@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PLATE 41 — ACID is four promises.</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@800;900&family=Fraunces:ital,opsz,wght@1,9..144,400;1,9..144,500&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/poster.css">
+</head>
+<body>
+  <article class="poster" data-track="database">
+    <span class="mark mark--tl"></span><span class="mark mark--tr"></span><span class="mark mark--bl"></span><span class="mark mark--br"></span>
+    <p class="spine">Foundations series — software engineering mental models</p>
+    <div class="rule"></div><div class="ghost">41</div><div class="vignette"></div>
+    <svg class="grain" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="4" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(#n)"></rect></svg>
+    <header class="mast">
+      <p class="kicker"><span>Database</span><span class="dot"></span><span class="whisper">BEGIN · WAL fsync</span></p>
+      <h1 class="title">ACID is <span class="title-accent">four promises.</span></h1>
+      <p class="lede">Four separate guarantees a transaction asks of the engine — not a vibe. <code>BEGIN</code> … <code>COMMIT</code> / <code>ROLLBACK</code>. Interviews fail people who recite the acronym and cannot assign a sentence, a syscall, or a constraint to each letter.</p>
+    </header>
+    <section class="stage stage--wide">
+      <div class="stage-inner">
+        <div class="facts">
+          <div class="fact fact--hit">
+            <p class="fact-k">A · atomic</p>
+            <p class="fact-n">all / none</p>
+            <p class="fact-c">Debit A and credit B live or die together. ROLLBACK exists. Plate 07.</p>
+          </div>
+          <div class="fact">
+            <p class="fact-k">C · consistent</p>
+            <p class="fact-n">PK FK CHECK</p>
+            <p class="fact-c">Constraints hold at COMMIT: PRIMARY KEY, FOREIGN KEY, UNIQUE, CHECK. Not CAP-C (plate 11).</p>
+          </div>
+          <div class="fact">
+            <p class="fact-k">I · isolated</p>
+            <p class="fact-n">RC…SSI</p>
+            <p class="fact-c">What others see. Levels (plate 40). More isolation, more waits or 40001 retries.</p>
+          </div>
+          <div class="fact">
+            <p class="fact-k">D · durable</p>
+            <p class="fact-n">WAL + fsync</p>
+            <p class="fact-c">After COMMIT returns, a crash must not eat it. <code>synchronous_commit=on</code>. Power-cord test.</p>
+          </div>
+        </div>
+        <div class="deck">
+          <div class="deck-row"><span class="deck-k">What</span><p>A = rollback. C = declared constraints, not “the data makes business sense” (that’s the app). I = levels. D = WAL fsynced to disk. CAP-C is “all nodes see the same write.” ACID-C is “the schema’s rules still hold.”</p></div>
+          <div class="deck-row"><span class="deck-k">Why</span><p>How you talk about Postgres vs Redis vs a queue. Redis can be durable-ish (AOF, <code>fsync everysec</code>); it is not your FK enforcer. Know which promise you just gave up.</p></div>
+          <div class="deck-row deck-row--trap"><span class="deck-k">Trap</span><p>Using C for business sense. Claiming durable with <code>fsync=off</code> or <code>synchronous_commit=off</code> — that’s speed, not D. Unlogged tables, same story.</p></div>
+        </div>
+      </div>
+    </section>
+    <footer class="foot"><p class="one-liner"></p><p class="plate-id">Plate 41 / 375</p></footer>
+  </article>
+</body>
+</html>

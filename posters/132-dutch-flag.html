@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PLATE 132 — Three pointers. Three colors.</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@800;900&family=Fraunces:ital,opsz,wght@1,9..144,400;1,9..144,500&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/poster.css">
+</head>
+<body>
+  <article class="poster" data-track="dsa">
+    <span class="mark mark--tl"></span><span class="mark mark--tr"></span><span class="mark mark--bl"></span><span class="mark mark--br"></span>
+    <p class="spine">Foundations series — software engineering mental models</p>
+    <div class="rule"></div><div class="ghost">132</div><div class="vignette"></div>
+    <svg class="grain" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="4" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(#n)"></rect></svg>
+    <header class="mast">
+      <p class="kicker"><span>DSA</span><span class="dot"></span><span class="whisper">Sort colors · 0 1 2</span></p>
+      <h1 class="title">Three pointers. <span class="title-accent">Three colors.</span></h1>
+      <p class="lede">Dutch national flag: partition an array of three values (0, 1, 2) in one pass. lo writes the next 0, hi writes the next 2, mid scans. Meet a 0: swap with lo++, mid++. Meet a 2: swap with hi--, do not mid++ (the new mid is unseen). Meet a 1: mid++.</p>
+    </header>
+    <section class="stage">
+      <div class="stage-inner">
+        <div class="compare">
+          <div class="compare-pane compare-pane--hit">
+            <p class="pane-label">One pass · three regions</p>
+            <h2 class="pane-title">0 / 1 / 2</h2>
+            <div class="codeblock ok">[2,0,2,1,1,0]
+[0,lo)     0s
+[lo,mid)   1s
+[mid,hi]   unknown
+(hi,n)     2s
+
+0: swap with lo, lo++ mid++
+1: mid++
+2: swap with hi, hi--  # stay</div>
+            <p class="caption">Stop when <code>mid &gt; hi</code>. Also the 3-way partition inside quicksort for duplicates (plate 163).</p>
+          </div>
+          <div class="compare-vs">trap</div>
+          <div class="compare-pane">
+            <p class="pane-label">The swapped-in value is unseen</p>
+            <h2 class="pane-title">No mid++</h2>
+            <div class="codeblock">swap a[mid], a[hi]
+hi -= 1
+mid += 1     # bug
+
+you just pulled an unknown
+into mid — 0 or 2
+skip it and the invariant dies
+
+[2,0,…] swap with last 0
+mid++ would skip that 0</div>
+            <p class="caption">A 0 swapped from hi still needs a lo-swap. Counting sort also works for 3 values; say it, then write this if they want in-place one-pass.</p>
+          </div>
+        </div>
+        <div class="deck">
+          <div class="deck-row"><span class="deck-k">What</span><p>One pass, O(1) extra. Invariant: zeros on the left, twos on the right, ones behind mid, unknown under the scan. Not a comparison sort. Counting is valid for a tiny alphabet — they often still want Dijkstra’s partition.</p></div>
+          <div class="deck-row"><span class="deck-k">Why</span><p>LeetCode 75 Sort Colors. Interview tests in-place partition invariants: which pointer moves, and why mid sometimes stays. Same bones as quicksort’s pivot split.</p></div>
+          <div class="deck-row deck-row--trap"><span class="deck-k">Trap</span><p><code>mid++</code> after swapping a 2. Using a sort. Counting sort when they said “one pass, constant space” — counting is two passes (tally, then write). Say that, then write the three-pointer.</p></div>
+        </div>
+      </div>
+    </section>
+    <footer class="foot"><p class="one-liner"></p><p class="plate-id">Plate 132 / 200</p></footer>
+  </article>
+</body>
+</html>

@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PLATE 292 — fork copies the map. Writes copy the page.</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@800;900&family=Fraunces:ital,opsz,wght@1,9..144,400;1,9..144,500&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/poster.css">
+</head>
+<body>
+  <article class="poster" data-track="os">
+    <span class="mark mark--tl"></span><span class="mark mark--tr"></span><span class="mark mark--bl"></span><span class="mark mark--br"></span>
+    <p class="spine">Foundations series — software engineering mental models</p>
+    <div class="rule"></div><div class="ghost">292</div><div class="vignette"></div>
+    <svg class="grain" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="4" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(#n)"></rect></svg>
+    <header class="mast">
+      <p class="kicker"><span>OS</span><span class="dot"></span><span class="whisper">CoW · PTE write-protect</span></p>
+      <h1 class="title">fork copies the map. <span class="title-accent">Writes copy the page.</span></h1>
+      <p class="lede"><code>fork</code> duplicates mm: the child’s PTEs point at the same physical pages, marked read-only. First write in either process → fault → copy the page → mark both writable. <code>execve</code> after fork drops the parent’s pages. That is why fork+exec is cheap compared to copying 100 MiB.</p>
+    </header>
+    <section class="stage">
+      <div class="stage-inner">
+        <div class="steps">
+          <div class="step"><span class="step-n">1</span><p class="step-copy">Parent rss 80 MiB<span>Pages present, PTEs writable. This is the working set, not VSZ.</span></p><span class="step-meta">parent</span></div>
+          <div class="step step--hit"><span class="step-n">2</span><p class="step-copy">fork: PTEs copied, same PFNs, write-protect<span>rss still ~80 MiB shared. Cost is page-table copy, not 80 MiB memcpy.</span></p><span class="step-meta">CoW</span></div>
+          <div class="step"><span class="step-n">3</span><p class="step-copy">Child writes 1 page → #PF, copy, +4 KiB<span>MAP_SHARED file maps write through — not CoW. posix_spawn is the API; vfork runs in the parent’s map until exec.</span></p><span class="step-meta">+4 KiB</span></div>
+        </div>
+        <div class="facts facts-3">
+          <div class="fact fact--hit"><p class="fact-k">First write</p><p class="fact-n">+4 KiB</p><p class="fact-c">One page, not the whole heap.</p></div>
+          <div class="fact"><p class="fact-k">fork+exec</p><p class="fact-n">cheap</p><p class="fact-c">exec drops the inherited pages.</p></div>
+          <div class="fact"><p class="fact-k">Avoid</p><p class="fact-n">vfork</p><p class="fact-c">Child in parent’s mm until exec/exit.</p></div>
+        </div>
+        <div class="deck">
+          <div class="deck-row"><span class="deck-k">What</span><p>CoW is per page. Shared file mappings (<code>MAP_SHARED</code>) write through, not CoW.</p></div>
+          <div class="deck-row"><span class="deck-k">Why</span><p>Prefork servers (Apache, Redis on Linux). A huge parent with dirty heaps still pays page-table copy + later CoW.</p></div>
+          <div class="deck-row deck-row--trap"><span class="deck-k">Trap</span><p><code>fork</code> in a multithreaded process (POSIX: undefined for other threads). Relying on vfork. Measuring “fork is instant” on a 32 GiB RSS JVM.</p></div>
+        </div>
+      </div>
+    </section>
+    <footer class="foot"><p class="one-liner"></p><p class="plate-id">Plate 292 / 375</p></footer>
+  </article>
+</body>
+</html>

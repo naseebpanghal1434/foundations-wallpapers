@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PLATE 96 — Readers don't block writers.</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@800;900&family=Fraunces:ital,opsz,wght@1,9..144,400;1,9..144,500&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/poster.css">
+</head>
+<body>
+  <article class="poster" data-track="database">
+    <span class="mark mark--tl"></span><span class="mark mark--tr"></span><span class="mark mark--bl"></span><span class="mark mark--br"></span>
+    <p class="spine">Foundations series — software engineering mental models</p>
+    <div class="rule"></div><div class="ghost">96</div><div class="vignette"></div>
+    <svg class="grain" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="4" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(#n)"></rect></svg>
+    <header class="mast">
+      <p class="kicker"><span>Database</span><span class="dot"></span><span class="whisper">Snapshots, not read locks</span></p>
+      <h1 class="title">Readers don't <span class="title-accent">block writers.</span></h1>
+      <p class="lede">MVCC keeps versions. A reader pins a snapshot and sees the row as of that snapshot. A writer makes a new version instead of overwriting in place. They don’t wait on each other. Isolation (plate 40) is “which versions you are allowed to see.” Vacuum is how dead versions leave.</p>
+    </header>
+    <section class="stage">
+      <div class="stage-inner">
+        <div class="compare">
+          <div class="compare-pane">
+            <p class="pane-label">Old picture · lock the row</p>
+            <h2 class="pane-title">Reader waits</h2>
+            <div class="codeblock bad">SELECT Ada  → shared lock
+UPDATE Ada  → waits
+report holds the lock
+writer queues
+writer queues
+timeout</div>
+            <p class="caption">Read locks make a long SELECT a write outage. Some engines still do this. Postgres does not, for ordinary reads.</p>
+          </div>
+          <div class="compare-vs">vs</div>
+          <div class="compare-pane compare-pane--hit">
+            <p class="pane-label">Row as versions</p>
+            <h2 class="pane-title">MVCC</h2>
+            <div class="codeblock ok">Ada v1  xmin=10  100
+Ada v2  xmin=40  70   writer
+reader snapshot 10..39
+        still sees v1
+writer not blocked
+
+VACUUM
+reclaim v1 when
+no snapshot needs it</div>
+            <p class="caption">Writers still block writers on the same row. MVCC is not “no locks.”</p>
+          </div>
+        </div>
+        <div class="deck">
+          <div class="deck-row"><span class="deck-k">What</span><p>Postgres: UPDATE/DELETE leave a dead tuple; autovacuum (VACUUM) reclaims it and updates the visibility map (index-only scans, plate 97). InnoDB: undo log + purge. Snapshot = the set of transactions whose writes you see.</p></div>
+          <div class="deck-row"><span class="deck-k">Why</span><p>OLTP wants readers and writers at once. This is why a long report doesn’t have to freeze checkout — until the report is so long it prevents vacuum. Interviews: snapshot, no reader/writer block, vacuum, bloat.</p></div>
+          <div class="deck-row deck-row--trap"><span class="deck-k">Trap</span><p>Long transactions bloat. <code>idle in transaction</code> pins xmin; dead tuples cannot go; tables and indexes swell; wraparound is the late stage. A connection-pool leak is a vacuum problem. Also: “MVCC means I skip <code>FOR UPDATE</code>” — lost updates still happen (plate 40).</p></div>
+        </div>
+      </div>
+    </section>
+    <footer class="foot"><p class="one-liner"></p><p class="plate-id">Plate 96 / 100</p></footer>
+  </article>
+</body>
+</html>

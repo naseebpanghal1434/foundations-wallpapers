@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PLATE 296 — A pipe is a kernel ring buffer.</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@800;900&family=Fraunces:ital,opsz,wght@1,9..144,400;1,9..144,500&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/poster.css">
+</head>
+<body>
+  <article class="poster" data-track="os">
+    <span class="mark mark--tl"></span><span class="mark mark--tr"></span><span class="mark mark--bl"></span><span class="mark mark--br"></span>
+    <p class="spine">Foundations series — software engineering mental models</p>
+    <div class="rule"></div><div class="ghost">296</div><div class="vignette"></div>
+    <svg class="grain" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="4" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(#n)"></rect></svg>
+    <header class="mast">
+      <p class="kicker"><span>OS</span><span class="dot"></span><span class="whisper">pipe(2) · 64 KiB</span></p>
+      <h1 class="title">A pipe is a kernel <span class="title-accent">ring buffer.</span></h1>
+      <p class="lede"><code>pipe()</code> returns two fds: write end, read end. Bytes sit in a kernel buffer (Linux default 64 KiB, <code>F_SETPIPE_SZ</code> up to <code>/proc/sys/fs/pipe-max-size</code>). Full write blocks (or EAGAIN if O_NONBLOCK). Broken read end → write gets SIGPIPE/EPIPE.</p>
+    </header>
+    <section class="stage">
+      <div class="stage-inner">
+        <div class="compare">
+          <div class="compare-pane compare-pane--hit">
+            <p class="pane-label">Shell composition</p>
+            <h2 class="pane-title">a | b</h2>
+            <div class="codeblock">pipe() → (w, r)
+a stdout = w
+b stdin  = r
+unidirectional
+byte stream</div>
+          </div>
+          <div class="compare-vs">vs</div>
+          <div class="compare-pane">
+            <p class="pane-label">Backpressure is block</p>
+            <h2 class="pane-title">64 KiB</h2>
+            <div class="codeblock">writer faster
+buffer fills
+write() sleeps
+→ SIGPIPE / EPIPE</div>
+          </div>
+        </div>
+        <p class="caption">Plate 5 is the product view; this is the syscall. splice/tee move pages without a user copy. SOCK_STREAM is a different buffer.</p>
+        <div class="facts facts-3">
+          <div class="fact fact--hit"><p class="fact-k">Default capacity</p><p class="fact-n">64 KiB</p><p class="fact-c">16 pages. F_SETPIPE_SZ to raise.</p></div>
+          <div class="fact"><p class="fact-k">PIPE_BUF</p><p class="fact-n">4 KiB</p><p class="fact-c">Linux atomic write. POSIX ≥ 512 B.</p></div>
+          <div class="fact"><p class="fact-k">No reader</p><p class="fact-n">EPIPE</p><p class="fact-c">Plus SIGPIPE unless ignored.</p></div>
+        </div>
+        <div class="deck">
+          <div class="deck-row"><span class="deck-k">What</span><p>Unidirectional byte stream in-kernel. Atomic writes ≤ PIPE_BUF (4 KiB on Linux).</p></div>
+          <div class="deck-row"><span class="deck-k">Why</span><p>Unix composition. Backpressure is blocking, not a polite API.</p></div>
+          <div class="deck-row deck-row--trap"><span class="deck-k">Trap</span><p>Ignoring SIGPIPE (process dies). Waiting for both ends in one thread (deadlock). Assuming pipe capacity is unlimited.</p></div>
+        </div>
+      </div>
+    </section>
+    <footer class="foot"><p class="one-liner"></p><p class="plate-id">Plate 296 / 375</p></footer>
+  </article>
+</body>
+</html>

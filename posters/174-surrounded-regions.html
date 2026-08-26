@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PLATE 174 — Fill from the border. The rest drowns.</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@800;900&family=Fraunces:ital,opsz,wght@1,9..144,400;1,9..144,500&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/poster.css">
+</head>
+<body>
+  <article class="poster" data-track="dsa">
+    <span class="mark mark--tl"></span><span class="mark mark--tr"></span><span class="mark mark--bl"></span><span class="mark mark--br"></span>
+    <p class="spine">Foundations series — software engineering mental models</p>
+    <div class="rule"></div><div class="ghost">174</div><div class="vignette"></div>
+    <svg class="grain" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="4" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(#n)"></rect></svg>
+    <header class="mast">
+      <p class="kicker"><span>DSA</span><span class="dot"></span><span class="whisper">O connected to edge lives</span></p>
+      <h1 class="title">Fill from the border. <span class="title-accent">The rest drowns.</span></h1>
+      <p class="lede">Surrounded regions: flip <code>O</code> to <code>X</code> if that <code>O</code> is not connected to the border. Invert the problem: DFS/BFS from every border <code>O</code>, mark them safe (e.g. <code>S</code>). Then scan: remaining <code>O</code> are captured → <code>X</code>; <code>S</code> → <code>O</code>. Same bones: pacific-atlantic (plate 178) marks from two borders.</p>
+    </header>
+    <section class="stage">
+      <div class="stage-inner">
+        <div class="compare">
+          <div class="compare-pane compare-pane--hit">
+            <p class="pane-label">Flood from the ocean</p>
+            <h2 class="pane-title">Border Os</h2>
+            <div class="codeblock ok">X X X X      X X X X
+X O O X  →   X X X X
+X X O X      X X X X
+X O X X      X O X X
+
+DFS every border O → S
+then: O→X,  S→O</div>
+            <div class="bullets">
+              <div>Only (3,1) touches an edge. Interior blob drowns.</div>
+              <div>Start from the ocean, not from the island.</div>
+            </div>
+          </div>
+          <div class="compare-vs">vs</div>
+          <div class="compare-pane">
+            <p class="pane-label">Flood each interior O</p>
+            <h2 class="pane-title">Per cell</h2>
+            <div class="codeblock">for each O:
+  DFS, hope you hit a border
+  maybe walk the whole
+  board per cell
+  and you still don't know
+  whether to flip yet</div>
+            <div class="bullets">
+              <div>You might recurse the board once per cell.</div>
+              <div>Flipping mid-DFS is a lie until you know.</div>
+            </div>
+          </div>
+        </div>
+        <div class="deck">
+          <div class="deck-row"><span class="deck-k">What</span><p>Multi-source flood from the boundary. Mark the <code>O</code>s that can reach an edge, then flip whatever <code>O</code> remains. O(rows×cols) — each cell once. 4-dir, same grid graph as islands (plate 173). Don’t DFS each interior cell independently.</p></div>
+          <div class="deck-row"><span class="deck-k">Why</span><p>LeetCode 130. Pattern: “survives if connected to X” → search from X. Walls and gates, rotting oranges: the same multi-source BFS, just a different border.</p></div>
+          <div class="deck-row deck-row--trap"><span class="deck-k">Trap</span><p>Flipping while you DFS from an interior <code>O</code> (you don’t yet know). 4 vs 8 dir. Forgetting all four borders. Leaving <code>S</code> on the board after the capture pass.</p></div>
+        </div>
+      </div>
+    </section>
+    <footer class="foot"><p class="one-liner"></p><p class="plate-id">Plate 174 / 200</p></footer>
+  </article>
+</body>
+</html>

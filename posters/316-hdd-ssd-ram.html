@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PLATE 316 — HDD seeks ~10 ms. NVMe is ~100 µs.</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@800;900&family=Fraunces:ital,opsz,wght@1,9..144,400;1,9..144,500&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/poster.css">
+</head>
+<body>
+  <article class="poster" data-track="arch">
+    <span class="mark mark--tl"></span><span class="mark mark--tr"></span><span class="mark mark--bl"></span><span class="mark mark--br"></span>
+    <p class="spine">Foundations series — software engineering mental models</p>
+    <div class="rule"></div><div class="ghost">316</div><div class="vignette"></div>
+    <svg class="grain" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="4" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(#n)"></rect></svg>
+    <header class="mast">
+      <p class="kicker"><span>Arch</span><span class="dot"></span><span class="whisper">IOPS · sequential</span></p>
+      <h1 class="title">HDD seeks ~10 ms. <span class="title-accent">NVMe is ~100 µs.</span></h1>
+      <p class="lede">HDD: mechanical seek+rotation 5–15 ms → ~100 IOPS. SATA SSD: ~100 µs, 10k–100k IOPS. NVMe: 20–100 µs, 100k–1M IOPS. Sequential GB/s on all of them if you stop seeking. RAM ~100 ns latency, 10–50 GB/s, ~10M random ops/s/core if you miss cache.</p>
+    </header>
+    <section class="stage stage--wide">
+      <div class="stage-inner">
+        <div class="facts facts-5">
+          <div class="fact">
+            <p class="fact-k">HDD</p>
+            <p class="fact-n">~10 ms</p>
+            <p class="fact-c">~100 IOPS. Seek + rotation.</p>
+          </div>
+          <div class="fact fact--hit">
+            <p class="fact-k">NVMe</p>
+            <p class="fact-n">~100 µs</p>
+            <p class="fact-c">100k–1M IOPS. Still 1000× RAM.</p>
+          </div>
+          <div class="fact">
+            <p class="fact-k">SATA SSD</p>
+            <p class="fact-n">~100 µs</p>
+            <p class="fact-c">10k–100k IOPS. Not DRAM.</p>
+          </div>
+          <div class="fact">
+            <p class="fact-k">4 KiB vs 1 MiB</p>
+            <p class="fact-n">100×</p>
+            <p class="fact-c">Random 4K vs seq 1M on HDD. ~5–10× on SSD.</p>
+          </div>
+          <div class="fact">
+            <p class="fact-k">RAM</p>
+            <p class="fact-n">~100 ns</p>
+            <p class="fact-c">10–50 GB/s. Page cache is this, not disk.</p>
+          </div>
+        </div>
+        <p class="caption">fsync on HDD is a seek; on NVMe still 10–100 µs. RAID and queues (iodepth) exist because one thread cannot fill NVMe. Page is 4 KiB.</p>
+        <div class="deck">
+          <div class="deck-row"><span class="deck-k">What</span><p>IOPS vs bandwidth are different axes. Random 4K vs sequential 1M differ by 100× on HDD, ~5–10× on SSD.</p></div>
+          <div class="deck-row"><span class="deck-k">Why</span><p>Why databases care about fsync (plate 95). Why log-structured merge trees exist.</p></div>
+          <div class="deck-row deck-row--trap"><span class="deck-k">Trap</span><p>Benchmarking with <code>/dev/null</code> or the page cache (that is RAM ~100 ns). One fsync per row insert.</p></div>
+        </div>
+      </div>
+    </section>
+    <footer class="foot"><p class="one-liner"></p><p class="plate-id">Plate 316 / 375</p></footer>
+  </article>
+</body>
+</html>

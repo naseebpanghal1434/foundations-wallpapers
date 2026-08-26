@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PLATE 314 — -1 is all bits set.</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@800;900&family=Fraunces:ital,opsz,wght@1,9..144,400;1,9..144,500&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/poster.css">
+</head>
+<body>
+  <article class="poster" data-track="arch">
+    <span class="mark mark--tl"></span><span class="mark mark--tr"></span><span class="mark mark--bl"></span><span class="mark mark--br"></span>
+    <p class="spine">Foundations series — software engineering mental models</p>
+    <div class="rule"></div><div class="ghost">314</div><div class="vignette"></div>
+    <svg class="grain" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="4" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(#n)"></rect></svg>
+    <header class="mast">
+      <p class="kicker"><span>Arch</span><span class="dot"></span><span class="whisper">two's complement · wrap</span></p>
+      <h1 class="title">-1 is <span class="title-accent">all bits set.</span></h1>
+      <p class="lede">Signed integers: -x is ~x+1. 8-bit: -1 = 0xFF, -128 = 0x80. Addition is the same circuit as unsigned; overflow wraps mod 2^n in hardware. C signed overflow is UB (plate 327); unsigned wrap is defined. Java and Go wrap signed too.</p>
+    </header>
+    <section class="stage">
+      <div class="stage-inner">
+        <div class="compare">
+          <div class="compare-pane compare-pane--hit">
+            <p class="pane-label">Encoding · sign is the high bit</p>
+            <h2 class="pane-title">0xFF is -1</h2>
+            <div class="codeblock">-1     1111 1111
+-128   1000 0000
+int32 max  2147483647
+int32 min -2147483648
+max+1 → min  (two’s wrap)</div>
+          </div>
+          <div class="compare-vs">vs</div>
+          <div class="compare-pane">
+            <p class="pane-label">Language rule</p>
+            <h2 class="pane-title">Wrap ≠ C</h2>
+            <div class="codeblock">hardware: mod 2^n
+C signed: UB
+C unsigned: defined
+Java/Go: wrap signed
+uint8 255+1 = 0</div>
+            <p class="caption">Range is asymmetric: one more negative. Right-shift of signed may keep the sign (old C: implementation-defined).</p>
+          </div>
+        </div>
+        <div class="deck">
+          <div class="deck-row"><span class="deck-k">What</span><p>The encoding is two’s complement on every modern CPU you will use. Range is asymmetric: one more negative.</p></div>
+          <div class="deck-row"><span class="deck-k">Why</span><p>Why uint8 255+1=0. Why <code>abs(INT_MIN)</code> cannot fit.</p></div>
+          <div class="deck-row deck-row--trap"><span class="deck-k">Trap</span><p><code>for (uint8_t i = 0; i &lt; n; i++)</code> with n=256 is infinite. Comparing signed and unsigned (C promotes).</p></div>
+        </div>
+      </div>
+    </section>
+    <footer class="foot"><p class="one-liner"></p><p class="plate-id">Plate 314 / 375</p></footer>
+  </article>
+</body>
+</html>

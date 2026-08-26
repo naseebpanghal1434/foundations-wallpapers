@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PLATE 45 — Hallucination is a confident guess.</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@800;900&family=Fraunces:ital,opsz,wght@1,9..144,400;1,9..144,500&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/poster.css">
+</head>
+<body>
+  <article class="poster" data-track="genai">
+    <span class="mark mark--tl"></span><span class="mark mark--tr"></span><span class="mark mark--bl"></span><span class="mark mark--br"></span>
+    <p class="spine">Foundations series — software engineering mental models</p>
+    <div class="rule"></div><div class="ghost">45</div><div class="vignette"></div>
+    <svg class="grain" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="4" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(#n)"></rect></svg>
+    <header class="mast">
+      <p class="kicker"><span>Gen AI</span><span class="dot"></span><span class="whisper">P(token | context) · no verifier</span></p>
+      <h1 class="title">Hallucination is <span class="title-accent">a confident guess.</span></h1>
+      <p class="lede">The model samples from P(token | previous tokens). There is no verifier and no loss term for “true.” If the answer is not in the prompt or the weights, it still emits a fluent sentence. Fluency is not a fact check. Lower T (plate 44) reduces variety, not falsehood.</p>
+    </header>
+    <section class="stage">
+      <div class="stage-inner">
+        <div class="compare">
+          <div class="compare-pane">
+            <p class="pane-label">Closed-book · paper that does not exist</p>
+            <h2 class="pane-title">Still answers</h2>
+            <div class="codeblock bad">Q: DOI for Smith 2019
+   “Queues considered harmful”
+A: 10.1145/3322425.3322450
+   formatted, fluent, wrong
+
+P(next) completed the genre
+“academic citation”</div>
+            <p class="caption">Invented APIs, legal cites, stack traces: same bug. Confidence in the prose is uncalibrated.</p>
+          </div>
+          <div class="compare-vs">fix</div>
+          <div class="compare-pane compare-pane--hit">
+            <p class="pane-label">Ground, then generate</p>
+            <h2 class="pane-title">Verifier outside</h2>
+            <div class="codeblock ok">1. retrieve top-k (plate 12)
+2. quote spans + chunk ids
+3. if not in docs: refuse
+4. tool: GET /papers?q=
+5. check id ∈ retrieved
+
+cite or it didn’t (plate 270)</div>
+            <p class="caption">RAG + refuse-if-missing + tools. The model can still ignore the docs — so verify membership, don’t trust the footnote.</p>
+          </div>
+        </div>
+        <div class="deck">
+          <div class="deck-row"><span class="deck-k">What</span><p>Ungrounded generation: a completion not entailed by provided or real facts. Default behavior of a next-token model, not a rare bug. “I’m 90% sure” is another sample, not a calibrated probability.</p></div>
+          <div class="deck-row"><span class="deck-k">Why</span><p>Gen-AI interviews always ask this. The answer is architectural (no truth loss), then product (retrieve, cite, tool, eval) — not “we’ll prompt it to be honest.”</p></div>
+          <div class="deck-row deck-row--trap"><span class="deck-k">Trap</span><p>Treating T=0 as ground truth. Stuffing 80 pages and assuming it cannot invent in the gaps. Trusting invented DOIs, package names, or “according to policy…” with no chunk id.</p></div>
+        </div>
+      </div>
+    </section>
+    <footer class="foot"><p class="one-liner"></p><p class="plate-id">Plate 45 / 375</p></footer>
+  </article>
+</body>
+</html>

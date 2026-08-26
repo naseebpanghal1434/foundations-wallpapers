@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PLATE 200 — Name the pattern before you type.</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@800;900&family=Fraunces:ital,opsz,wght@1,9..144,400;1,9..144,500&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/poster.css">
+</head>
+<body>
+  <article class="poster" data-track="dsa">
+    <span class="mark mark--tl"></span><span class="mark mark--tr"></span><span class="mark mark--bl"></span><span class="mark mark--br"></span>
+    <p class="spine">Foundations series — software engineering mental models</p>
+    <div class="rule"></div><div class="ghost">200</div><div class="vignette"></div>
+    <svg class="grain" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="4" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(#n)"></rect></svg>
+    <header class="mast">
+      <p class="kicker"><span>DSA</span><span class="dot"></span><span class="whisper">Interview playbook</span></p>
+      <h1 class="title">Name the pattern <span class="title-accent">before you type.</span></h1>
+      <p class="lede">A screen is not “have I seen this ID.” It is: sorted? window? graph? tree? DP state? Name it, then write. This plate is the map of 101–199. If you cannot name the pattern in one sentence, you are not ready to type. Complexity follows the pattern, not the other way around.</p>
+    </header>
+    <section class="stage stage--wide">
+      <div class="stage-inner">
+        <div class="grid4">
+          <div class="box box--pool">
+            <p class="col-label">Sorted · contiguous · range</p>
+            <h2 class="box-title">Array</h2>
+            <p class="caption">Two pointers. Prefix sums. Sliding window. Monotonic stack / deque. Binary search the answer. n log n is sort or the search, not two nested fors.</p>
+          </div>
+          <div class="box">
+            <p class="col-label">Nodes, edges, reach</p>
+            <h2 class="box-title">Graph</h2>
+            <p class="caption">BFS unweighted shortest. Dijkstra if weights ≥ 0. Topo on a DAG. DSU for components / “same as.” Grid flood is a graph with 4 neighbors.</p>
+          </div>
+          <div class="box">
+            <p class="col-label">Kids, levels, bounds</p>
+            <h2 class="box-title">Tree</h2>
+            <p class="caption">Recurse both kids (LCA, diameter, path sum). BFS levels (order, right side). BST: walk with bounds, not “check the children.”</p>
+          </div>
+          <div class="box">
+            <p class="col-label">State, or choice + undo</p>
+            <h2 class="box-title">DP</h2>
+            <p class="caption">Name the state, the transition, the base, the order. List-all is backtrack (choose, recurse, pop). Count / opt is DP. Not both unless they ask.</p>
+          </div>
+        </div>
+        <p class="caption">Brute n² / n! first as a sentence so the better pattern has a baseline. Playbook: restated constraint → structure → pattern → complexity → code → the trap.</p>
+        <div class="deck">
+          <div class="deck-row"><span class="deck-k">What</span><p>Playbook, not a new algorithm. Restate the constraint, pick the structure, name the pattern, quote the complexity, then type. Draw six boxes. Speak the invariant out loud. Plates 101–199 are the pieces; this is the index.</p></div>
+          <div class="deck-row"><span class="deck-k">Why</span><p>SDE-1/2 interviews grade the map more than the last index bug. If you cannot name the pattern in one sentence, the code will wander. Complexity is a consequence of the pattern you picked, not a number you tack on after.</p></div>
+          <div class="deck-row deck-row--trap"><span class="deck-k">Trap</span><p>Jumping to code. DP on a graph shortest-path with nonnegative weights (that’s Dijkstra). Sliding window on non-monotonic / non-contiguous. Sorting when indices matter. Recursion on 10⁵ without a stack / iterative write.</p></div>
+        </div>
+      </div>
+    </section>
+    <footer class="foot"><p class="one-liner"></p><p class="plate-id">Plate 200 / 200</p></footer>
+  </article>
+</body>
+</html>

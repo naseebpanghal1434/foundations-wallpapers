@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PLATE 274 — HTTP/2 multiplexes. HTTP/1 lined up.</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@800;900&family=Fraunces:ital,opsz,wght@1,9..144,400;1,9..144,500&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/poster.css">
+</head>
+<body>
+  <article class="poster" data-track="network">
+    <span class="mark mark--tl"></span><span class="mark mark--tr"></span><span class="mark mark--bl"></span><span class="mark mark--br"></span>
+    <p class="spine">Foundations series — software engineering mental models</p>
+    <div class="rule"></div><div class="ghost">274</div><div class="vignette"></div>
+    <svg class="grain" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="4" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(#n)"></rect></svg>
+    <header class="mast">
+      <p class="kicker"><span>Network</span><span class="dot"></span><span class="whisper">Streams · one TCP</span></p>
+      <h1 class="title">HTTP/2 multiplexes. <span class="title-accent">HTTP/1 lined up.</span></h1>
+      <p class="lede">HTTP/1.1 is one request at a time per connection — pipelining never really worked — so browsers open ~6 TCPs per host. HTTP/2 is many streams on one TLS connection; head-of-line still exists at TCP (plate 285), which is why HTTP/3 moved to QUIC.</p>
+    </header>
+    <section class="stage">
+      <div class="stage-inner">
+        <div class="compare">
+          <div class="compare-pane">
+            <p class="pane-label">Six connections · GETs in line</p>
+            <h2 class="pane-title">HTTP/1.1</h2>
+            <div class="codeblock">TCP1  GET /app.css   wait
+TCP2  GET /app.js    wait
+TCP3  GET /icon.svg  wait
+… ×6 per host
+
+one request per socket
+until the response ends</div>
+            <p class="caption">Keep-alive (plate 277) reuses the socket. It does not interleave requests.</p>
+          </div>
+          <div class="compare-vs">vs</div>
+          <div class="compare-pane compare-pane--hit">
+            <p class="pane-label">One TLS · streams 1, 3, 5</p>
+            <h2 class="pane-title">HTTP/2</h2>
+            <div class="codeblock">1 TLS  ALPN h2
+  sid 1  /app.js
+  sid 3  /app.css
+  sid 5  /icon.svg
+in flight together
+
+binary frames · HPACK</div>
+            <p class="caption">A fat image still occupies bytes; multiplex is not extra bandwidth. Server push mostly lost — preload instead.</p>
+          </div>
+        </div>
+        <div class="deck">
+          <div class="deck-row"><span class="deck-k">What</span><p>One TLS, many streams, binary frames. HPACK compresses headers. Priorities exist; implementations vary.</p></div>
+          <div class="deck-row"><span class="deck-k">Why</span><p>Domain-sharding is harmful on H2 — you split what should share one connection. Plate 13 is the click; this is the reuse.</p></div>
+          <div class="deck-row deck-row--trap"><span class="deck-k">Trap</span><p>Sharding assets across 8 hosts on HTTP/2, or assuming multiplexed means no blocking. HTTP/1.1 keepalive (plate 277) is not multiplexing.</p></div>
+        </div>
+      </div>
+    </section>
+    <footer class="foot"><p class="one-liner"></p><p class="plate-id">Plate 274 / 286</p></footer>
+  </article>
+</body>
+</html>

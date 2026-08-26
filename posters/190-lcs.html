@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PLATE 190 — Match, or skip one side.</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@800;900&family=Fraunces:ital,opsz,wght@1,9..144,400;1,9..144,500&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/poster.css">
+</head>
+<body>
+  <article class="poster" data-track="dsa">
+    <span class="mark mark--tl"></span><span class="mark mark--tr"></span><span class="mark mark--bl"></span><span class="mark mark--br"></span>
+    <p class="spine">Foundations series — software engineering mental models</p>
+    <div class="rule"></div><div class="ghost">190</div><div class="vignette"></div>
+    <svg class="grain" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="4" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(#n)"></rect></svg>
+    <header class="mast">
+      <p class="kicker"><span>DSA</span><span class="dot"></span><span class="whisper">dp[i][j] two strings</span></p>
+      <h1 class="title">Match, or <span class="title-accent">skip one side.</span></h1>
+      <p class="lede">Longest common subsequence of s and t. <code>dp[i][j]</code> = LCS of <code>s[:i]</code> and <code>t[:j]</code>. If <code>s[i-1]==t[j-1]</code>, <code>1+dp[i-1][j-1]</code>; else max(skip s, skip t). O(n·m). Shortest common supersequence = n+m−LCS. Delete-distance to make equal = n+m−2·LCS. Print the string by walking the table back.</p>
+    </header>
+    <section class="stage">
+      <div class="stage-inner">
+        <div class="steps">
+          <div class="step"><span class="step-n">1</span><p class="step-copy">The cell<span>Match → take the diagonal + 1. Mismatch → max of skip last of s (<code>dp[i-1][j]</code>) or skip last of t (<code>dp[i][j-1]</code>). Empty prefix is 0.</span></p><span class="step-meta">recurrence</span></div>
+          <div class="step step--hit"><span class="step-n">2</span><p class="step-copy">ace vs abcde → 3<span>LCS is <code>ace</code>, length 3 — same order, not contiguous. Walk back from <code>dp[n][m]</code>: match prepends and goes diagonal; else step to the larger neighbor.</span></p><span class="step-meta">LC 1143</span></div>
+          <div class="step"><span class="step-n">3</span><p class="step-copy">Substring is a different DP<span>Longest common <em>substring</em> must be contiguous: consecutive matches, reset to 0 on mismatch. Space for LCS length: two rows (or rolling), not the full n×m, if you skip reconstruct.</span></p><span class="step-meta">not substring</span></div>
+        </div>
+        <div class="deck">
+          <div class="deck-row"><span class="deck-k">What</span><p>Two-string DP. Subsequence keeps order, not adjacency. Empty vs empty is 0. Index the prefixes 1-based so row 0 / col 0 are the empty bases. Reconstruct stores choices or re-derives them from the numbers.</p></div>
+          <div class="deck-row"><span class="deck-k">Why</span><p>LeetCode 1143. Diff tools, DNA, merge. Edit distance (plate 191) adds replace. Delete-only equal strings is n+m−2·LCS — say that when they forbid replace.</p></div>
+          <div class="deck-row deck-row--trap"><span class="deck-k">Trap</span><p>Substring DP (reset on mismatch) sold as LCS. Recursing without memo — exponential. Off-by-one empty prefixes (<code>s[i]</code> vs <code>s[i-1]</code>). Reconstructing without storing choices, then guessing the path.</p></div>
+        </div>
+      </div>
+    </section>
+    <footer class="foot"><p class="one-liner"></p><p class="plate-id">Plate 190 / 200</p></footer>
+  </article>
+</body>
+</html>

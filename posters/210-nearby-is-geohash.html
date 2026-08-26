@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PLATE 210 — Nearby is a geo hash, not a scan.</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@800;900&family=Fraunces:ital,opsz,wght@1,9..144,400;1,9..144,500&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/poster.css">
+</head>
+<body>
+  <article class="poster" data-track="system">
+    <span class="mark mark--tl"></span><span class="mark mark--tr"></span><span class="mark mark--bl"></span><span class="mark mark--br"></span>
+    <p class="spine">Foundations series — software engineering mental models</p>
+    <div class="rule"></div><div class="ghost">210</div><div class="vignette"></div>
+    <svg class="grain" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="4" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(#n)"></rect></svg>
+    <header class="mast">
+      <p class="kicker"><span>System</span><span class="dot"></span><span class="whisper">Geohash · quadtree · drivers</span></p>
+      <h1 class="title">Nearby is a geo hash, <span class="title-accent">not a scan.</span></h1>
+      <p class="lede">“Cars within 2 km” is not <code>WHERE abs(lat-?) &lt; 0.02</code> on 1e6 rows. Geohash precision 6 ≈ 1.2 km × 0.6 km. Nearby = that cell + 8 neighbors, then a true-distance filter. Live: <code>SET driver:9 gh EX 15</code>. The trip row in the DB is truth.</p>
+    </header>
+    <section class="stage">
+      <div class="stage-inner">
+        <div class="compare">
+          <div class="compare-pane">
+            <p class="pane-label">1e6 rows · unindexed float</p>
+            <h2 class="pane-title">Scan</h2>
+            <div class="codeblock bad">SELECT * FROM drivers
+WHERE abs(lat-?) &lt; 0.02
+  AND abs(lon-?) &lt; 0.02
+then Haversine in app
+
+every ping stored
+  forever on the
+  hot path</div>
+            <p class="caption">A bounding box without an index is a full scan with extra trig. Fine for a demo. Fatal at city scale.</p>
+          </div>
+          <div class="compare-vs">vs</div>
+          <div class="compare-pane compare-pane--hit">
+            <p class="pane-label">Prefix + 8 neighbors</p>
+            <h2 class="pane-title">Geohash</h2>
+            <div class="codeblock ok">gh = geohash(lat,lon,6)
+     ~1 km cell
+GET members of gh
+  + 8 neighbors
+filter true km
+SET driver:9 gh EX 15
+GEOADD also works</div>
+            <p class="caption">A car 10 m over the cell edge lives in a neighbor. Heartbeat TTL (plate 222). Then match on car type / ETA.</p>
+          </div>
+        </div>
+        <div class="deck">
+          <div class="deck-row"><span class="deck-k">What</span><p>Spatial index + TTL presence. Heartbeat updates the cell; a trip locks the driver. Recalc ETA on that small set. Quadtree / S2 / H3 — say neighbors.</p></div>
+          <div class="deck-row"><span class="deck-k">Why</span><p>Uber / Yelp nearby. They want the index, the 8 neighbor cells, and why <code>lat/lon BETWEEN</code> is not enough at 1e6 rows.</p></div>
+          <div class="deck-row deck-row--trap"><span class="deck-k">Trap</span><p>Bounding-box SQL on an unindexed float. One geohash with no neighbors (miss the car 10 m over the edge). Storing every ping forever on the hot path.</p></div>
+        </div>
+      </div>
+    </section>
+    <footer class="foot"><p class="one-liner"></p><p class="plate-id">Plate 210 / 375</p></footer>
+  </article>
+</body>
+</html>

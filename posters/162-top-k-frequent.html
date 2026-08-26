@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PLATE 162 — Count. Then a heap of size k.</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@800;900&family=Fraunces:ital,opsz,wght@1,9..144,400;1,9..144,500&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/poster.css">
+</head>
+<body>
+  <article class="poster" data-track="dsa">
+    <span class="mark mark--tl"></span><span class="mark mark--tr"></span><span class="mark mark--bl"></span><span class="mark mark--br"></span>
+    <p class="spine">Foundations series — software engineering mental models</p>
+    <div class="rule"></div><div class="ghost">162</div><div class="vignette"></div>
+    <svg class="grain" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="4" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(#n)"></rect></svg>
+    <header class="mast">
+      <p class="kicker"><span>DSA</span><span class="dot"></span><span class="whisper">Bucket or quickselect</span></p>
+      <h1 class="title">Count. Then a <span class="title-accent">heap of size k.</span></h1>
+      <p class="lede">Top k frequent: count with a hashmap, then pick the k largest counts. Min-heap of size k — evict the smallest count — is O(n log k). Bucket sort by frequency: n+1 buckets, walk from n down, O(n). Quickselect on unique keys by count: average O(n). Sorting all uniques is O(u log u).</p>
+    </header>
+    <section class="stage stage--wide">
+      <div class="stage-inner">
+        <div class="trio">
+          <div class="box box--pool">
+            <p class="col-label">Default sentence</p>
+            <h2 class="box-title">Min-heap k</h2>
+            <div class="codeblock ok">[1,1,1,2,2,3]  k=2
+1:3  2:2  3:1
+min-heap (count, key)
+(3,1) (2,2)     size 2
+(1,3) evict min
+pop (1,3) → key 3
+keep keys 1, 2</div>
+            <p class="caption">Root is the smallest winner. Size k, not n. O(n log k) after the count.</p>
+          </div>
+          <div class="box">
+            <p class="col-label">Freq ≤ n · linear</p>
+            <h2 class="box-title">Buckets</h2>
+            <div class="codeblock">idx = count
+[3] → [1]
+[2] → [2]
+[1] → [3]
+walk n .. 1
+take until k</div>
+            <p class="caption">n+1 buckets. O(n). Same bones as counting sort (plate 64).</p>
+          </div>
+          <div class="box">
+            <p class="col-label">Paid for everyone</p>
+            <h2 class="box-title">Sort n</h2>
+            <div class="codeblock">sort the array
+O(n log n)
+k=1 still n log n
+
+max-heap of n
+then pop k
+extra log n</div>
+            <p class="caption">Correct, wasteful. Quickselect on uniques: average O(n) (plate 163).</p>
+          </div>
+        </div>
+        <p class="caption">If k==n return everything. Ties: the usual spec is any k, not a stable ranking.</p>
+        <div class="deck">
+          <div class="deck-row"><span class="deck-k">What</span><p>Count first — O(n), hashmap of value → freq. The second structure is the interview choice. Heap of size k is the default sentence. Buckets if you want worst-case linear. You are ranking uniques by count, not sorting the raw stream.</p></div>
+          <div class="deck-row"><span class="deck-k">Why</span><p>LeetCode 347 (cousin of 215). Word frequencies, top-k URLs, heavy hitters. Plate 63 was the heap slogan; this is the full pattern: count, then select. Say min-heap, size k, evict smallest count.</p></div>
+          <div class="deck-row deck-row--trap"><span class="deck-k">Trap</span><p>Sorting the entire array O(n log n) when k=1. A max-heap of n, then pop k. A heap of size k that is a <em>max</em>-heap — that keeps the rare ones and evicts a winner. Skipping the count pass and heapifying raw values.</p></div>
+        </div>
+      </div>
+    </section>
+    <footer class="foot"><p class="one-liner"></p><p class="plate-id">Plate 162 / 200</p></footer>
+  </article>
+</body>
+</html>

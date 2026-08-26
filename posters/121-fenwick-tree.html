@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PLATE 121 — The index holds a prefix of bits.</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@800;900&family=Fraunces:ital,opsz,wght@1,9..144,400;1,9..144,500&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/poster.css">
+</head>
+<body>
+  <article class="poster" data-track="dsa">
+    <span class="mark mark--tl"></span><span class="mark mark--tr"></span><span class="mark mark--bl"></span><span class="mark mark--br"></span>
+    <p class="spine">Foundations series — software engineering mental models</p>
+    <div class="rule"></div><div class="ghost">121</div><div class="vignette"></div>
+    <svg class="grain" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="4" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(#n)"></rect></svg>
+    <header class="mast">
+      <p class="kicker"><span>DSA</span><span class="dot"></span><span class="whisper">BIT · +i&amp;-i</span></p>
+      <h1 class="title">The index holds <span class="title-accent">a prefix of bits.</span></h1>
+      <p class="lede">A Fenwick tree (BIT) is a prefix-sum machine in an array of size n+1. Index i is responsible for a range whose length is the last set bit of i. add(i,δ): while i≤n, t[i]+=δ, i += i &amp; −i. prefix(i): while i&gt;0, s+=t[i], i -= i &amp; −i. Both O(log n).</p>
+    </header>
+    <section class="stage">
+      <div class="stage-inner">
+        <div class="steps">
+          <div class="step">
+            <span class="step-n">1</span>
+            <p class="step-copy">1-based. Never index 0<span>i=6 = 110b, last bit 2, t[6] covers two cells. i=8 = 1000b covers eight.</span></p>
+            <span class="step-meta">last set bit</span>
+          </div>
+          <div class="step step--hit">
+            <span class="step-n">2</span>
+            <p class="step-copy">Update +2 at index 3<span>Walk 3, 4, 8. Each step <code>i += i &amp; -i</code>. Stop when i &gt; n.</span></p>
+            <span class="step-meta">add</span>
+          </div>
+          <div class="step">
+            <span class="step-n">3</span>
+            <p class="step-copy">Range [l, r] is two prefixes<span><code>prefix(r) − prefix(l-1)</code>. Query walks <code>i -= i &amp; -i</code> down to 0.</span></p>
+            <span class="step-meta">query</span>
+          </div>
+        </div>
+        <p class="caption"><code>i &amp; -i</code> isolates the lowest set bit (two’s complement). <code>i += i &amp; -i</code> on 0 is 0 — infinite loop.</p>
+        <div class="deck">
+          <div class="deck-row"><span class="deck-k">What</span><p>Point add + prefix query, or (via difference) range add + point query. Less general than a segment tree: the op needs an inverse (sum yes, min no). Size n+1, indices 1…n.</p></div>
+          <div class="deck-row"><span class="deck-k">Why</span><p>Count inversions (map values, add 1 as you scan). Frequency of ranks. Interview: “range sum with updates” — Fenwick if it is prefix-shaped, segment if min/gcd (plate 120).</p></div>
+          <div class="deck-row deck-row--trap"><span class="deck-k">Trap</span><p>0-based loops that never move (<code>i += i &amp; -i</code> on 0 stays 0). Using Fenwick for range minimum. Off-by-one: <code>prefix(r) − prefix(l-1)</code>, not <code>prefix(r) − prefix(l)</code>.</p></div>
+        </div>
+      </div>
+    </section>
+    <footer class="foot"><p class="one-liner"></p><p class="plate-id">Plate 121 / 200</p></footer>
+  </article>
+</body>
+</html>

@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PLATE 327 — UB is a license, not a crash.</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@800;900&family=Fraunces:ital,opsz,wght@1,9..144,400;1,9..144,500&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/poster.css">
+</head>
+<body>
+  <article class="poster" data-track="lang">
+    <span class="mark mark--tl"></span><span class="mark mark--tr"></span><span class="mark mark--bl"></span><span class="mark mark--br"></span>
+    <p class="spine">Foundations series — software engineering mental models</p>
+    <div class="rule"></div><div class="ghost">327</div><div class="vignette"></div>
+    <svg class="grain" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="4" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(#n)"></rect></svg>
+    <header class="mast">
+      <p class="kicker"><span>Lang</span><span class="dot"></span><span class="whisper">C/C++ · as-if</span></p>
+      <h1 class="title">UB is a license, <span class="title-accent">not a crash.</span></h1>
+      <p class="lede">Undefined behavior in C/C++: the standard imposes no requirements. The compiler may delete the branch, “format your disk” in theory, or appear to work until <code>-O2</code>. Signed overflow, use-after-free, data races, out-of-bounds — not a guaranteed <code>SIGSEGV</code>.</p>
+    </header>
+    <section class="stage">
+      <div class="stage-inner">
+        <div class="compare">
+          <div class="compare-pane">
+            <p class="pane-label">C/C++ · as-if · -O2</p>
+            <h2 class="pane-title">No rules</h2>
+            <div class="codeblock">int x = *p;
+if (p) use(p);
+     ↑ gone: *p
+       already proved
+       p non-null
+
+i++ past INT_MAX
+UAF · race · OOB</div>
+            <p class="caption">Nasal demons is the joke. Deleted checks are the reality. <code>-fsanitize=undefined,address</code>.</p>
+          </div>
+          <div class="compare-vs">vs</div>
+          <div class="compare-pane compare-pane--hit">
+            <p class="pane-label">Defined · panic or wrap</p>
+            <h2 class="pane-title">A rule</h2>
+            <div class="codeblock">Rust  panic / wrap
+Java  throw / wrap
+Go    panic / wrap
+C unsigned wrap
+      is defined
+
+null deref → fault
+in these runtimes</div>
+            <p class="caption">They still have bugs. They do not give the optimizer a license to delete your <code>if</code>.</p>
+          </div>
+        </div>
+        <div class="deck">
+          <div class="deck-row"><span class="deck-k">What</span><p>A hole in the spec the optimizer exploits under the as-if rule. If signed overflow “cannot happen,” a loop to <code>INT_MAX</code> may never terminate.</p></div>
+          <div class="deck-row"><span class="deck-k">Why</span><p>Security: RCE from a “benign” overflow. Why sanitizers exist, and why <code>-O0</code> tests are not the shipping program.</p></div>
+          <div class="deck-row deck-row--trap"><span class="deck-k">Trap</span><p>Testing <code>-O0</code> and shipping <code>-O3</code>. “It works on my compiler.” Using signed <code>i++</code> to walk to <code>INT_MAX</code>. A data race on a non-atomic is UB, not a stale read (plate 330).</p></div>
+        </div>
+      </div>
+    </section>
+    <footer class="foot"><p class="one-liner"></p><p class="plate-id">Plate 327 / 375</p></footer>
+  </article>
+</body>
+</html>

@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PLATE 372 — A container is namespaces plus cgroups, not a VM.</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@800;900&family=Fraunces:ital,opsz,wght@1,9..144,400;1,9..144,500&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/poster.css">
+</head>
+<body>
+  <article class="poster" data-track="tools">
+    <span class="mark mark--tl"></span><span class="mark mark--tr"></span><span class="mark mark--bl"></span><span class="mark mark--br"></span>
+    <p class="spine">Foundations series — software engineering mental models</p>
+    <div class="rule"></div><div class="ghost">372</div><div class="vignette"></div>
+    <svg class="grain" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="4" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(#n)"></rect></svg>
+    <header class="mast">
+      <p class="kicker"><span>Tools</span><span class="dot"></span><span class="whisper">clone · overlay</span></p>
+      <h1 class="title">A container is namespaces plus cgroups, <span class="title-accent">not a VM.</span></h1>
+      <p class="lede">A Linux container is PID/mount/net/uts/ipc/user namespaces (<code>clone</code> flags) plus cgroups (plate 306) plus a rootfs (often overlayfs) — same kernel as the host. A VM has its own kernel and hardware model; isolation here is only as good as the kernel + seccomp + dropped caps (plate 304).</p>
+    </header>
+    <section class="stage">
+      <div class="stage-inner">
+        <div class="steps">
+          <div class="step"><span class="step-n">1</span><p class="step-copy">Namespaces hide names<span><code>CLONE_NEWPID|CLONE_NEWNS|CLONE_NEWNET|CLONE_NEWUTS|CLONE_NEWIPC|CLONE_NEWUSER</code>. <code>/proc/1</code> in the container is not host init.</span></p><span class="step-meta">clone</span></div>
+          <div class="step"><span class="step-n">2</span><p class="step-copy">cgroups cap resources<span>memory.max, cpu.max, pids.max. Limits, not a hypervisor. Same scheduler as the host.</span></p><span class="step-meta">quota</span></div>
+          <div class="step step--hit"><span class="step-n">3</span><p class="step-copy">overlay: lower + upper<span>Image layers are lowerdir (read). Writes go to upperdir. Docker is UX on runc/containerd.</span></p><span class="step-meta">rootfs</span></div>
+        </div>
+        <p class="caption">K8s is orchestration. A kernel CVE is a container CVE. Bind mounts and <code>/proc</code> still show host reality you mapped in.</p>
+        <div class="deck">
+          <div class="deck-row"><span class="deck-k">What</span><p>Kernel features composed. Not a hypervisor. Isolation is names + quotas + a root, on the host kernel.</p></div>
+          <div class="deck-row"><span class="deck-k">Why</span><p>Density vs isolation. Pack many apps per kernel. A VM would duplicate a kernel and a hardware model.</p></div>
+          <div class="deck-row deck-row--trap"><span class="deck-k">Trap</span><p><code>--privileged</code>. Mounting <code>docker.sock</code> (the container is now the host’s docker client). Assuming host files are invisible.</p></div>
+        </div>
+      </div>
+    </section>
+    <footer class="foot"><p class="one-liner"></p><p class="plate-id">Plate 372 / 375</p></footer>
+  </article>
+</body>
+</html>

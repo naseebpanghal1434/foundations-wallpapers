@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PLATE 66 — Has-a beats is-a.</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@800;900&family=Fraunces:ital,opsz,wght@1,9..144,400;1,9..144,500&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/poster.css">
+</head>
+<body>
+  <article class="poster" data-track="lang">
+    <span class="mark mark--tl"></span><span class="mark mark--tr"></span><span class="mark mark--bl"></span><span class="mark mark--br"></span>
+    <p class="spine">Foundations series — software engineering mental models</p>
+    <div class="rule"></div><div class="ghost">66</div><div class="vignette"></div>
+    <svg class="grain" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="4" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(#n)"></rect></svg>
+    <header class="mast">
+      <p class="kicker"><span>Language</span><span class="dot"></span><span class="whisper">extends vs a field</span></p>
+      <h1 class="title">Has-a beats <span class="title-accent">is-a.</span></h1>
+      <p class="lede">Inheritance is is-a: a subtype must honor the parent contract at every call site (Liskov, plate 72). Composition is has-a: a field plus forwarding. <code>class User extends Array</code> reuses <code>push</code> by claiming a user is a list. Hold <code>roles = []</code> instead. Java’s <code>Stack extends Vector</code> is the same false is-a.</p>
+    </header>
+    <section class="stage">
+      <div class="stage-inner">
+        <div class="compare">
+          <div class="compare-pane">
+            <p class="pane-label">Reuse by extending</p>
+            <h2 class="pane-title">False is-a</h2>
+            <div class="codeblock bad">class User extends Array {}
+u.push(role)
+u.map(fn)      // not a User
+
+class Square extends Rect {
+  setWidth(w) { this.w = this.h = w }
+}
+// caller set 4×5, Square is 5×5</div>
+            <p class="caption">A User is not an Array. A Square is not a Rect you can stretch on one axis.</p>
+          </div>
+          <div class="compare-vs">vs</div>
+          <div class="compare-pane compare-pane--hit">
+            <p class="pane-label">Reuse by holding</p>
+            <h2 class="pane-title">Has-a</h2>
+            <div class="codeblock ok">class User { roles = [] }
+
+class Square { size }
+class Rect   { w, h }
+// both: area()
+// neither extends the other</div>
+            <p class="caption">Share an <code>interface</code> if you need polymorphism (plate 65). Do not inherit for the methods.</p>
+          </div>
+        </div>
+        <div class="deck">
+          <div class="deck-row"><span class="deck-k">What</span><p>Composition = fields + delegation. Inherit only when substitution is true. JS <code>extends Array</code> also breaks <code>map</code> species and <code>JSON.stringify</code>.</p></div>
+          <div class="deck-row"><span class="deck-k">Why</span><p>A change in the base class hits every subclass. A field you own can be swapped. Interviews: Square/Rectangle, then User-extends-Array.</p></div>
+          <div class="deck-row deck-row--trap"><span class="deck-k">Trap</span><p><code>User extends Array</code> or <code>Stack extends Vector</code> for a few methods. If you cannot say “is-a” as a type fact, do not <code>extends</code>.</p></div>
+        </div>
+      </div>
+    </section>
+    <footer class="foot"><p class="one-liner"></p><p class="plate-id">Plate 66 / 375</p></footer>
+  </article>
+</body>
+</html>

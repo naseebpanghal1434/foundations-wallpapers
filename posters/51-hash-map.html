@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PLATE 51 — Hash into buckets.</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@800;900&family=Fraunces:ital,opsz,wght@1,9..144,400;1,9..144,500&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/poster.css">
+</head>
+<body>
+  <article class="poster" data-track="dsa">
+    <span class="mark mark--tl"></span><span class="mark mark--tr"></span><span class="mark mark--bl"></span><span class="mark mark--br"></span>
+    <p class="spine">Foundations series — software engineering mental models</p>
+    <div class="rule"></div><div class="ghost">51</div><div class="vignette"></div>
+    <svg class="grain" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="4" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(#n)"></rect></svg>
+    <header class="mast">
+      <p class="kicker"><span>DSA</span><span class="dot"></span><span class="whisper">Collisions · load factor</span></p>
+      <h1 class="title">Hash into <span class="title-accent">buckets.</span></h1>
+      <p class="lede">A hash function turns a key into a bucket index. Two keys can land in the same bucket — a collision. Load factor is items ÷ buckets; when it climbs, you resize. Average get/put is O(1). That is a promise about the average, not a law.</p>
+    </header>
+    <section class="stage stage--wide">
+      <div class="stage-inner">
+        <div class="trio">
+          <div class="box box--pool">
+            <p class="col-label">Key → index</p>
+            <h2 class="box-title">Hash</h2>
+            <div class="codeblock">h = hash("ada") % 8
+table[h] holds "ada"</div>
+            <p class="caption">Need hash <em>and</em> equals. Same hash ≠ same key — then you compare.</p>
+          </div>
+          <div class="box">
+            <p class="col-label">Two keys, one slot</p>
+            <h2 class="box-title">Collide</h2>
+            <div class="codeblock">bucket[3]:
+  ada → 7
+  kai → 2   chain</div>
+            <p class="caption">Chaining (list/tree) or open addressing (probe the next empty slot).</p>
+          </div>
+          <div class="box">
+            <p class="col-label">n / buckets</p>
+            <h2 class="box-title">Load</h2>
+            <div class="codeblock">6 / 8 = 0.75
+resize → 16
+rehash every key</div>
+            <p class="caption">Java’s default 0.75, then ×2. Resize is O(n), amortized into the puts.</p>
+          </div>
+        </div>
+        <div class="deck">
+          <div class="deck-row"><span class="deck-k">What</span><p>Set / map / dict. Average O(1) get, put, delete. Worst O(n) if everything collides. Iteration is O(n) in the items — looking the map up once is not “looping it is free.”</p></div>
+          <div class="deck-row"><span class="deck-k">Why</span><p>2-sum, counting, grouping, “have I seen this?” SDE-1 default for lookup. Say: hash → bucket → equals on the chain. That’s the whole machine.</p></div>
+          <div class="deck-row deck-row--trap"><span class="deck-k">Trap</span><p>Mutable keys: hash, then change a field the hash used — the entry sits in the old bucket, <code>get</code> misses. Assuming O(1) always (adversarial hashes, one giant chain). Using a list as a key (Python won’t; Java will hurt you).</p></div>
+        </div>
+      </div>
+    </section>
+    <footer class="foot"><p class="one-liner"></p><p class="plate-id">Plate 51 / 100</p></footer>
+  </article>
+</body>
+</html>

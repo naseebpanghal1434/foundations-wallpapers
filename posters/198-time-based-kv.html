@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PLATE 198 — Binary search the timestamps.</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@800;900&family=Fraunces:ital,opsz,wght@1,9..144,400;1,9..144,500&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/poster.css">
+</head>
+<body>
+  <article class="poster" data-track="dsa">
+    <span class="mark mark--tl"></span><span class="mark mark--tr"></span><span class="mark mark--bl"></span><span class="mark mark--br"></span>
+    <p class="spine">Foundations series — software engineering mental models</p>
+    <div class="rule"></div><div class="ghost">198</div><div class="vignette"></div>
+    <svg class="grain" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="4" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(#n)"></rect></svg>
+    <header class="mast">
+      <p class="kicker"><span>DSA</span><span class="dot"></span><span class="whisper">set · get ≤ t</span></p>
+      <h1 class="title">Binary search <span class="title-accent">the timestamps.</span></h1>
+      <p class="lede">Time-based key-value store: <code>set(key, value, timestamp)</code> (timestamps per key increase), <code>get(key, t)</code> returns the value with the largest timestamp ≤ t. Map key → list of (ts, val). get is binary search (upper bound) on that list. O(log n) get. If timestamps are not sorted, you cannot log n.</p>
+    </header>
+    <section class="stage">
+      <div class="stage-inner">
+        <div class="steps">
+          <div class="step"><span class="step-n">1</span><p class="step-copy">Append if ts is monotonic<span><code>set foo, bar, 1</code> then <code>set foo, bar2, 4</code>. Hash map of sorted arrays. Don’t binary search across keys. Decreasing timestamps break append — then you need an ordered map, not a push.</span></p><span class="step-meta">set</span></div>
+          <div class="step step--hit"><span class="step-n">2</span><p class="step-copy">get is floor, not exact<span><code>get foo,1 → bar</code>; <code>get foo,3 → bar</code> (3 is a hole); <code>get foo,4 → bar2</code>; <code>get foo,0 → empty</code>. They want the latest value whose time is still ≤ t.</span></p><span class="step-meta">floor</span></div>
+          <div class="step"><span class="step-n">3</span><p class="step-copy">bisect_right, then −1<span>Upper bound: first index with ts &gt; t, then take the previous pair. Same bones as floor in an ordered map (plate 125). Snapshot array is this per index (LC 1146).</span></p><span class="step-meta">O(log n)</span></div>
+        </div>
+        <div class="deck">
+          <div class="deck-row"><span class="deck-k">What</span><p>Hash map of sorted arrays. set is append if timestamps are non-decreasing. get is binary search for floor — upper bound, then index−1. Don’t binary search across keys. One list per key, not one global timeline.</p></div>
+          <div class="deck-row"><span class="deck-k">Why</span><p>LeetCode 981 / 1146. Design + binary search. Interview: they want floor, not exact match. State the invariant: “largest ts ≤ t, or none.” Linear scan of the history is the fail they are fishing for.</p></div>
+          <div class="deck-row deck-row--trap"><span class="deck-k">Trap</span><p>Linear scan of the whole history. TreeMap per get without knowing the API. get exact t only — misses the hole at t=3. set with decreasing timestamps — then you need an ordered map, not an append.</p></div>
+        </div>
+      </div>
+    </section>
+    <footer class="foot"><p class="one-liner"></p><p class="plate-id">Plate 198 / 200</p></footer>
+  </article>
+</body>
+</html>

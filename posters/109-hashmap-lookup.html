@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PLATE 109 — Need a pair? Store the complement.</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@800;900&family=Fraunces:ital,opsz,wght@1,9..144,400;1,9..144,500&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/poster.css">
+</head>
+<body>
+  <article class="poster" data-track="dsa">
+    <span class="mark mark--tl"></span><span class="mark mark--tr"></span><span class="mark mark--bl"></span><span class="mark mark--br"></span>
+    <p class="spine">Foundations series — software engineering mental models</p>
+    <div class="rule"></div><div class="ghost">109</div><div class="vignette"></div>
+    <svg class="grain" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="4" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(#n)"></rect></svg>
+    <header class="mast">
+      <p class="kicker"><span>DSA</span><span class="dot"></span><span class="whisper">Two-sum · index map</span></p>
+      <h1 class="title">Need a pair? <span class="title-accent">Store the complement.</span></h1>
+      <p class="lede">A hash map is key → value in average O(1). The two-sum pattern: walking <code>i</code>, look up <code>target − a[i]</code>; if present you have the pair; else store <code>a[i] → i</code>. One pass. The map remembers what the left side already saw.</p>
+    </header>
+    <section class="stage">
+      <div class="stage-inner">
+        <div class="compare">
+          <div class="compare-pane compare-pane--hit">
+            <p class="pane-label">a=[2,7,11,15] t=9</p>
+            <h2 class="pane-title">Two-sum</h2>
+            <div class="codeblock ok">i=0  need 7  miss
+     store 2→0
+i=1  need 2  hit 0
+     → [0,1]
+
+look up, then store
+one pass, avg O(n)</div>
+            <p class="caption">Plate 51 is the machine; this plate is the move. Indices stay. Unsorted is fine.</p>
+          </div>
+          <div class="compare-vs">also</div>
+          <div class="compare-pane">
+            <p class="pane-label">key = sorted letters</p>
+            <h2 class="pane-title">Anagrams</h2>
+            <div class="codeblock">eat tea tan ate
+aet → eat, tea, ate
+ant → tan
+
+or 26-count tuple
+→ list of words</div>
+            <p class="caption">Value can be an index, a count, or a list of positions. Same map, different payload.</p>
+          </div>
+        </div>
+        <div class="deck">
+          <div class="deck-row"><span class="deck-k">What</span><p>get/put/delete average O(1). Iterate items O(n). Keys need hash + equals. Value can be an index, a count, a list of positions.</p></div>
+          <div class="deck-row"><span class="deck-k">Why</span><p>Two-sum, subarray sum equals k (prefix + map, plate 126), group anagrams, clone graph (old node → new). First tool when the naive pair loop is n².</p></div>
+          <div class="deck-row deck-row--trap"><span class="deck-k">Trap</span><p>Unsorted two-sum with two pointers (plate 54) — that needs sorted data and loses indices. Storing the current index before looking up — a number that is twice itself false-hits. Mutable keys.</p></div>
+        </div>
+      </div>
+    </section>
+    <footer class="foot"><p class="one-liner"></p><p class="plate-id">Plate 109 / 200</p></footer>
+  </article>
+</body>
+</html>

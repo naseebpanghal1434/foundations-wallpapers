@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PLATE 196 — XOR cancels pairs.</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@800;900&family=Fraunces:ital,opsz,wght@1,9..144,400;1,9..144,500&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/poster.css">
+</head>
+<body>
+  <article class="poster" data-track="dsa">
+    <span class="mark mark--tl"></span><span class="mark mark--tr"></span><span class="mark mark--bl"></span><span class="mark mark--br"></span>
+    <p class="spine">Foundations series — software engineering mental models</p>
+    <div class="rule"></div><div class="ghost">196</div><div class="vignette"></div>
+    <svg class="grain" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="4" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(#n)"></rect></svg>
+    <header class="mast">
+      <p class="kicker"><span>DSA</span><span class="dot"></span><span class="whisper">a^a=0 · a^0=a</span></p>
+      <h1 class="title">XOR <span class="title-accent">cancels pairs.</span></h1>
+      <p class="lede">XOR is bitwise add without carry. <code>a^a=0</code>, <code>a^0=a</code>, commutative, associative. Single number: XOR the array, pairs die, the lonely remains. Two singles: XOR all, a bit that is 1 belongs to one of them — split the array by that bit, XOR each half. Missing number: XOR indices and values. Swap without temp: <code>a^=b; b^=a; a^=b</code> — cute, rarely wise.</p>
+    </header>
+    <section class="stage stage--wide">
+      <div class="stage-inner">
+        <div class="trio">
+          <div class="box">
+            <p class="col-label">Pairs vanish</p>
+            <h2 class="box-title">One single</h2>
+            <div class="codeblock">[2,2,1]
+2^2^1 = 0^1 = 1
+
+every pair → 0
+lonely → itself</div>
+            <p class="caption box-foot">LC 136. Linear, O(1) extra. Proof needs <em>exactly</em> pairs plus one.</p>
+          </div>
+          <div class="box box--pool">
+            <p class="col-label">XOR all, then split</p>
+            <h2 class="box-title">Two singles</h2>
+            <div class="codeblock">[1,2,1,3,2,5]
+xor=3^5=6 (110)
+last set bit = 2
+bit set:   2,3,2 → 3
+bit clear: 1,1,5 → 5</div>
+            <p class="caption box-foot">LC 260. The set bit is where the two singles differ.</p>
+          </div>
+          <div class="box">
+            <p class="col-label">Triples · missing · bits</p>
+            <h2 class="box-title">Mod 3</h2>
+            <div class="codeblock">136's proof dies
+on triples: count
+each bit % 3 (LC 137)
+
+missing 0..n:
+xor i with a[i]
+
+n&amp;(n-1) drops a 1</div>
+            <p class="caption box-foot">LC 268 / 191 / 338. Bits independent. <code>dp[i]=dp[i&gt;&gt;1]+(i&amp;1)</code>.</p>
+          </div>
+        </div>
+        <div class="deck">
+          <div class="deck-row"><span class="deck-k">What</span><p>Linear time, O(1) extra for these. Not a search. Bits independent — you can count or XOR them one column at a time. Two singles need a splitting bit; triples need mod 3 (or a two-bit FSM), not another XOR.</p></div>
+          <div class="deck-row"><span class="deck-k">Why</span><p>LeetCode 136 / 137 / 260 / 268 / 191. Bit screens. 137 is the follow-up that breaks 136’s proof. Say <code>a^a=0</code> before you write the loop.</p></div>
+          <div class="deck-row deck-row--trap"><span class="deck-k">Trap</span><p>XOR for sums (that’s +). Assuming XOR isolates a value that appears 3 times — 136 needs exactly pairs. Overflow on <code>1&lt;&lt;31</code> in Java: use <code>&gt;&gt;&gt;</code> or <code>1L</code>. The temp-less swap overlapping the same variable.</p></div>
+        </div>
+      </div>
+    </section>
+    <footer class="foot"><p class="one-liner"></p><p class="plate-id">Plate 196 / 200</p></footer>
+  </article>
+</body>
+</html>

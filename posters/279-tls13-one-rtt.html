@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PLATE 279 — TLS 1.3 is one round trip.</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@800;900&family=Fraunces:ital,opsz,wght@1,9..144,400;1,9..144,500&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/poster.css">
+</head>
+<body>
+  <article class="poster" data-track="network">
+    <span class="mark mark--tl"></span><span class="mark mark--tr"></span><span class="mark mark--bl"></span><span class="mark mark--br"></span>
+    <p class="spine">Foundations series — software engineering mental models</p>
+    <div class="rule"></div><div class="ghost">279</div><div class="vignette"></div>
+    <svg class="grain" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="4" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(#n)"></rect></svg>
+    <header class="mast">
+      <p class="kicker"><span>Network</span><span class="dot"></span><span class="whisper">1-RTT · 0-RTT</span></p>
+      <h1 class="title">TLS 1.3 is <span class="title-accent">one round trip.</span></h1>
+      <p class="lede">TLS 1.2 is about two RTTs of crypto after TCP. TLS 1.3 is a 1-RTT handshake — keys from the first flight — and 0-RTT on a session ticket can send data immediately, replayable, so not for <code>POST /charge</code>.</p>
+    </header>
+    <section class="stage">
+      <div class="stage-inner">
+        <div class="compare">
+          <div class="compare-pane">
+            <p class="pane-label">TCP + TLS 1.2</p>
+            <h2 class="pane-title">~2 RTT</h2>
+            <div class="codeblock">TCP handshake
+then crypto flights
+  ClientHello
+  … extra RTT …
+then GET
+
+false start /
+session resume
+are the 1.2 cousins</div>
+            <p class="caption">Certificates still chain. Clocks still matter (plate 78). Mixed content is the browser saying no.</p>
+          </div>
+          <div class="compare-vs">vs</div>
+          <div class="compare-pane compare-pane--hit">
+            <p class="pane-label">TLS 1.3 · ALPN h2/h3</p>
+            <h2 class="pane-title">1-RTT</h2>
+            <div class="codeblock">TCP handshake
+1.3 keys in first flight
+GET on the next RTT
+
+revisit + ticket:
+  0-RTT GET
+  replayable</div>
+            <p class="caption">Same PKI. 0-RTT is a cache of secrets with replay. ALPN picks h2 or h3.</p>
+          </div>
+        </div>
+        <div class="deck">
+          <div class="deck-row"><span class="deck-k">What</span><p>Fewer RTTs, same certificates. 0-RTT early data is not a new trust model — verify the cert anyway.</p></div>
+          <div class="deck-row"><span class="deck-k">Why</span><p>Tail latency on mobile RTTs of 100ms+. Why CDNs terminate TLS near the user.</p></div>
+          <div class="deck-row deck-row--trap"><span class="deck-k">Trap</span><p>0-RTT for a non-idempotent POST (plate 29). Expired clocks on IoT. Assuming 1.3 means you can skip cert verification.</p></div>
+        </div>
+      </div>
+    </section>
+    <footer class="foot"><p class="one-liner"></p><p class="plate-id">Plate 279 / 286</p></footer>
+  </article>
+</body>
+</html>

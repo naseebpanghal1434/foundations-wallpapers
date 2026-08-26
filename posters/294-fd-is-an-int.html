@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PLATE 294 — A file descriptor is an int in a table.</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@800;900&family=Fraunces:ital,opsz,wght@1,9..144,400;1,9..144,500&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/poster.css">
+</head>
+<body>
+  <article class="poster" data-track="os">
+    <span class="mark mark--tl"></span><span class="mark mark--tr"></span><span class="mark mark--bl"></span><span class="mark mark--br"></span>
+    <p class="spine">Foundations series — software engineering mental models</p>
+    <div class="rule"></div><div class="ghost">294</div><div class="vignette"></div>
+    <svg class="grain" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="4" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(#n)"></rect></svg>
+    <header class="mast">
+      <p class="kicker"><span>OS</span><span class="dot"></span><span class="whisper">0 1 2 · files_struct</span></p>
+      <h1 class="title">A file descriptor is an int <span class="title-accent">in a table.</span></h1>
+      <p class="lede">fd 0/1/2 = stdin/stdout/stderr. Each process has an fd table: small integers → file (offset, flags, inode). <code>dup2(old, 2)</code> redirects stderr. <code>close(fd)</code> frees the slot; the file dies when the last fd and mmap are gone. RLIMIT_NOFILE default is often 1024.</p>
+    </header>
+    <section class="stage">
+      <div class="stage-inner">
+        <div class="steps">
+          <div class="step step--hit"><span class="step-n">1</span><p class="step-copy">open → smallest free fd<span>Always the lowest unused integer. close(1) then open() → new fd is 1.</span></p><span class="step-meta">open</span></div>
+          <div class="step"><span class="step-n">2</span><p class="step-copy">fork copies the table<span>Shared file offset on the same file object. Two opens = two offsets. dup = one offset.</span></p><span class="step-meta">fork</span></div>
+          <div class="step"><span class="step-n">3</span><p class="step-copy">O_CLOEXEC so exec does not leak<span>Sockets, pipes, epoll, timers are fds too. EMFILE at the rlimit.</span></p><span class="step-meta">CLOEXEC</span></div>
+        </div>
+        <div class="facts facts-3">
+          <div class="fact"><p class="fact-k">stdio</p><p class="fact-n">0 1 2</p><p class="fact-c">in / out / err. dup2 redirects.</p></div>
+          <div class="fact fact--hit"><p class="fact-k">RLIMIT_NOFILE</p><p class="fact-n">1024</p><p class="fact-c">Common soft default. EMFILE at the cap.</p></div>
+          <div class="fact"><p class="fact-k">Last close</p><p class="fact-n">n=0</p><p class="fact-c">File object freed with last fd+mmap.</p></div>
+        </div>
+        <div class="deck">
+          <div class="deck-row"><span class="deck-k">What</span><p>The user-space handle is an int. The kernel object is a file. Two fds can share one offset (dup) or not (two opens).</p></div>
+          <div class="deck-row"><span class="deck-k">Why</span><p>Redirection, daemonizing, “too many open files.” Leaking fds exhausts the table, not the disk.</p></div>
+          <div class="deck-row deck-row--trap"><span class="deck-k">Trap</span><p><code>close(1)</code> then <code>open()</code> — logs go to the file you just opened. Forgetting CLOEXEC and leaking sockets across exec. Assuming fds are unique across processes.</p></div>
+        </div>
+      </div>
+    </section>
+    <footer class="foot"><p class="one-liner"></p><p class="plate-id">Plate 294 / 375</p></footer>
+  </article>
+</body>
+</html>

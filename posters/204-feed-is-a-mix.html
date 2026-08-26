@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PLATE 204 — The feed is a mix, not a query.</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@800;900&family=Fraunces:ital,opsz,wght@1,9..144,400;1,9..144,500&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/poster.css">
+</head>
+<body>
+  <article class="poster" data-track="system">
+    <span class="mark mark--tl"></span><span class="mark mark--tr"></span><span class="mark mark--bl"></span><span class="mark mark--br"></span>
+    <p class="spine">Foundations series — software engineering mental models</p>
+    <div class="rule"></div><div class="ghost">204</div><div class="vignette"></div>
+    <svg class="grain" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="4" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(#n)"></rect></svg>
+    <header class="mast">
+      <p class="kicker"><span>System</span><span class="dot"></span><span class="whisper">Home timeline · k-way merge</span></p>
+      <h1 class="title">The feed is a mix, <span class="title-accent">not a query.</span></h1>
+      <p class="lede">Home feed is not <code>SELECT * FROM posts WHERE author IN (friends) ORDER BY ts</code> — that is scatter-gather every scroll. Mix: friends inbox + celeb pulls + ads, k-way merge (heap of k heads, plate 161), cache the first 50, cursor <code>(ts, id)</code>.</p>
+    </header>
+    <section class="stage">
+      <div class="stage-inner">
+        <div class="steps">
+          <div class="step"><span class="step-n">1</span><p class="step-copy">Gather the sources<span>Friends inbox (fan-out on write). Celeb pulls (plate 203). Ads. A seen-id Bloom / Redis set (plate 123) so the same post does not loop.</span></p><span class="step-meta">streams</span></div>
+          <div class="step step--hit"><span class="step-n">2</span><p class="step-copy">Merge by score / ts<span>Heap of k heads, O(n log k). Ranking is a model; correctness is don’t miss, don’t dup. Unfollow invalidates the cache, it does not rewrite 80M inboxes.</span></p><span class="step-meta">k-way</span></div>
+          <div class="step"><span class="step-n">3</span><p class="step-copy">Cache page 1, cursor the rest<span>First 50 in Redis ~60 s. Cursor = last <code>(ts, id)</code>, never <code>OFFSET</code> (plate 32). Next scroll is the cursor, not a full recompute.</span></p><span class="step-meta">50</span></div>
+        </div>
+        <div class="deck">
+          <div class="deck-row"><span class="deck-k">What</span><p>Feed = mix of streams + rank + cache + cursor. Pagination is the cursor. Deletes / unfollows are invalidations, not instant global rewrites.</p></div>
+          <div class="deck-row"><span class="deck-k">Why</span><p>News-feed design. They watch for one SQL <code>IN</code>-list. Say mix, cache first 50, cursor <code>(ts,id)</code>.</p></div>
+          <div class="deck-row deck-row--trap"><span class="deck-k">Trap</span><p><code>OFFSET</code> on a live feed — items shift, dups and holes. Recomputing the whole mix on every scroll. No seen-set so the same post loops.</p></div>
+        </div>
+      </div>
+    </section>
+    <footer class="foot"><p class="one-liner"></p><p class="plate-id">Plate 204 / 375</p></footer>
+  </article>
+</body>
+</html>

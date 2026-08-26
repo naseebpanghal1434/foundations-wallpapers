@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PLATE 134 — Fill from the back.</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@800;900&family=Fraunces:ital,opsz,wght@1,9..144,400;1,9..144,500&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/poster.css">
+</head>
+<body>
+  <article class="poster" data-track="dsa">
+    <span class="mark mark--tl"></span><span class="mark mark--tr"></span><span class="mark mark--bl"></span><span class="mark mark--br"></span>
+    <p class="spine">Foundations series — software engineering mental models</p>
+    <div class="rule"></div><div class="ghost">134</div><div class="vignette"></div>
+    <svg class="grain" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="4" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(#n)"></rect></svg>
+    <header class="mast">
+      <p class="kicker"><span>DSA</span><span class="dot"></span><span class="whisper">Two pointers · extra tail</span></p>
+      <h1 class="title">Fill from <span class="title-accent">the back.</span></h1>
+      <p class="lede">Merge two sorted arrays. If nums1 has spare room at the end (length m+n), write from the back: the largest remaining goes to index m+n−1. Forward merge would overwrite unread nums1. If you own a new array, two pointers from the front are fine (merge lists, plate 146).</p>
+    </header>
+    <section class="stage">
+      <div class="stage-inner">
+        <div class="compare">
+          <div class="compare-pane compare-pane--hit">
+            <p class="pane-label">Tail is free · write largest</p>
+            <h2 class="pane-title">From the back</h2>
+            <div class="codeblock ok">nums1=[1,4,7,_,_,_] m=3
+nums2=[2,5,6]       n=3
+i=2 j=2 w=5
+
+7 vs 6 → write 7
+4 vs 6 → write 6
+4 vs 5 → write 5
+rest 1,2,4 → [1,2,4,5,6,7]
+
+leftover nums2 copies;
+leftover nums1 sits</div>
+            <p class="caption"><code>w = m+n-1</code>. Compare <code>nums1[i]</code> vs <code>nums2[j]</code>, write the larger, decrement. O(m+n), O(1) extra.</p>
+          </div>
+          <div class="compare-vs">trap</div>
+          <div class="compare-pane">
+            <p class="pane-label">Write at 0 · unread tail dies</p>
+            <h2 class="pane-title">Clobber</h2>
+            <div class="codeblock">start at 0, write 1,2,…
+clobbers 4 and 7
+still needed later
+
+sorted descending?
+largest lives at 0 —
+then fill from the front
+
+new array / two lists:
+front merge is fine</div>
+            <p class="caption">The spare slots decide the write direction. Merge sort’s last step owns a new buffer, so it fills forward.</p>
+          </div>
+        </div>
+        <div class="deck">
+          <div class="deck-row"><span class="deck-k">What</span><p>O(m+n) time, O(1) extra when the tail is free. Same pattern: merge from the side that has spare slots. Three indices: read nums1, read nums2, write.</p></div>
+          <div class="deck-row"><span class="deck-k">Why</span><p>LeetCode 88. Also the last step of merge sort. Interviews watch whether you clobber unread values in nums1. Linked-list merge never clobbers — you own the links (plate 146).</p></div>
+          <div class="deck-row deck-row--trap"><span class="deck-k">Trap</span><p>Merging forward in nums1. Off-by-one on <code>m+n-1</code>. Copying nums1 leftovers unnecessarily (they are already in place). Sorted-descending arrays — then fill from the front.</p></div>
+        </div>
+      </div>
+    </section>
+    <footer class="foot"><p class="one-liner"></p><p class="plate-id">Plate 134 / 200</p></footer>
+  </article>
+</body>
+</html>

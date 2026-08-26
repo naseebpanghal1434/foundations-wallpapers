@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PLATE 243 — A stacking context is a new z-world.</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@800;900&family=Fraunces:ital,opsz,wght@1,9..144,400;1,9..144,500&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/poster.css">
+</head>
+<body>
+  <article class="poster" data-track="frontend">
+    <span class="mark mark--tl"></span><span class="mark mark--tr"></span><span class="mark mark--bl"></span><span class="mark mark--br"></span>
+    <p class="spine">Foundations series — software engineering mental models</p>
+    <div class="rule"></div><div class="ghost">243</div><div class="vignette"></div>
+    <svg class="grain" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="4" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(#n)"></rect></svg>
+    <header class="mast">
+      <p class="kicker"><span>Frontend</span><span class="dot"></span><span class="whisper">z-index · opacity · transform</span></p>
+      <h1 class="title">A stacking context is <span class="title-accent">a new z-world.</span></h1>
+      <p class="lede"><code>z-index</code> only compares siblings inside the same stacking context. A child with <code>z-index:9999</code> cannot paint above an uncle if its parent is a lower context.</p>
+    </header>
+    <section class="stage">
+      <div class="stage-inner">
+        <div class="compare">
+          <div class="compare-pane">
+            <p class="pane-label">Parent is a ceiling</p>
+            <h2 class="pane-title">Trapped</h2>
+            <div class="codeblock bad">.wrap  { opacity: 0.99 }
+.child { z-index: 9999 }
+.uncle { z-index: 1 }
+/* uncle can cover child */</div>
+            <p class="caption"><code>opacity &lt; 1</code>, <code>transform</code>, <code>filter</code>, position+z-index, <code>isolation</code> each open a context.</p>
+          </div>
+          <div class="compare-vs">trap</div>
+          <div class="compare-pane compare-pane--hit">
+            <p class="pane-label">z on the overlay root</p>
+            <h2 class="pane-title">Isolate</h2>
+            <div class="codeblock ok">.modal {
+  position: fixed;
+  z-index: 10;
+  isolation: isolate;
+}</div>
+            <p class="caption">Raise the context, not a nested number. <code>translateZ(0)</code> for “GPU” also creates one.</p>
+          </div>
+        </div>
+        <div class="deck">
+          <div class="deck-row"><span class="deck-k">What</span><p><code>z-index</code> is local. The parent’s context is a ceiling. Fixed/sticky also interact with contexts.</p></div>
+          <div class="deck-row"><span class="deck-k">Why</span><p>Dropdowns under a header, modals under a toast. Draw the contexts, not the numbers.</p></div>
+          <div class="deck-row deck-row--trap"><span class="deck-k">Trap</span><p><code>z-index:99999</code> on a nested node. <code>opacity</code> on a wrapper “for a fade” trapping the menu. Mixing stacking with <code>overflow:hidden</code> clipping.</p></div>
+        </div>
+      </div>
+    </section>
+    <footer class="foot"><p class="one-liner"></p><p class="plate-id">Plate 243 / 286</p></footer>
+  </article>
+</body>
+</html>

@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PLATE 18 — A JOIN is a match.</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@800;900&family=Fraunces:ital,opsz,wght@1,9..144,400;1,9..144,500&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/poster.css">
+</head>
+<body>
+  <article class="poster" data-track="database">
+    <span class="mark mark--tl"></span><span class="mark mark--tr"></span><span class="mark mark--bl"></span><span class="mark mark--br"></span>
+    <p class="spine">Foundations series — software engineering mental models</p>
+    <div class="rule"></div><div class="ghost">18</div><div class="vignette"></div>
+    <svg class="grain" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="4" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(#n)"></rect></svg>
+    <header class="mast">
+      <p class="kicker"><span>Database</span><span class="dot"></span><span class="whisper">INNER · LEFT · CROSS</span></p>
+      <h1 class="title">A JOIN is <span class="title-accent">a match.</span></h1>
+      <p class="lede">A JOIN is a set match on a predicate, usually <code>o.user_id = u.id</code>. INNER drops non-matches. LEFT keeps left rows and fills right columns with NULL. Missing ON (<code>FROM a, b</code>) is a cartesian product: n × m rows. Planner picks Nested Loop / Hash / Merge (plate 98).</p>
+    </header>
+    <section class="stage">
+      <div class="stage-inner">
+        <div class="compare">
+          <div class="compare-pane compare-pane--hit">
+            <p class="pane-label">3 users · 2 orders for Ada</p>
+            <h2 class="pane-title">INNER JOIN</h2>
+            <div class="codeblock ok">SELECT u.name, o.id
+FROM users u
+JOIN orders o
+  ON o.user_id = u.id
+-- Nested Loop if o.user_id indexed</div>
+            <div class="rows">
+              <div class="row row--read"><span class="id">7</span><span>Ada</span><span>order 101</span></div>
+              <div class="row row--read"><span class="id">7</span><span>Ada</span><span>order 108</span></div>
+              <div class="row"><span class="id">2</span><span>Kai</span><span>dropped</span></div>
+            </div>
+            <p class="caption">LEFT JOIN keeps Kai with <code>o.id NULL</code>. 1:N fans out Ada — <code>GROUP BY</code> if you wanted one row per user.</p>
+          </div>
+          <div class="compare-vs">vs</div>
+          <div class="compare-pane">
+            <p class="pane-label">No ON · n × m</p>
+            <h2 class="pane-title">CROSS</h2>
+            <div class="codeblock bad">FROM users, orders
+-- 3 × 2 = 6 rows
+-- most pairs are nonsense
+
+WHERE on a LEFT JOIN
+  (o.id IS NOT NULL)
+turns it back into INNER</div>
+            <p class="caption">Always write ON (or USING). Filter left-only rows in WHERE, not in ON, if you meant LEFT.</p>
+          </div>
+        </div>
+        <div class="deck">
+          <div class="deck-row"><span class="deck-k">What</span><p>Match condition in ON. INNER = matches only. LEFT = keep left. The match column is usually the FK (plate 17).</p></div>
+          <div class="deck-row"><span class="deck-k">Why</span><p>Names next to orders without N+1 loops (plate 10). Nested Loop + index on the inner key is the usual plan.</p></div>
+          <div class="deck-row deck-row--trap"><span class="deck-k">Trap</span><p>JOIN then <code>distinct</code> in JS. Duplicate Ada rows are correct 1:N. <code>SELECT * FROM users, orders WHERE users.id = 7</code> still multiplies orders. Filtering the right table in WHERE on a LEFT JOIN drops the NULLs.</p></div>
+        </div>
+      </div>
+    </section>
+    <footer class="foot"><p class="one-liner"></p><p class="plate-id">Plate 18 / 375</p></footer>
+  </article>
+</body>
+</html>

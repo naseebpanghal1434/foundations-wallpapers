@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PLATE 334 — JS length is UTF-16 code units.</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@800;900&family=Fraunces:ital,opsz,wght@1,9..144,400;1,9..144,500&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/poster.css">
+</head>
+<body>
+  <article class="poster" data-track="lang">
+    <span class="mark mark--tl"></span><span class="mark mark--tr"></span><span class="mark mark--bl"></span><span class="mark mark--br"></span>
+    <p class="spine">Foundations series — software engineering mental models</p>
+    <div class="rule"></div><div class="ghost">334</div><div class="vignette"></div>
+    <svg class="grain" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="4" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(#n)"></rect></svg>
+    <header class="mast">
+      <p class="kicker"><span>Lang</span><span class="dot"></span><span class="whisper">code unit · code point</span></p>
+      <h1 class="title">JS length is <span class="title-accent">UTF-16 code units.</span></h1>
+      <p class="lede">JavaScript strings are UTF-16. <code>'é'.length</code> is 1. Many emoji are two units (a surrogate pair): <code>'🙂'.length === 2</code>. <code>str[i]</code> is a code unit, not a grapheme. <code>[...str]</code> or <code>for (const c of str)</code> iterates code points. Bytes on the wire are UTF-8 (plate 322).</p>
+    </header>
+    <section class="stage">
+      <div class="stage-inner">
+        <div class="compare">
+          <div class="compare-pane">
+            <p class="pane-label">16-bit units · .length</p>
+            <h2 class="pane-title">Code units</h2>
+            <div class="codeblock">'é'.length           1
+'🙂'.length          2
+s[0] on 🙂     D83D
+s.substring(0, 1)
+  unpaired surrogate
+
+Java String: same
+UTF-16 history</div>
+            <p class="caption">U+1F642 lives in the supplementary plane → one surrogate pair, two units.</p>
+          </div>
+          <div class="compare-vs">vs</div>
+          <div class="compare-pane compare-pane--hit">
+            <p class="pane-label">U+ · grapheme · bytes</p>
+            <h2 class="pane-title">Code points</h2>
+            <div class="codeblock">[...'🙂'].length     1
+for (c of s)    points
+Intl.Segmenter  graphemes
+Buffer.byteLength
+  UTF-8 bytes
+
+Rust str: UTF-8
+'é' is 2 bytes</div>
+            <p class="caption">A family emoji is several code points and one grapheme. Files and HTTP bodies are almost always UTF-8.</p>
+          </div>
+        </div>
+        <div class="deck">
+          <div class="deck-row"><span class="deck-k">What</span><p>Indexing and <code>.length</code> are in 16-bit units. Network and files are usually UTF-8. A code point is U+…. A grapheme is what the user sees.</p></div>
+          <div class="deck-row"><span class="deck-k">Why</span><p>Tweet-sized limits, <code>substr</code> bugs, slicing mid-surrogate producing unpaired values that later explode a UTF-8 encoder.</p></div>
+          <div class="deck-row deck-row--trap"><span class="deck-k">Trap</span><p><code>s.substring(0, 1)</code> on a leading surrogate. <code>Buffer.byteLength(s)</code> vs <code>s.length</code> in Node — bytes ≠ units. Truncating a UTF-8 buffer mid-sequence (plate 322).</p></div>
+        </div>
+      </div>
+    </section>
+    <footer class="foot"><p class="one-liner"></p><p class="plate-id">Plate 334 / 375</p></footer>
+  </article>
+</body>
+</html>

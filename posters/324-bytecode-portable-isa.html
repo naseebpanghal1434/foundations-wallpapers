@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PLATE 324 — Bytecode is a portable ISA.</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@800;900&family=Fraunces:ital,opsz,wght@1,9..144,400;1,9..144,500&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/poster.css">
+</head>
+<body>
+  <article class="poster" data-track="lang">
+    <span class="mark mark--tl"></span><span class="mark mark--tr"></span><span class="mark mark--bl"></span><span class="mark mark--br"></span>
+    <p class="spine">Foundations series — software engineering mental models</p>
+    <div class="rule"></div><div class="ghost">324</div><div class="vignette"></div>
+    <svg class="grain" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="4" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(#n)"></rect></svg>
+    <header class="mast">
+      <p class="kicker"><span>Lang</span><span class="dot"></span><span class="whisper">JVM · CPython · WASM</span></p>
+      <h1 class="title">Bytecode is <span class="title-accent">a portable ISA.</span></h1>
+      <p class="lede">Bytecode is instructions for a virtual machine, not for your CPU. <code>javac</code> → <code>.class</code> (stack machine). CPython → <code>.pyc</code>. WASM → a linear-memory ISA in the browser and at the edge. The VM maps those ops to native — interpret or JIT. One artifact, many CPUs.</p>
+    </header>
+    <section class="stage">
+      <div class="stage-inner">
+        <div class="compare">
+          <div class="compare-pane">
+            <p class="pane-label">Host ISA · one chip</p>
+            <h2 class="pane-title">x86_64 ELF</h2>
+            <div class="codeblock">add  eax, ecx
+call printf
+sysv rdi = arg0
+
+won't load on
+arm64 without
+an emulator</div>
+            <p class="caption">AOT native is a different binary per ISA (plate 323). The linker patched real addresses (plate 325).</p>
+          </div>
+          <div class="compare-vs">vs</div>
+          <div class="compare-pane compare-pane--hit">
+            <p class="pane-label">VM ISA · one artifact</p>
+            <h2 class="pane-title">.class / wasm</h2>
+            <div class="codeblock">JVM      iadd
+CPython  LOAD_FAST
+WASM     i32.add
+
+VM on each CPU
+verify, then
+interpret / JIT</div>
+            <p class="caption"><code>.pyc</code> is version-locked to that CPython. JVM and WASM can reject illegal programs before run.</p>
+          </div>
+        </div>
+        <div class="deck">
+          <div class="deck-row"><span class="deck-k">What</span><p>A stable, simpler ISA plus a runtime. Verification (JVM, WASM) is a gate. The CPU never sees <code>iadd</code> until the VM translates it.</p></div>
+          <div class="deck-row"><span class="deck-k">Why</span><p>Portability and sandboxing: Android ART, Spark executors, the browser. Ship bytecode, not a fat ELF per arch.</p></div>
+          <div class="deck-row deck-row--trap"><span class="deck-k">Trap</span><p>Shipping <code>.pyc</code> across Python minor versions (magic number mismatch). Treating WASM as “C speed” without bounds checks and the JS glue.</p></div>
+        </div>
+      </div>
+    </section>
+    <footer class="foot"><p class="one-liner"></p><p class="plate-id">Plate 324 / 375</p></footer>
+  </article>
+</body>
+</html>

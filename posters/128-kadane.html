@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PLATE 128 — Best ending here, or start over.</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@800;900&family=Fraunces:ital,opsz,wght@1,9..144,400;1,9..144,500&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/poster.css">
+</head>
+<body>
+  <article class="poster" data-track="dsa">
+    <span class="mark mark--tl"></span><span class="mark mark--tr"></span><span class="mark mark--bl"></span><span class="mark mark--br"></span>
+    <p class="spine">Foundations series — software engineering mental models</p>
+    <div class="rule"></div><div class="ghost">128</div><div class="vignette"></div>
+    <svg class="grain" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="4" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(#n)"></rect></svg>
+    <header class="mast">
+      <p class="kicker"><span>DSA</span><span class="dot"></span><span class="whisper">Max subarray</span></p>
+      <h1 class="title">Best ending here, <span class="title-accent">or start over.</span></h1>
+      <p class="lede">Kadane: walk left to right. At i, the best subarray ending at i is either <code>a[i]</code> alone or <code>a[i]</code> glued to the best ending at i−1. <code>cur = max(a[i], cur+a[i])</code>; <code>ans = max(ans, cur)</code>. One pass, O(n), O(1) extra. The empty subarray is a policy: usually not allowed if the problem wants at least one element.</p>
+    </header>
+    <section class="stage">
+      <div class="stage-inner">
+        <div class="compare">
+          <div class="compare-pane compare-pane--hit">
+            <p class="pane-label">Best ending at i</p>
+            <h2 class="pane-title">Kadane</h2>
+            <div class="codeblock ok">a=[-2,1,-3,4,-1,2,1,-5,4]
+cur = max(a[i], cur+a[i])
+ans = max(ans, cur)
+
+cur: -2,1,-2,4,3,5,6,1,5
+ans: -2,1, 1,4,4,5,6,6,6
+window [4,-1,2,1] = 6</div>
+            <p class="caption">Reset when <code>a[i]</code> beats <code>cur+a[i]</code>. Store <code>start=i</code> on a reset if you need the bounds.</p>
+          </div>
+          <div class="compare-vs">trap</div>
+          <div class="compare-pane">
+            <p class="pane-label">All negative · empty policy</p>
+            <h2 class="pane-title">Not 0</h2>
+            <div class="codeblock">a = [-3, -1, -2]
+cur always a[i]
+ans = max element = -1
+
+ans = 0   # empty allowed?
+# LC 53 wants ≥ 1 element
+# all-negative → -1, not 0</div>
+            <p class="caption">Init <code>ans</code> to <code>a[0]</code> (or −∞), never 0, unless the spec says empty is 0. Non-contiguous is a different problem.</p>
+          </div>
+        </div>
+        <div class="deck">
+          <div class="deck-row"><span class="deck-k">What</span><p>Optimal substructure on “best ending at i.” DP with two variables. <code>cur = max(a[i], cur+a[i])</code>. Recover the window by noting the index where you last started over. Contiguous — adjacent cells.</p></div>
+          <div class="deck-row"><span class="deck-k">Why</span><p>Maximum subarray (LeetCode 53). Maximum circular: Kadane plus <code>total − min-subarray</code> (and still the all-negative guard). If they say contiguous, think Kadane before n².</p></div>
+          <div class="deck-row deck-row--trap"><span class="deck-k">Trap</span><p>Initializing <code>ans=0</code> so an all-negative array answers 0. “Max subsequence” — that sums the positives, not Kadane. 2D max rectangle is Kadane on compressed rows, not one line.</p></div>
+        </div>
+      </div>
+    </section>
+    <footer class="foot"><p class="one-liner"></p><p class="plate-id">Plate 128 / 200</p></footer>
+  </article>
+</body>
+</html>

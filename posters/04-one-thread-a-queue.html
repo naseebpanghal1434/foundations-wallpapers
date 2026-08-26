@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PLATE 04 — One thread. A queue.</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@800;900&family=Fraunces:ital,opsz,wght@1,9..144,400;1,9..144,500&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/poster.css">
+</head>
+<body>
+  <article class="poster" data-track="backend">
+    <span class="mark mark--tl"></span><span class="mark mark--tr"></span><span class="mark mark--bl"></span><span class="mark mark--br"></span>
+    <p class="spine">Foundations series — software engineering mental models</p>
+    <div class="rule"></div><div class="ghost">04</div><div class="vignette"></div>
+    <svg class="grain" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="4" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(#n)"></rect></svg>
+    <header class="mast">
+      <p class="kicker"><span>Backend</span><span class="dot"></span><span class="whisper">libuv · UV_THREADPOOL_SIZE=4</span></p>
+      <h1 class="title">One thread. <span class="title-accent">A queue.</span></h1>
+      <p class="lede">Node’s JavaScript runs on one OS thread. The event loop (<code>epoll_wait</code> / <code>kqueue</code>) collects I/O; callbacks run to completion on that thread (plate 226). libuv’s default pool is 4 threads (<code>UV_THREADPOOL_SIZE</code>) for <code>fs</code>, <code>getaddrinfo</code>, some crypto — not for request handlers.</p>
+    </header>
+    <section class="stage">
+      <div class="stage-inner">
+        <div class="stack">
+          <div class="layer layer--http">
+            <div class="layer-name">JS</div>
+            <p class="layer-copy">
+              One V8 stack. No preemption. 10 ms <code>JSON.parse</code> stalls every socket.
+              <span><code>bcrypt.hashSync</code> 50–100 ms × 100 rps saturates the core.</span>
+            </p>
+            <p class="layer-meta">main thread</p>
+          </div>
+          <div class="layer-join">run-to-completion</div>
+          <div class="layer layer--tcp">
+            <div class="layer-name">Loop</div>
+            <p class="layer-copy">
+              timers → poll → check. One callback at a time.
+              <span><code>await</code> yields. A tight <code>for</code> does not. <code>setTimeout(0)</code> is the next macrotask.</span>
+            </p>
+            <p class="layer-meta">event loop</p>
+          </div>
+          <div class="layer-join">offloads fs/dns</div>
+          <div class="layer layer--ip">
+            <div class="layer-name">uv</div>
+            <p class="layer-copy">
+              4 C threads. <code>uv_fs_*</code>, DNS, some crypto.
+              <span>CPU work: <code>worker_threads</code> or another process. cluster = N loops, not one shared thread.</span>
+            </p>
+            <p class="layer-meta">threadpool</p>
+          </div>
+        </div>
+        <div class="deck">
+          <div class="deck-row"><span class="deck-k">What</span><p>Cooperative concurrency on one thread. Thousands of keep-alives are fine if handlers <code>await</code>. CPU occupies the only JS thread until it returns.</p></div>
+          <div class="deck-row"><span class="deck-k">Why</span><p><code>fs.readFileSync</code> in a request freezes every other connection on that process. Interviews: concurrency ≠ parallelism.</p></div>
+          <div class="deck-row deck-row--trap"><span class="deck-k">Trap</span><p>Saying “Node is multithreaded.” Sync bcrypt/JSON/regex on the hot path. Filling the 4-thread pool with heavy <code>fs</code> so DNS waits. <code>while(true)</code> starves poll and timers.</p></div>
+        </div>
+      </div>
+    </section>
+    <footer class="foot"><p class="one-liner"></p><p class="plate-id">Plate 04 / 375</p></footer>
+  </article>
+</body>
+</html>

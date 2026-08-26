@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PLATE 258 — A reranker is a second, smaller model.</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@800;900&family=Fraunces:ital,opsz,wght@1,9..144,400;1,9..144,500&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/poster.css">
+</head>
+<body>
+  <article class="poster" data-track="genai">
+    <span class="mark mark--tl"></span><span class="mark mark--tr"></span><span class="mark mark--bl"></span><span class="mark mark--br"></span>
+    <p class="spine">Foundations series — software engineering mental models</p>
+    <div class="rule"></div><div class="ghost">258</div><div class="vignette"></div>
+    <svg class="grain" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="4" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(#n)"></rect></svg>
+    <header class="mast">
+      <p class="kicker"><span>GenAI</span><span class="dot"></span><span class="whisper">Cross-encoder · pair</span></p>
+      <h1 class="title">A reranker is a second, <span class="title-accent">smaller model.</span></h1>
+      <p class="lede">A bi-encoder embeds query and doc separately — fast, cacheable. A cross-encoder reads the pair and scores relevance; that second model is the reranker — it sorts, it does not retrieve.</p>
+    </header>
+    <section class="stage">
+      <div class="stage-inner">
+        <div class="compare">
+          <div class="compare-pane">
+            <p class="pane-label">Two vectors</p>
+            <h2 class="pane-title">Cosine</h2>
+            <div class="codeblock">cosine(q, d)
+cheap, approximate
+cache each side</div>
+            <p class="caption">Bi-encoder. First-stage retrieval. Fast over millions.</p>
+          </div>
+          <div class="compare-vs">vs</div>
+          <div class="compare-pane compare-pane--hit">
+            <p class="pane-label">One pair</p>
+            <h2 class="pane-title">Cross-encoder</h2>
+            <div class="codeblock">model([q; d]) → score
+50 pairs, not 1e6</div>
+            <p class="caption">Distilled rerankers (miniLM) are usual. The LLM can rerank, at 10× cost.</p>
+          </div>
+        </div>
+        <div class="deck">
+          <div class="deck-row"><span class="deck-k">What</span><p>Pairwise relevance on a shortlist. Cache nothing about the pair except the score for that query.</p></div>
+          <div class="deck-row"><span class="deck-k">Why</span><p>The missing piece after “we did embeddings.” SDE-2 GenAI.</p></div>
+          <div class="deck-row deck-row--trap"><span class="deck-k">Trap</span><p>Cross-encoding the whole corpus. Using the generator as the only ranker with a 20k prompt. A news reranker applied to code.</p></div>
+        </div>
+      </div>
+    </section>
+    <footer class="foot"><p class="one-liner"></p><p class="plate-id">Plate 258 / 286</p></footer>
+  </article>
+</body>
+</html>

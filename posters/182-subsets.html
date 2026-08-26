@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PLATE 182 — For each item: in, or out.</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@800;900&family=Fraunces:ital,opsz,wght@1,9..144,400;1,9..144,500&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/poster.css">
+</head>
+<body>
+  <article class="poster" data-track="dsa">
+    <span class="mark mark--tl"></span><span class="mark mark--tr"></span><span class="mark mark--bl"></span><span class="mark mark--br"></span>
+    <p class="spine">Foundations series — software engineering mental models</p>
+    <div class="rule"></div><div class="ghost">182</div><div class="vignette"></div>
+    <svg class="grain" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="4" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(#n)"></rect></svg>
+    <header class="mast">
+      <p class="kicker"><span>DSA</span><span class="dot"></span><span class="whisper">2^n · start index</span></p>
+      <h1 class="title">For each item: <span class="title-accent">in, or out.</span></h1>
+      <p class="lede">Subsets (power set): each element is in or out → 2<sup>n</sup> subsets. Backtrack with a start index: for <code>j</code> in <code>start..n-1</code>, take <code>nums[j]</code>, recurse <code>j+1</code>, pop. Include the path at every node (not only leaves). Bit mask <code>0..(1&lt;&lt;n)-1</code> is the other write. Duplicates in input: sort, skip <code>j</code> if <code>nums[j]==nums[j-1]</code> and <code>j&gt;start</code>.</p>
+    </header>
+    <section class="stage">
+      <div class="stage-inner">
+        <div class="compare">
+          <div class="compare-pane compare-pane--hit">
+            <p class="pane-label">Record at every node</p>
+            <h2 class="pane-title">Start j</h2>
+            <div class="codeblock ok">[1,2,3]
+[]
+[1] [1,2] [1,2,3]
+    [1,3]
+[2] [2,3]
+[3]
+
+for j in start..n-1
+  take, recurse j+1, pop</div>
+            <div class="bullets">
+              <div>Start-index blocks perms of the same set.</div>
+              <div>Subsets II: sort, skip a dup at this depth.</div>
+            </div>
+          </div>
+          <div class="compare-vs">vs</div>
+          <div class="compare-pane">
+            <p class="pane-label">n bits, 2<sup>n</sup> masks</p>
+            <h2 class="pane-title">Bits</h2>
+            <div class="codeblock">mask 5 = 101 → [1,3]
+for mask in 0..(1&lt;&lt;n)-1:
+  pick bit j if set
+
+loop from 0 + used[]
+  = perms of each subset
+  [1,2] and [2,1]
+  both show up</div>
+            <div class="bullets">
+              <div>Bits skip recursion. Same 2<sup>n</sup> answers.</div>
+              <div>Only recording at length n misses the proper subsets.</div>
+            </div>
+          </div>
+        </div>
+        <div class="deck">
+          <div class="deck-row"><span class="deck-k">What</span><p>O(n 2<sup>n</sup>) to write them all. Loop from start, not 0 (that’s permutations). Record at every call, including <code>[]</code>. Include/exclude recursion is the same tree: take nums[i] or skip it, then i+1.</p></div>
+          <div class="deck-row"><span class="deck-k">Why</span><p>LeetCode 78/90. The simplest backtrack (plate 181). Interview: “include/exclude” or start-index — either sentence, then copy the path.</p></div>
+          <div class="deck-row deck-row--trap"><span class="deck-k">Trap</span><p>Looping from 0 and using <code>used[]</code> (you generate permutations of each subset). Only recording at leaves of length n. Not copying. Handling dups with a set of tuples instead of skip — works, slower to talk through.</p></div>
+        </div>
+      </div>
+    </section>
+    <footer class="foot"><p class="one-liner"></p><p class="plate-id">Plate 182 / 200</p></footer>
+  </article>
+</body>
+</html>

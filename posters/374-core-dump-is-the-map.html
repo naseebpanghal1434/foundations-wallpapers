@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PLATE 374 — A core dump is the address space at death.</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@800;900&family=Fraunces:ital,opsz,wght@1,9..144,400;1,9..144,500&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/poster.css">
+</head>
+<body>
+  <article class="poster" data-track="tools">
+    <span class="mark mark--tl"></span><span class="mark mark--tr"></span><span class="mark mark--bl"></span><span class="mark mark--br"></span>
+    <p class="spine">Foundations series — software engineering mental models</p>
+    <div class="rule"></div><div class="ghost">374</div><div class="vignette"></div>
+    <svg class="grain" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="4" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(#n)"></rect></svg>
+    <header class="mast">
+      <p class="kicker"><span>Tools</span><span class="dot"></span><span class="whisper">ulimit -c · gdb</span></p>
+      <h1 class="title">A core dump is the address space <span class="title-accent">at death.</span></h1>
+      <p class="lede">SIGSEGV/SIGABRT with <code>ulimit -c unlimited</code> writes a file of the mm plus notes (registers, auxv). <code>gdb ./app core</code> then <code>bt</code>; systemd-coredump or apport may intercept. Size ≈ RSS — strip secrets; without debug symbols you get hex.</p>
+    </header>
+    <section class="stage">
+      <div class="stage-inner">
+        <div class="steps">
+          <div class="step"><span class="step-n">1</span><p class="step-copy">ulimit -c unlimited<span>RLIMIT_CORE. <code>/proc/sys/kernel/core_pattern</code> names the file — or pipes to systemd-coredump.</span></p><span class="step-meta">allow</span></div>
+          <div class="step"><span class="step-n">2</span><p class="step-copy">Crash writes the map<span>SIGSEGV/SIGABRT dumps mm + notes. Size ≈ RSS. A pipe to <code>/dev/null</code> means no file.</span></p><span class="step-meta">dump</span></div>
+          <div class="step step--hit"><span class="step-n">3</span><p class="step-copy">gdb ./app core; bt full<span>Need symbols (and build-id). ASLR: addresses differ per run. minidump is a subset (Breakpad).</span></p><span class="step-meta">bt</span></div>
+        </div>
+        <p class="caption">Go: <code>GOTRACEBACK=crash</code> can dump. Core in world-readable <code>/tmp</code> still holds whatever was in RAM.</p>
+        <div class="deck">
+          <div class="deck-row"><span class="deck-k">What</span><p>A snapshot for postmortem. Not a log. The file is the address space plus register notes at the killing signal.</p></div>
+          <div class="deck-row"><span class="deck-k">Why</span><p>Native crashes. You cannot replay the race; you can read the heap and the stack that remained.</p></div>
+          <div class="deck-row deck-row--trap"><span class="deck-k">Trap</span><p><code>core_pattern</code> piped to nowhere. Shipping without symbols and wondering why <code>bt</code> is empty. Core files in <code>/tmp</code> with secrets in RAM.</p></div>
+        </div>
+      </div>
+    </section>
+    <footer class="foot"><p class="one-liner"></p><p class="plate-id">Plate 374 / 375</p></footer>
+  </article>
+</body>
+</html>

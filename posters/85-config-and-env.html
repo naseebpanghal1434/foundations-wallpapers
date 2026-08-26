@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PLATE 85 — Secrets do not live in git.</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@800;900&family=Fraunces:ital,opsz,wght@1,9..144,400;1,9..144,500&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/poster.css">
+</head>
+<body>
+  <article class="poster" data-track="backend">
+    <span class="mark mark--tl"></span><span class="mark mark--tr"></span><span class="mark mark--bl"></span><span class="mark mark--br"></span>
+    <p class="spine">Foundations series — software engineering mental models</p>
+    <div class="rule"></div><div class="ghost">85</div><div class="vignette"></div>
+    <svg class="grain" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="4" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(#n)"></rect></svg>
+    <header class="mast">
+      <p class="kicker"><span>Backend</span><span class="dot"></span><span class="whisper">12-factor · process.env</span></p>
+      <h1 class="title">Secrets do not live <span class="title-accent">in git.</span></h1>
+      <p class="lede">Twelve-factor: the same image in every environment; config is injected at runtime. <code>DATABASE_URL</code> and <code>STRIPE_SECRET</code> come from <code>process.env</code> (k8s Secret, AWS Secrets Manager, Vault). A <code>sk_live_…</code> committed to git is leaked — <code>.git</code> history keeps it after <code>git rm</code>.</p>
+    </header>
+    <section class="stage">
+      <div class="stage-inner">
+        <div class="compare">
+          <div class="compare-pane">
+            <p class="pane-label">Checked in</p>
+            <h2 class="pane-title">Repo</h2>
+            <div class="codeblock bad">const STRIPE =
+  "sk_live_51N…"
+// config.js on main
+
+.git history still has it
+after you git rm</div>
+            <p class="caption">Private repo is not a vault. Forks, CI logs, laptops, backups all see it. Rotate the key; rewriting history is not enough if it was pushed.</p>
+          </div>
+          <div class="compare-vs">vs</div>
+          <div class="compare-pane compare-pane--hit">
+            <p class="pane-label">Injected at run</p>
+            <h2 class="pane-title">Env</h2>
+            <div class="codeblock ok">process.env.STRIPE_SECRET
+process.env.DATABASE_URL
+
+.env gitignored
+prod: k8s secret / SM
+same image, different env</div>
+            <p class="caption">Build once (plate 90). Rotate a key without a new SHA. Constants (ok in git) ≠ deploys (host, keys, flags).</p>
+          </div>
+        </div>
+        <div class="deck">
+          <div class="deck-row"><span class="deck-k">What</span><p>Config in the environment, not files in the artifact. Secrets: a manager — not <code>secrets.py</code>. Fail boot if a required var is missing; do not default to a live key.</p></div>
+          <div class="deck-row"><span class="deck-k">Why</span><p>Same bits in staging and prod. Dev can run without prod keys. Interviews: “where does the Stripe key live?” — env, not the repo.</p></div>
+          <div class="deck-row deck-row--trap"><span class="deck-k">Trap</span><p>Prod keys in the repo. Committing <code>.env</code>. Logging <code>process.env</code> on boot. A config file per environment that drifts so you cannot reproduce prod.</p></div>
+        </div>
+      </div>
+    </section>
+    <footer class="foot"><p class="one-liner"></p><p class="plate-id">Plate 85 / 375</p></footer>
+  </article>
+</body>
+</html>

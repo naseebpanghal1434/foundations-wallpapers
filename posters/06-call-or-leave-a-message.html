@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PLATE 06 — Call, or leave a message.</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@800;900&family=Fraunces:ital,opsz,wght@1,9..144,400;1,9..144,500&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/poster.css">
+</head>
+<body>
+  <article class="poster" data-track="backend">
+    <span class="mark mark--tl"></span><span class="mark mark--tr"></span><span class="mark mark--bl"></span><span class="mark mark--br"></span>
+    <p class="spine">Foundations series — software engineering mental models</p>
+    <div class="rule"></div><div class="ghost">06</div><div class="vignette"></div>
+    <svg class="grain" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="4" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(#n)"></rect></svg>
+    <header class="mast">
+      <p class="kicker"><span>Backend</span><span class="dot"></span><span class="whisper">RPC wait · queue ack</span></p>
+      <h1 class="title">Call, or <span class="title-accent">leave a message.</span></h1>
+      <p class="lede">REST and RPC block on <code>recv</code> until a status or timeout (20–200 ms typical). A queue (SQS, Kafka, Redis Streams, AMQP) is persist-then-ack: produce returns when the broker has the bytes; a worker consumes later. At-least-once is the default (plate 92).</p>
+    </header>
+    <section class="stage stage--wide">
+      <div class="stage-inner">
+        <div class="trio">
+          <div class="box">
+            <p class="col-label">Nouns · HTTP</p>
+            <h2 class="box-title">REST</h2>
+            <div class="codeblock">GET    /orders/12  → 200
+POST   /orders      → 201
+DELETE /orders/12   → 204
+
+caller waits 1 RTT
++ handler</div>
+            <div class="bullets">
+              <div>Cacheable GETs. HTTP status is the contract (plate 34).</div>
+              <div>Callee down → 502/503/timeout now.</div>
+            </div>
+            <p class="caption box-foot">Public APIs, CRUD.</p>
+          </div>
+          <div class="box">
+            <p class="col-label">Verbs · protobuf / JSON</p>
+            <h2 class="box-title">RPC</h2>
+            <div class="codeblock">createOrder({sku, qty})
+grpc: HTTP/2 + proto
+deadline 200ms
+
+still a blocking call</div>
+            <div class="bullets">
+              <div>Tight contract. gRPC status, not only HTTP.</div>
+              <div>Internal services, unary or stream (plate 282).</div>
+            </div>
+            <p class="caption box-foot">Sync service-to-service.</p>
+          </div>
+          <div class="box box--pool">
+            <p class="col-label">Persist · ack later</p>
+            <h2 class="box-title">Queue</h2>
+            <div class="codeblock">PUBLISH order.created
+{id:12, qty:2}
+→ 202 to the client
+
+worker: consume, ack
+retry on nack</div>
+            <div class="bullets">
+              <div>Producer does not wait on billing.</div>
+              <div>Consumer can be at 0 replicas right now.</div>
+            </div>
+            <p class="caption box-foot">Email, webhooks, thumbnails.</p>
+          </div>
+        </div>
+        <div class="deck">
+          <div class="deck-row"><span class="deck-k">What</span><p>A call couples you to a live callee and a deadline. A message couples you to a durable log and an ack protocol.</p></div>
+          <div class="deck-row"><span class="deck-k">Why</span><p>Checkout total → call. Send receipt → queue. If billing is down, the order row can still commit and the worker retries.</p></div>
+          <div class="deck-row deck-row--trap"><span class="deck-k">Trap</span><p>Enqueue then poll <code>/jobs/:id</code> every 50 ms — a slow RPC with extra failure modes. Dual-write DB and queue without an outbox (plate 224). Retrying a non-idempotent consumer (plate 225).</p></div>
+        </div>
+      </div>
+    </section>
+    <footer class="foot"><p class="one-liner"></p><p class="plate-id">Plate 06 / 375</p></footer>
+  </article>
+</body>
+</html>

@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PLATE 92 — At least once means twice.</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@800;900&family=Fraunces:ital,opsz,wght@1,9..144,400;1,9..144,500&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/poster.css">
+</head>
+<body>
+  <article class="poster" data-track="system">
+    <span class="mark mark--tl"></span><span class="mark mark--tr"></span><span class="mark mark--bl"></span><span class="mark mark--br"></span>
+    <p class="spine">Foundations series — software engineering mental models</p>
+    <div class="rule"></div><div class="ghost">92</div><div class="vignette"></div>
+    <svg class="grain" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="4" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(#n)"></rect></svg>
+    <header class="mast">
+      <p class="kicker"><span>System</span><span class="dot"></span><span class="whisper">Delivery, not magic</span></p>
+      <h1 class="title">At least once <span class="title-accent">means twice.</span></h1>
+      <p class="lede">Queues retry. A timeout after “charge $30” may have succeeded; the retry sends it again. At-least-once delivery is the default (SQS, Rabbit, Kafka). Exactly-once of <em>your</em> side effect is an idempotent consumer (plate 29), not a broker checkbox.</p>
+    </header>
+    <section class="stage stage--wide">
+      <div class="stage-inner">
+        <div class="trio">
+          <div class="box">
+            <p class="col-label">May lose</p>
+            <h2 class="box-title">At-most-once</h2>
+            <div class="codeblock">ack, then process
+or fire and forget</div>
+            <p class="caption">No duplicates. A crash between send and work drops the message. Metrics, logs, “best effort.”</p>
+          </div>
+          <div class="box box--pool">
+            <p class="col-label">May duplicate</p>
+            <h2 class="box-title">At-least-once</h2>
+            <div class="codeblock">process, then ack
+timeout → retry
+two charges</div>
+            <p class="caption">The honest default. Producer retries. Consumer dies after work, before ack. You will see the message twice.</p>
+          </div>
+          <div class="box">
+            <p class="col-label">Effectively once</p>
+            <h2 class="box-title">Exactly-once</h2>
+            <div class="codeblock">at-least-once
++ unique key / upsert
+same charge id</div>
+            <p class="caption">The broker can help inside itself. Your DB write, email, Stripe call still need a key you can safely do twice.</p>
+          </div>
+        </div>
+        <div class="deck">
+          <div class="deck-row"><span class="deck-k">What</span><p>At-most-once = lose rather than dup. At-least-once = retry until ack. Exactly-once = at-least-once plus idempotent handling (unique constraint, upsert, outbox). Kafka transactions are consume-transform-produce <em>inside Kafka</em>, not “Stripe ran once.”</p></div>
+          <div class="deck-row"><span class="deck-k">Why</span><p>Networks lie (plate 19). If billing is a queue (plate 06), duplicates are the design. Interviews want: name the three, pick at-least-once, put the uniqueness on the consumer.</p></div>
+          <div class="deck-row deck-row--trap"><span class="deck-k">Trap</span><p>“We use Kafka, so we have exactly-once everywhere.” EOS is not your HTTP handler, not your email, not a row without a unique key. Auto-commit-before-work is silent at-most-once. Deduping only in RAM dies on restart.</p></div>
+        </div>
+      </div>
+    </section>
+    <footer class="foot"><p class="one-liner"></p><p class="plate-id">Plate 92 / 100</p></footer>
+  </article>
+</body>
+</html>

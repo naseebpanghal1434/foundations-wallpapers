@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PLATE 263 — A judge model has a bias too.</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@800;900&family=Fraunces:ital,opsz,wght@1,9..144,400;1,9..144,500&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/poster.css">
+</head>
+<body>
+  <article class="poster" data-track="genai">
+    <span class="mark mark--tl"></span><span class="mark mark--tr"></span><span class="mark mark--bl"></span><span class="mark mark--br"></span>
+    <p class="spine">Foundations series — software engineering mental models</p>
+    <div class="rule"></div><div class="ghost">263</div><div class="vignette"></div>
+    <svg class="grain" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="4" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(#n)"></rect></svg>
+    <header class="mast">
+      <p class="kicker"><span>GenAI</span><span class="dot"></span><span class="whisper">LLM-as-judge · position</span></p>
+      <h1 class="title">A judge model has <span class="title-accent">a bias too.</span></h1>
+      <p class="lede">A second model grading answers is noisy: it prefers whoever is listed first, and the longer write-up. Use it when code cannot score; swap A/B, average, and prefer a checklist (“contains X”) over 1–5 stars.</p>
+    </header>
+    <section class="stage">
+      <div class="stage-inner">
+        <div class="compare">
+          <div class="compare-pane">
+            <p class="pane-label">Score 1–5 · A listed first</p>
+            <h2 class="pane-title">Position wins</h2>
+            <div class="codeblock">which is better,
+A or B?
+
+A always first
+→ A wins
+longer A → still A</div>
+            <p class="caption">Position bias plus length bias. One number, not a measurement.</p>
+          </div>
+          <div class="compare-vs">vs</div>
+          <div class="compare-pane compare-pane--hit">
+            <p class="pane-label">Rubric · swap · two judges</p>
+            <h2 class="pane-title">Checklist</h2>
+            <div class="codeblock">contains X?  0/1
+contains Y?  0/1
+swap A/B
+avg two judges
+calibrate vs humans</div>
+            <p class="caption">Do not use the generator as the only judge.</p>
+          </div>
+        </div>
+        <div class="deck">
+          <div class="deck-row"><span class="deck-k">What</span><p>A noisy metric. Fine for ranking prompts; bad as the only ship gate. Keep a human spot-check on a slice.</p></div>
+          <div class="deck-row"><span class="deck-k">Why</span><p>Evals at scale (plate 262). Interviews: name the bias — position, length — and how you cancel it.</p></div>
+          <div class="deck-row deck-row--trap"><span class="deck-k">Trap</span><p>Letting the judge see the gold and the model’s chain-of-thought and calling it blind. One call, one number, ship.</p></div>
+        </div>
+      </div>
+    </section>
+    <footer class="foot"><p class="one-liner"></p><p class="plate-id">Plate 263 / 286</p></footer>
+  </article>
+</body>
+</html>

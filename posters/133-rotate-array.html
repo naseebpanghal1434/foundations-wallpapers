@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PLATE 133 — Reverse all. Reverse the parts.</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@800;900&family=Fraunces:ital,opsz,wght@1,9..144,400;1,9..144,500&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/poster.css">
+</head>
+<body>
+  <article class="poster" data-track="dsa">
+    <span class="mark mark--tl"></span><span class="mark mark--tr"></span><span class="mark mark--bl"></span><span class="mark mark--br"></span>
+    <p class="spine">Foundations series — software engineering mental models</p>
+    <div class="rule"></div><div class="ghost">133</div><div class="vignette"></div>
+    <svg class="grain" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="4" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(#n)"></rect></svg>
+    <header class="mast">
+      <p class="kicker"><span>DSA</span><span class="dot"></span><span class="whisper">k steps right · O(1) space</span></p>
+      <h1 class="title">Reverse all. <span class="title-accent">Reverse the parts.</span></h1>
+      <p class="lede">Rotate right by k: last k items move to the front. <code>k %= n</code>. Extra array is O(n) space. In-place: reverse the whole array, reverse <code>[0,k)</code>, reverse <code>[k,n)</code>. Each item walks to its final index. Cycle-swap (jump i → i+k) is the other O(1) write — gcd cycles.</p>
+    </header>
+    <section class="stage">
+      <div class="stage-inner">
+        <div class="steps">
+          <div class="step"><span class="step-n">1</span><p class="step-copy"><code>[1,2,3,4,5,6,7]</code> k=3<span>Right rotate. First <code>k %= n</code> — k=n is identity; k&gt;n wraps. Left rotate by k is right rotate by n−k.</span></p><span class="step-meta">k %= n</span></div>
+          <div class="step"><span class="step-n">2</span><p class="step-copy">Reverse all<span><code>[7,6,5,4,3,2,1]</code>. The block that should land first is now a reversed prefix of length k.</span></p><span class="step-meta">whole</span></div>
+          <div class="step"><span class="step-n">3</span><p class="step-copy">Reverse <code>[0,k)</code><span><code>[5,6,7,4,3,2,1]</code>. Un-reverse the new front. Half-open: last index is k−1, not k.</span></p><span class="step-meta">front</span></div>
+          <div class="step step--hit"><span class="step-n">4</span><p class="step-copy">Reverse <code>[k,n)</code><span><code>[5,6,7,1,2,3,4]</code>. Done. O(n) time, O(1) extra. Cycle-swap is the other in-place write.</span></p><span class="step-meta">rest</span></div>
+        </div>
+        <div class="deck">
+          <div class="deck-row"><span class="deck-k">What</span><p>Right rotate: <code>a[i] ← a[(i−k) mod n]</code>. Three reverses prove it: reverse puts the tail block at the front (backwards), then each block is unreversed. Extra array <code>b[(i+k)%n]=a[i]</code> is correct and uses O(n) space.</p></div>
+          <div class="deck-row"><span class="deck-k">Why</span><p>LeetCode 189. Tests modulo and in-place thinking. Rotate a matrix 90° is a different plate (197) — transpose then reverse rows, not this.</p></div>
+          <div class="deck-row deck-row--trap"><span class="deck-k">Trap</span><p>Forgetting <code>k %= n</code> (k=n should be identity; k&gt;n otherwise index error). Reversing <code>[0,k]</code> inclusive — off-by-one. Using extra memory after O(1) space was required. Rotating left vs right.</p></div>
+        </div>
+      </div>
+    </section>
+    <footer class="foot"><p class="one-liner"></p><p class="plate-id">Plate 133 / 200</p></footer>
+  </article>
+</body>
+</html>

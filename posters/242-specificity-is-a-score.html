@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PLATE 242 — Specificity is a score.</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@800;900&family=Fraunces:ital,opsz,wght@1,9..144,400;1,9..144,500&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/poster.css">
+</head>
+<body>
+  <article class="poster" data-track="frontend">
+    <span class="mark mark--tl"></span><span class="mark mark--tr"></span><span class="mark mark--bl"></span><span class="mark mark--br"></span>
+    <p class="spine">Foundations series — software engineering mental models</p>
+    <div class="rule"></div><div class="ghost">242</div><div class="vignette"></div>
+    <svg class="grain" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="4" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(#n)"></rect></svg>
+    <header class="mast">
+      <p class="kicker"><span>Frontend</span><span class="dot"></span><span class="whisper">inline · id · class · type</span></p>
+      <h1 class="title">Specificity <span class="title-accent">is a score.</span></h1>
+      <p class="lede">When two rules match, CSS picks the higher specificity, then source order. The score is a four-tuple: (inline, IDs, classes/attrs/pseudos, types).</p>
+    </header>
+    <section class="stage">
+      <div class="stage-inner">
+        <div class="steps">
+          <div class="step"><span class="step-n">1</span><p class="step-copy">Score the selectors<span><code>#nav a</code> → <code>0,1,0,1</code>. <code>.nav .link</code> → <code>0,0,2,0</code>. <code>:not()</code> adds nothing; its argument does.</span></p><span class="step-meta">tuple</span></div>
+          <div class="step step--hit"><span class="step-n">2</span><p class="step-copy">ID beats ten classes<span><code>0,1,0,0</code> beats <code>0,0,10,0</code>. Not “longer selector.” <code>style=""</code> is <code>1,0,0,0</code>.</span></p><span class="step-meta">ID</span></div>
+          <div class="step"><span class="step-n">3</span><p class="step-copy">Tie → later rule<span>Equal spec: source order. <code>!important</code> is a separate layer above — a surrender, not a strategy. Unlayered beats <code>@layer</code>.</span></p><span class="step-meta">order</span></div>
+        </div>
+        <div class="deck">
+          <div class="deck-row"><span class="deck-k">What</span><p>A four-tuple, not “more classes always win.” Inheritance is not specificity — it loses to a direct match of <code>0,0,0,0</code>.</p></div>
+          <div class="deck-row"><span class="deck-k">Why</span><p>“Why won’t it change color?” Usually an ID or inline somewhere. Compare the tuples, then the file order.</p></div>
+          <div class="deck-row deck-row--trap"><span class="deck-k">Trap</span><p>Fighting with <code>!important</code>. Counting selectors by length. Thinking a later stylesheet always wins across IDs.</p></div>
+        </div>
+      </div>
+    </section>
+    <footer class="foot"><p class="one-liner"></p><p class="plate-id">Plate 242 / 286</p></footer>
+  </article>
+</body>
+</html>

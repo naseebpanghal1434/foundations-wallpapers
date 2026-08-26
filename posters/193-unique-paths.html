@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PLATE 193 — From left, or from above.</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@800;900&family=Fraunces:ital,opsz,wght@1,9..144,400;1,9..144,500&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/poster.css">
+</head>
+<body>
+  <article class="poster" data-track="dsa">
+    <span class="mark mark--tl"></span><span class="mark mark--tr"></span><span class="mark mark--bl"></span><span class="mark mark--br"></span>
+    <p class="spine">Foundations series — software engineering mental models</p>
+    <div class="rule"></div><div class="ghost">193</div><div class="vignette"></div>
+    <svg class="grain" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="4" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(#n)"></rect></svg>
+    <header class="mast">
+      <p class="kicker"><span>DSA</span><span class="dot"></span><span class="whisper">Grid DP · combinatorics</span></p>
+      <h1 class="title">From left, or <span class="title-accent">from above.</span></h1>
+      <p class="lede">Unique paths in a grid, only right and down: <code>dp[r][c] = dp[r-1][c] + dp[r][c-1]</code>, first row/col = 1. That’s C(m+n−2, m−1). Obstacles: those cells stay 0, skip them in the recurrence. Min path sum: same DAG, min instead of +. Space: one row.</p>
+    </header>
+    <section class="stage">
+      <div class="stage-inner">
+        <div class="steps">
+          <div class="step step--hit"><span class="step-n">1</span><p class="step-copy">3×3 empty → 6 paths<span>Pascal: rows <code>1 1 1</code> / <code>1 2 3</code> / <code>1 3 6</code>. Combinatorics: choose m−1 downs in m+n−2 steps, C(4,2)=6. First row and first col stay 1 (only one way in).</span></p><span class="step-meta">LC 62</span></div>
+          <div class="step"><span class="step-n">2</span><p class="step-copy">Obstacle punches a 0<span>Middle blocked: <code>1 1 1</code> / <code>1 0 1</code> / <code>1 1 2</code>. That cell stays 0; neighbors add less. No closed form — combinatorics dies the moment a stone appears (LC 63).</span></p><span class="step-meta">holes</span></div>
+          <div class="step"><span class="step-n">3</span><p class="step-copy">Same DAG, min instead of +<span>Min path sum <code>[1,3,1]/[1,5,1]/[4,2,1]</code> = 7 along 1-3-1-1-1. Four directions is not this DP — that’s a graph (Dijkstra / 0-1 BFS).</span></p><span class="step-meta">LC 64</span></div>
+        </div>
+        <div class="deck">
+          <div class="deck-row"><span class="deck-k">What</span><p>DAG DP on a grid. Only right and down, so acyclic, so a table works. Combinatorics when empty. Obstacles punch holes in Pascal. Unique paths III is Hamiltonian backtrack (visit every empty cell), not this recurrence.</p></div>
+          <div class="deck-row"><span class="deck-k">Why</span><p>LeetCode 62 / 63 / 64. The grid DP starter. Interview: they add a stone, then they ask min sum. If they want the count modulo 10⁹+7, they will say so — overflow is a real fail.</p></div>
+          <div class="deck-row deck-row--trap"><span class="deck-k">Trap</span><p>Four directions (this DP assumes a DAG; 4-dir has cycles). Combinatorics with obstacles (no closed form). Off-by-one on 1-index vs 0-index rows. First row after an obstacle is 0 for the rest of that row, not 1.</p></div>
+        </div>
+      </div>
+    </section>
+    <footer class="foot"><p class="one-liner"></p><p class="plate-id">Plate 193 / 200</p></footer>
+  </article>
+</body>
+</html>

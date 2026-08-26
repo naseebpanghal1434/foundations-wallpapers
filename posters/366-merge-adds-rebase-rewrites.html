@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PLATE 366 — merge adds a node. rebase rewrites hashes.</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@800;900&family=Fraunces:ital,opsz,wght@1,9..144,400;1,9..144,500&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/poster.css">
+</head>
+<body>
+  <article class="poster" data-track="tools">
+    <span class="mark mark--tl"></span><span class="mark mark--tr"></span><span class="mark mark--bl"></span><span class="mark mark--br"></span>
+    <p class="spine">Foundations series — software engineering mental models</p>
+    <div class="rule"></div><div class="ghost">366</div><div class="vignette"></div>
+    <svg class="grain" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="4" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(#n)"></rect></svg>
+    <header class="mast">
+      <p class="kicker"><span>Tools</span><span class="dot"></span><span class="whisper">fast-forward · --force</span></p>
+      <h1 class="title">merge adds a node. <span class="title-accent">rebase rewrites hashes.</span></h1>
+      <p class="lede">Merge C onto M: if M is an ancestor, fast-forward (move the name); else a new commit with two parents. Rebase C onto M: replay C’s unique commits as new objects with new hashes on M. Shared published hashes should not be rebased without coordination.</p>
+    </header>
+    <section class="stage">
+      <div class="stage-inner">
+        <div class="compare">
+          <div class="compare-pane compare-pane--hit">
+            <p class="pane-label">DAG append</p>
+            <h2 class="pane-title">merge</h2>
+            <div class="codeblock">M -- m2 -- M'
+ \         /
+  C1 --- C2
+
+M' parents: m2 and C2
+C1, C2 hashes stay
+history shows the join</div>
+            <p class="caption">Fast-forward is just moving the name. No new object if already ancestor.</p>
+          </div>
+          <div class="compare-vs">vs</div>
+          <div class="compare-pane">
+            <p class="pane-label">New objects · old orphaned</p>
+            <h2 class="pane-title">rebase</h2>
+            <div class="codeblock">M -- m2 -- C1' -- C2'
+
+C1, C2 still in reflog
+~30 days, then GC
+
+linear; hashes changed
+force-with-lease, not --force</div>
+            <p class="caption">Conflicts are the same content problem. The DAG edit is the difference.</p>
+          </div>
+        </div>
+        <div class="deck">
+          <div class="deck-row"><span class="deck-k">What</span><p>Merge appends a node (or slides a name). Rebase copies commits; new parent → new hash (plate 364).</p></div>
+          <div class="deck-row"><span class="deck-k">Why</span><p>Branch policy. Why a force-push breaks other clones that still hold the old C hashes.</p></div>
+          <div class="deck-row deck-row--trap"><span class="deck-k">Trap</span><p>Rebasing main onto a feature (inverted). Rebase after someone pulled your branch. <code>merge --no-ff</code> spam vs always-rebase fights.</p></div>
+        </div>
+      </div>
+    </section>
+    <footer class="foot"><p class="one-liner"></p><p class="plate-id">Plate 366 / 375</p></footer>
+  </article>
+</body>
+</html>

@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PLATE 337 — A B+ tree is wide and short. Leaves hold rows.</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@800;900&family=Fraunces:ital,opsz,wght@1,9..144,400;1,9..144,500&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/poster.css">
+</head>
+<body>
+  <article class="poster" data-track="database">
+    <span class="mark mark--tl"></span><span class="mark mark--tr"></span><span class="mark mark--bl"></span><span class="mark mark--br"></span>
+    <p class="spine">Foundations series — software engineering mental models</p>
+    <div class="rule"></div><div class="ghost">337</div><div class="vignette"></div>
+    <svg class="grain" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="4" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(#n)"></rect></svg>
+    <header class="mast">
+      <p class="kicker"><span>Database</span><span class="dot"></span><span class="whisper">fanout ~100 · height 3–4</span></p>
+      <h1 class="title">A B+ tree is wide and short. <span class="title-accent">Leaves hold rows.</span></h1>
+      <p class="lede">A B+ node is a page (8 KiB in Postgres). Fanout is ~100–300 keys, so 1e9 rows sit at height 3–4. Internals are keys + child pointers; payloads live in linked leaves — a range scan walks the chain, not the tree. Postgres btree is this shape (plate 2).</p>
+    </header>
+    <section class="stage">
+      <div class="stage-inner">
+        <div class="compare">
+          <div class="compare-pane">
+            <p class="pane-label">RAM textbook</p>
+            <h2 class="pane-title">Binary</h2>
+            <div class="codeblock bad">1e9 rows
+2-way node
+height ≈ 30
+
+30 hops
+if each hop is a page
+that is 30 I/Os</div>
+            <p class="caption">Fine in RAM. On disk, a 2-child node wastes the 8 KiB page.</p>
+          </div>
+          <div class="compare-vs">vs</div>
+          <div class="compare-pane compare-pane--hit">
+            <p class="pane-label">One page, hundreds of keys</p>
+            <h2 class="pane-title">B+</h2>
+            <div class="codeblock ok">8 KiB node
+fanout ~100
+height 3–4
+
+point: height I/Os
+range: leaf → leaf
+Postgres btree</div>
+            <p class="caption">Leaf value is a TID (or the row, if clustered). uuid4 keys randomize splits (plate 348).</p>
+          </div>
+        </div>
+        <div class="deck">
+          <div class="deck-row"><span class="deck-k">What</span><p>Disk-friendly search tree. Point lookup = height I/Os. Range = height + leaf chain. Key size sets fanout: smaller keys, shorter tree.</p></div>
+          <div class="deck-row"><span class="deck-k">Why</span><p>Indexes are not binary trees from a RAM textbook. An 8-byte key packs ~100–300 siblings; a fat key does not.</p></div>
+          <div class="deck-row deck-row--trap"><span class="deck-k">Trap</span><p>A 2 KiB JSON key in the index — fanout collapses, height grows, cache dies. Then every lookup is more pages.</p></div>
+        </div>
+      </div>
+    </section>
+    <footer class="foot"><p class="one-liner"></p><p class="plate-id">Plate 337 / 375</p></footer>
+  </article>
+</body>
+</html>

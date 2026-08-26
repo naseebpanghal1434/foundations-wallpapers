@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PLATE 108 — Both ends are doors.</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@800;900&family=Fraunces:ital,opsz,wght@1,9..144,400;1,9..144,500&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/poster.css">
+</head>
+<body>
+  <article class="poster" data-track="dsa">
+    <span class="mark mark--tl"></span><span class="mark mark--tr"></span><span class="mark mark--bl"></span><span class="mark mark--br"></span>
+    <p class="spine">Foundations series — software engineering mental models</p>
+    <div class="rule"></div><div class="ghost">108</div><div class="vignette"></div>
+    <svg class="grain" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="4" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(#n)"></rect></svg>
+    <header class="mast">
+      <p class="kicker"><span>DSA</span><span class="dot"></span><span class="whisper">Push/pop front and back</span></p>
+      <h1 class="title">Both ends <span class="title-accent">are doors.</span></h1>
+      <p class="lede">A deque (double-ended queue) pushes and pops at both ends in O(1). Sliding-window maximum keeps candidates in a deque of indices, front = max (plate 136). Palindrome check: pop both ends. Implement a queue with a ring, or two stacks — different trade.</p>
+    </header>
+    <section class="stage stage--wide">
+      <div class="stage-inner">
+        <div class="trio">
+          <div class="box">
+            <p class="col-label">One door · LIFO</p>
+            <h2 class="box-title">Stack</h2>
+            <div class="codeblock">push/pop same end
+1 2 3 → pop 3</div>
+            <p class="caption">Undo, brackets, DFS. Not both ends.</p>
+          </div>
+          <div class="box">
+            <p class="col-label">In back · out front</p>
+            <h2 class="box-title">Queue</h2>
+            <div class="codeblock">enq 1 2 3
+deq → 1 2 3</div>
+            <p class="caption">BFS, level order. One way in, one way out.</p>
+          </div>
+          <div class="box box--pool">
+            <p class="col-label">Both ends · O(1)</p>
+            <h2 class="box-title">Deque</h2>
+            <div class="codeblock ok">k=3  [1, 3, -1, -3, 5]
+dq decreasing, front=max
+[1,3,-1]  3
+[3,-1,-3] 3
+[-1,-3,5] 5</div>
+            <p class="caption">Windows: 3, 3, 5. Drop stale indices from the front; pop smaller backs.</p>
+          </div>
+        </div>
+        <div class="deck">
+          <div class="deck-row"><span class="deck-k">What</span><p>O(1) push/pop front and back. Random access is not promised (a ring deque can index; a linked deque cannot cheaply). Python <code>collections.deque</code>, Java <code>ArrayDeque</code>.</p></div>
+          <div class="deck-row"><span class="deck-k">Why</span><p>Sliding window max/min, 0-1 BFS (push front if weight 0), palindrome, undo/redo with two ends. When both ends move, it is a deque not a stack.</p></div>
+          <div class="deck-row deck-row--trap"><span class="deck-k">Trap</span><p>Java <code>Stack</code> class (synchronized, extends <code>Vector</code>) vs <code>ArrayDeque</code>. Indexing a linked deque as if it were an array. Using deque as a list and scanning the middle — O(n).</p></div>
+        </div>
+      </div>
+    </section>
+    <footer class="foot"><p class="one-liner"></p><p class="plate-id">Plate 108 / 200</p></footer>
+  </article>
+</body>
+</html>

@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PLATE 150 — Hash finds. The list splices.</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@800;900&family=Fraunces:ital,opsz,wght@1,9..144,400;1,9..144,500&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/poster.css">
+</head>
+<body>
+  <article class="poster" data-track="dsa">
+    <span class="mark mark--tl"></span><span class="mark mark--tr"></span><span class="mark mark--bl"></span><span class="mark mark--br"></span>
+    <p class="spine">Foundations series — software engineering mental models</p>
+    <div class="rule"></div><div class="ghost">150</div><div class="vignette"></div>
+    <svg class="grain" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="4" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(#n)"></rect></svg>
+    <header class="mast">
+      <p class="kicker"><span>DSA</span><span class="dot"></span><span class="whisper">O(1) get and put</span></p>
+      <h1 class="title">Hash finds. <span class="title-accent">The list splices.</span></h1>
+      <p class="lede">LRU cache: get and put in O(1), evict the least recently used when over capacity. Hash map key → node for O(1) find. Doubly-linked list with dummy head <em>and</em> dummy tail for O(1) splice (plate 104). Recency is the list order; the map is only an index.</p>
+    </header>
+    <section class="stage">
+      <div class="stage-inner">
+        <div class="compare">
+          <div class="compare-pane compare-pane--hit">
+            <p class="pane-label">cap=2 · dummyH and dummyT</p>
+            <h2 class="pane-title">Hash + DLL</h2>
+            <div class="codeblock ok">put 1  H ⇄ 1 ⇄ T
+put 2  H ⇄ 1 ⇄ 2 ⇄ T
+get 1  move 1 to tail
+       H ⇄ 2 ⇄ 1 ⇄ T
+put 3  unlink 2 (LRU)
+       H ⇄ 1 ⇄ 3 ⇄ T
+map: 1→node, 3→node</div>
+            <p class="caption">Tail = most recent. <code>H.next</code> = victim. Map is key → node, not key → value alone.</p>
+          </div>
+          <div class="compare-vs">vs</div>
+          <div class="compare-pane">
+            <p class="pane-label">Cannot splice the middle</p>
+            <h2 class="pane-title">Queue + map</h2>
+            <div class="codeblock bad">get(1) hits the map
+but the queue still has
+1 sitting in the middle
+unlink = scan  O(n)
+
+singly list: same scan
+for the victim</div>
+            <p class="caption">LFU needs a second structure (freq lists). <code>OrderedDict</code> is the language gift — still draw the DLL.</p>
+          </div>
+        </div>
+        <div class="deck">
+          <div class="deck-row"><span class="deck-k">What</span><p><code>get</code>: map lookup, move that node to the tail, return val or -1. <code>put</code>: update+move, or insert at tail; if over cap, unlink the least-recent (<code>dummyH.next</code>) and delete it from the map. Four pointer writes splice a node (plate 104).</p></div>
+          <div class="deck-row"><span class="deck-k">Why</span><p>LeetCode 146. The design question. Say both structures in the first sentence. Dummy sentinels so you never null-check head or tail. O(1) get and put is the whole spec — a scan fails it.</p></div>
+          <div class="deck-row deck-row--trap"><span class="deck-k">Trap</span><p>Evicting the most recent. Forgetting to erase the victim from the map. Hash map of values with a queue you cannot splice. A singly-linked list that scans for the victim — that is O(n), not O(1).</p></div>
+        </div>
+      </div>
+    </section>
+    <footer class="foot"><p class="one-liner"></p><p class="plate-id">Plate 150 / 200</p></footer>
+  </article>
+</body>
+</html>

@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PLATE 176 — Edges are prereqs. A cycle is a no.</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@800;900&family=Fraunces:ital,opsz,wght@1,9..144,400;1,9..144,500&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/poster.css">
+</head>
+<body>
+  <article class="poster" data-track="dsa">
+    <span class="mark mark--tl"></span><span class="mark mark--tr"></span><span class="mark mark--bl"></span><span class="mark mark--br"></span>
+    <p class="spine">Foundations series — software engineering mental models</p>
+    <div class="rule"></div><div class="ghost">176</div><div class="vignette"></div>
+    <svg class="grain" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="4" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(#n)"></rect></svg>
+    <header class="mast">
+      <p class="kicker"><span>DSA</span><span class="dot"></span><span class="whisper">Topo · Kahn or DFS color</span></p>
+      <h1 class="title">Edges are prereqs. <span class="title-accent">A cycle is a no.</span></h1>
+      <p class="lede">Course schedule: can you finish all courses given prereqs? That’s a directed graph, edge <code>b→a</code> if <code>a</code> requires <code>b</code>. Possible iff DAG. Kahn: queue of indegree-0, peel, if you peel n you win (and you have an order). DFS: coloring white/gray/black — gray edge is a cycle. Order is the reverse of finish times.</p>
+    </header>
+    <section class="stage">
+      <div class="stage-inner">
+        <div class="compare">
+          <div class="compare-pane compare-pane--hit">
+            <p class="pane-label">Peel indegree 0</p>
+            <h2 class="pane-title">Kahn</h2>
+            <div class="codeblock ok">n=2  prereq [1,0]
+# 1 requires 0, so 0→1
+indeg[1]=1   q=[0]
+peel 0, indeg[1]=0
+peel 1
+count=2 → true
+order: 0, 1</div>
+            <div class="bullets">
+              <div>LC 210 returns the peel sequence.</div>
+              <div>DFS: white/gray/black; edge to gray = cycle.</div>
+            </div>
+          </div>
+          <div class="compare-vs">vs</div>
+          <div class="compare-pane">
+            <p class="pane-label">A cycle never peels</p>
+            <h2 class="pane-title">Stuck</h2>
+            <div class="codeblock">[0,1] and [1,0]
+0→1, 1→0
+indeg both 1
+q empty, count=0
+≠ n → false
+
+visited-only DFS:
+back-edge vs cross-edge
+look the same</div>
+            <div class="bullets">
+              <div>Alien dictionary (plate 199) is topo on letters.</div>
+              <div>Heap the queue if they want lex-smallest.</div>
+            </div>
+          </div>
+        </div>
+        <div class="deck">
+          <div class="deck-row"><span class="deck-k">What</span><p>Build adj + indegree. O(V+E). Multiple valid orders: any peel order is fine unless they ask lexicographically smallest (then a heap). Directed: undirected union-find cannot see this cycle.</p></div>
+          <div class="deck-row"><span class="deck-k">Why</span><p>LeetCode 207/210. The DAG question. If they say “ordering with dependencies,” you said topological sort — then you pick Kahn or 3-color DFS.</p></div>
+          <div class="deck-row deck-row--trap"><span class="deck-k">Trap</span><p>Undirected union-find (wrong for directed cycles). DFS without colors — a visited bit cannot tell a back-edge from a cross-edge. Building the edge the wrong way so “prereq” means the opposite of take-first.</p></div>
+        </div>
+      </div>
+    </section>
+    <footer class="foot"><p class="one-liner"></p><p class="plate-id">Plate 176 / 200</p></footer>
+  </article>
+</body>
+</html>

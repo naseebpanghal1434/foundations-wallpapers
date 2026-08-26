@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PLATE 347 — jsonb is binary and indexable. json is text.</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@800;900&family=Fraunces:ital,opsz,wght@1,9..144,400;1,9..144,500&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/poster.css">
+</head>
+<body>
+  <article class="poster" data-track="database">
+    <span class="mark mark--tl"></span><span class="mark mark--tr"></span><span class="mark mark--bl"></span><span class="mark mark--br"></span>
+    <p class="spine">Foundations series — software engineering mental models</p>
+    <div class="rule"></div><div class="ghost">347</div><div class="vignette"></div>
+    <svg class="grain" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="4" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(#n)"></rect></svg>
+    <header class="mast">
+      <p class="kicker"><span>Database</span><span class="dot"></span><span class="whisper">GIN · -&gt;&gt;</span></p>
+      <h1 class="title">jsonb is binary and indexable. <span class="title-accent">json is text.</span></h1>
+      <p class="lede"><code>json</code> is stored as input text. <code>jsonb</code> is decomposed; whitespace gone; keys unique; GIN indexes path/value. <code>-&gt;</code> returns json; <code>-&gt;&gt;</code> returns text. Prefer jsonb unless you must byte-preserve. Still not a substitute for columns you filter every time.</p>
+    </header>
+    <section class="stage">
+      <div class="stage-inner">
+        <div class="compare">
+          <div class="compare-pane">
+            <p class="pane-label">Input text, no structure</p>
+            <h2 class="pane-title">json</h2>
+            <div class="codeblock bad">{" sku " : "A1"}
+whitespace kept
+keys may repeat
+
+WHERE extra::text
+  LIKE '%A1%'
+seq scan on a blob</div>
+            <p class="caption">Use it when the bytes must round-trip. Do not query it.</p>
+          </div>
+          <div class="compare-vs">vs</div>
+          <div class="compare-pane compare-pane--hit">
+            <p class="pane-label">Decomposed, GIN or expression</p>
+            <h2 class="pane-title">jsonb</h2>
+            <div class="codeblock ok">WHERE extra @&gt; '{"sku":"A1"}'
+  GIN (jsonb_path_ops)
+
+WHERE extra-&gt;&gt;'sku' = 'A1'
+  INDEX on (extra-&gt;&gt;'sku')
+
+TOAST if the doc is wide</div>
+            <p class="caption"><code>jsonb_ops</code> is the default (keys + containment). <code>jsonb_path_ops</code> is smaller, <code>@&gt;</code> only.</p>
+          </div>
+        </div>
+        <div class="deck">
+          <div class="deck-row"><span class="deck-k">What</span><p>A typed document in a cell. Index the expressions you query. Stats on a jsonb column are weak compared to a real column.</p></div>
+          <div class="deck-row"><span class="deck-k">Why</span><p>Semi-structured extras. Event payloads. Not the whole domain model.</p></div>
+          <div class="deck-row deck-row--trap"><span class="deck-k">Trap</span><p>jsonb for every field (no constraints, no stats). Updating one key rewrites the TOASTed value. <code>json</code> plus <code>LIKE</code> as a query planner.</p></div>
+        </div>
+      </div>
+    </section>
+    <footer class="foot"><p class="one-liner"></p><p class="plate-id">Plate 347 / 375</p></footer>
+  </article>
+</body>
+</html>

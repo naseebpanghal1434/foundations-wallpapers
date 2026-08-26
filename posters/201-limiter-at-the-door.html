@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PLATE 201 — Put the limiter at the door.</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@800;900&family=Fraunces:ital,opsz,wght@1,9..144,400;1,9..144,500&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/poster.css">
+</head>
+<body>
+  <article class="poster" data-track="backend">
+    <span class="mark mark--tl"></span><span class="mark mark--tr"></span><span class="mark mark--bl"></span><span class="mark mark--br"></span>
+    <p class="spine">Foundations series — software engineering mental models</p>
+    <div class="rule"></div><div class="ghost">201</div><div class="vignette"></div>
+    <svg class="grain" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="4" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(#n)"></rect></svg>
+    <header class="mast">
+      <p class="kicker"><span>Backend</span><span class="dot"></span><span class="whisper">Token bucket · Redis</span></p>
+      <h1 class="title">Put the limiter <span class="title-accent">at the door.</span></h1>
+      <p class="lede">A rate limiter is one shared counter per subject per window: Redis <code>INCR</code> + <code>EXPIRE</code> (TTL) so every replica sees the same budget. Token bucket: <code>tokens = min(burst, tokens + rate·Δt)</code>. Over limit: <code>429</code> with <code>Retry-After</code>.</p>
+    </header>
+    <section class="stage">
+      <div class="stage-inner">
+        <div class="compare">
+          <div class="compare-pane">
+            <p class="pane-label">8 replicas × 100/s</p>
+            <h2 class="pane-title">Per process</h2>
+            <div class="codeblock bad">limiter in each app
+  A:100  B:100  ×8
+budget = 800/s
+
+user:42 retries
+  hops instances
+each RAM counter
+  is a different 100</div>
+            <p class="caption">Local counters lie behind a load balancer (plate 35). The user just changed boxes.</p>
+          </div>
+          <div class="compare-vs">vs</div>
+          <div class="compare-pane compare-pane--hit">
+            <p class="pane-label">One key · Lua</p>
+            <h2 class="pane-title">INCR + TTL</h2>
+            <div class="codeblock ok">INCR  rl:42:&lt;win&gt;
+if n==1 EXPIRE 60
+if n&gt;100
+  429
+  Retry-After: 12
+
+tok=min(burst,
+  tok+rate*dt)</div>
+            <p class="caption">Lua: INCR and the check are one round-trip. Hot user is a hot Redis key. 429 is the contract (plate 34).</p>
+          </div>
+        </div>
+        <div class="deck">
+          <div class="deck-row"><span class="deck-k">What</span><p>One Redis key per IP / user / API key per window, at the gateway so the app never sees rejected traffic. Token bucket allows burst; fixed window is 1 op and spikes at <code>:00</code>.</p></div>
+          <div class="deck-row"><span class="deck-k">Why</span><p>SDE-2 “design a rate limiter”: where it lives, the key, atomic increment, <code>429</code> vs drop. In-memory limiters lie under load-balanced replicas.</p></div>
+          <div class="deck-row deck-row--trap"><span class="deck-k">Trap</span><p>Per-process counters. Fixed window 100/min: 100 at 12:00.99 + 100 at 12:01.00. No <code>Retry-After</code>. Limiting <code>/login</code> and leaving <code>/signup</code> open.</p></div>
+        </div>
+      </div>
+    </section>
+    <footer class="foot"><p class="one-liner"></p><p class="plate-id">Plate 201 / 375</p></footer>
+  </article>
+</body>
+</html>

@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PLATE 323 — Compile ahead. Interpret each form. JIT both.</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@800;900&family=Fraunces:ital,opsz,wght@1,9..144,400;1,9..144,500&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/poster.css">
+</head>
+<body>
+  <article class="poster" data-track="lang">
+    <span class="mark mark--tl"></span><span class="mark mark--tr"></span><span class="mark mark--bl"></span><span class="mark mark--br"></span>
+    <p class="spine">Foundations series — software engineering mental models</p>
+    <div class="rule"></div><div class="ghost">323</div><div class="vignette"></div>
+    <svg class="grain" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="4" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(#n)"></rect></svg>
+    <header class="mast">
+      <p class="kicker"><span>Lang</span><span class="dot"></span><span class="whisper">AOT · VM · hot path</span></p>
+      <h1 class="title">Compile ahead. Interpret each form. <span class="title-accent">JIT both.</span></h1>
+      <p class="lede">AOT (C, Go, rustc): translate to machine code before run — 0 warmup, one ISA’s binary. Interpreter (CPython’s <code>ceval.c</code> loop, early Java): execute each bytecode form; portable, ~10–100× a C loop. JIT (V8, HotSpot, LuaJIT): interpret or baseline first, then emit native for hot functions using types you observed.</p>
+    </header>
+    <section class="stage stage--wide">
+      <div class="stage-inner">
+        <div class="trio">
+          <div class="box">
+            <p class="col-label">Before run</p>
+            <h2 class="box-title">AOT</h2>
+            <div class="codeblock">gcc -O2 / rustc / go
+→ ELF · Mach-O · PE
+native for one CPU
+0 warmup</div>
+            <p class="caption"><code>-O0</code> is still compiled. It is not optimized.</p>
+          </div>
+          <div class="box">
+            <p class="col-label">Each form</p>
+            <h2 class="box-title">Interpret</h2>
+            <div class="codeblock">.pyc → ceval.c
+LOAD_FAST, BINARY_OP
+portable bytecode
+~10–100× C</div>
+            <p class="caption">The inner loop is a VM dispatch, not a native add.</p>
+          </div>
+          <div class="box box--pool">
+            <p class="col-label">Hot path</p>
+            <h2 class="box-title">JIT</h2>
+            <div class="codeblock">V8 Ignition → TurboFan
+HotSpot C1 / C2
+specialize on types
+deopt if they change</div>
+            <p class="caption">Graal, PyPy, JavaScriptCore: same shape (plate 336).</p>
+          </div>
+        </div>
+        <div class="deck">
+          <div class="deck-row"><span class="deck-k">What</span><p>When machine code is produced. AOT: compile time. Interpreter: every opcode. JIT: after warmup, speculative native that can deoptimize if types change.</p></div>
+          <div class="deck-row"><span class="deck-k">Why</span><p>Why a tight Python loop is slow and the C rewrite is not. Why a JVM bench needs 10–30 s warm and <code>-XX:</code> flags, not one call.</p></div>
+          <div class="deck-row deck-row--trap"><span class="deck-k">Trap</span><p>Benchmarking a JIT with one iteration (you timed the interpreter). Shipping CPython on a 1 ms p99 path. Assuming “compiled” means optimized (<code>gcc -O0</code>).</p></div>
+        </div>
+      </div>
+    </section>
+    <footer class="foot"><p class="one-liner"></p><p class="plate-id">Plate 323 / 375</p></footer>
+  </article>
+</body>
+</html>

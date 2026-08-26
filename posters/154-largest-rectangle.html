@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PLATE 154 — Bars wait for the first smaller.</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@800;900&family=Fraunces:ital,opsz,wght@1,9..144,400;1,9..144,500&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/poster.css">
+</head>
+<body>
+  <article class="poster" data-track="dsa">
+    <span class="mark mark--tl"></span><span class="mark mark--tr"></span><span class="mark mark--bl"></span><span class="mark mark--br"></span>
+    <p class="spine">Foundations series — software engineering mental models</p>
+    <div class="rule"></div><div class="ghost">154</div><div class="vignette"></div>
+    <svg class="grain" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="4" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(#n)"></rect></svg>
+    <header class="mast">
+      <p class="kicker"><span>DSA</span><span class="dot"></span><span class="whisper">Histogram · sentinel 0</span></p>
+      <h1 class="title">Bars wait for <span class="title-accent">the first smaller.</span></h1>
+      <p class="lede">Largest rectangle in a histogram: for each bar <code>i</code>, the max rectangle with height <code>a[i]</code> stretches until a smaller bar on the left and on the right. Those bounds are next-smaller (monotonic increasing stack). Area = <code>a[i] * (right − left − 1)</code>. One pass with a sentinel 0 at the end pops everyone.</p>
+    </header>
+    <section class="stage">
+      <div class="stage-inner">
+        <div class="steps">
+          <div class="step"><span class="step-n">1</span><p class="step-copy">Next smaller, both sides<span><code>[2,1,5,6,2,3]</code>. Height 5 at <code>i=2</code>: left smaller <code>i=1</code>, right smaller <code>i=4</code>. Not next greater — a taller bar does not stop this rectangle.</span></p><span class="step-meta">bounds</span></div>
+          <div class="step step--hit"><span class="step-n">2</span><p class="step-copy">Width = right − left − 1<span><code>4 − 1 − 1 = 2</code>. Area <code>5 × 2 = 10</code> — the max. Width is how many bars, not the index gap. <code>right − left</code> without the −1 is the bug.</span></p><span class="step-meta">area</span></div>
+          <div class="step"><span class="step-n">3</span><p class="step-copy">Increasing stack + sentinel 0<span>When <code>a[i]</code> is smaller than the top, pop and compute: right bound = current <code>i</code>, left bound = new top (or −1). Append height 0 so the last bars pop. Max area 10.</span></p><span class="step-meta">O(n)</span></div>
+        </div>
+        <p class="caption">Largest rectangle in a binary matrix = this on consecutive 1-heights per row (LC 85).</p>
+        <div class="deck">
+          <div class="deck-row"><span class="deck-k">What</span><p>O(n). Left/right smaller can be two arrays or one stack that computes area on pop. Each index push/pop once — same cost argument as next greater (plate 153), flipped to an increasing stack.</p></div>
+          <div class="deck-row"><span class="deck-k">Why</span><p>LeetCode 84 / 85. Hard stack. If they say histogram, do not n² min-range over every pair of bars.</p></div>
+          <div class="deck-row deck-row--trap"><span class="deck-k">Trap</span><p>Width = <code>right − left</code> not <code>right − left − 1</code>. Forgetting the sentinel so the last bars never pop. Using next greater instead of next smaller. Off-by-one on the empty-stack left bound (−1, not 0).</p></div>
+        </div>
+      </div>
+    </section>
+    <footer class="foot"><p class="one-liner"></p><p class="plate-id">Plate 154 / 200</p></footer>
+  </article>
+</body>
+</html>

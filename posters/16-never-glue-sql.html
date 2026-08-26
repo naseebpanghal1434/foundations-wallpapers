@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PLATE 16 — Never glue SQL with strings.</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@800;900&family=Fraunces:ital,opsz,wght@1,9..144,400;1,9..144,500&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/poster.css">
+</head>
+<body>
+  <article class="poster" data-track="database">
+    <span class="mark mark--tl"></span><span class="mark mark--tr"></span><span class="mark mark--bl"></span><span class="mark mark--br"></span>
+    <p class="spine">Foundations series — software engineering mental models</p>
+    <div class="rule"></div><div class="ghost">16</div><div class="vignette"></div>
+    <svg class="grain" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="4" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(#n)"></rect></svg>
+    <header class="mast">
+      <p class="kicker"><span>Database</span><span class="dot"></span><span class="whisper">$1 · PQexecParams</span></p>
+      <h1 class="title">Never glue SQL <span class="title-accent">with strings.</span></h1>
+      <p class="lede">SQL injection is concatenating untrusted bytes into the query string so the parser treats them as syntax. Parameterized queries send a prepared statement plus bind values (<code>$1</code>, <code>?</code>, <code>PQexecParams</code>). The value is data. It is never compiled.</p>
+    </header>
+    <section class="stage">
+      <div class="stage-inner">
+        <div class="compare">
+          <div class="compare-pane">
+            <p class="pane-label">id = 1 OR 1=1</p>
+            <h2 class="pane-title">Glued</h2>
+            <div class="codeblock bad">query(
+  "SELECT * FROM users
+   WHERE id = " + req.query.id
+)
+→ WHERE id = 1 OR 1=1
+  -- every row
+
+-- ORDER BY ${col} is syntax too
+-- identifiers cannot be bound</div>
+            <p class="caption">The input became syntax. Escaping quotes by hand misses encodings. OWASP injection class.</p>
+          </div>
+          <div class="compare-vs">vs</div>
+          <div class="compare-pane compare-pane--hit">
+            <p class="pane-label">Same bytes · bound</p>
+            <h2 class="pane-title">$1</h2>
+            <div class="codeblock ok">query(
+  "SELECT * FROM users
+   WHERE id = $1",
+  [req.query.id]
+)
+command: WHERE id = $1
+value:    "1 OR 1=1"
+
+int parse fails → 0 rows
+text stays a string</div>
+            <p class="caption">JDBC PreparedStatement, psycopg2, Prisma tagged sql. <code>.raw()</code> / <code>$queryRawUnsafe</code> opt out.</p>
+          </div>
+        </div>
+        <div class="deck">
+          <div class="deck-row"><span class="deck-k">What</span><p>Placeholders keep structure and values apart at the protocol. ORMs do this until you build a string.</p></div>
+          <div class="deck-row"><span class="deck-k">Why</span><p>One missed endpoint dumps <code>users</code>. Interviews: bind values; whitelist identifiers.</p></div>
+          <div class="deck-row deck-row--trap"><span class="deck-k">Trap</span><p><code>IN (${ids.join(',')})</code> is still glue — use <code>= ANY($1)</code>. <code>ORDER BY ${col}</code> cannot be bound; whitelist. <code>LIKE '%' + q + '%'</code> with concat is injection plus a leading-wildcard seq scan.</p></div>
+        </div>
+      </div>
+    </section>
+    <footer class="foot"><p class="one-liner"></p><p class="plate-id">Plate 16 / 375</p></footer>
+  </article>
+</body>
+</html>

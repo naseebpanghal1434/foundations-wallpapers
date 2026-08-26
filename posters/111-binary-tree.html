@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PLATE 111 — Two children. That's the tree.</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@800;900&family=Fraunces:ital,opsz,wght@1,9..144,400;1,9..144,500&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/poster.css">
+</head>
+<body>
+  <article class="poster" data-track="dsa">
+    <span class="mark mark--tl"></span><span class="mark mark--tr"></span><span class="mark mark--bl"></span><span class="mark mark--br"></span>
+    <p class="spine">Foundations series — software engineering mental models</p>
+    <div class="rule"></div><div class="ghost">111</div><div class="vignette"></div>
+    <svg class="grain" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="4" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(#n)"></rect></svg>
+    <header class="mast">
+      <p class="kicker"><span>DSA</span><span class="dot"></span><span class="whisper">Node · left · right</span></p>
+      <h1 class="title">Two children. <span class="title-accent">That's the tree.</span></h1>
+      <p class="lede">A binary tree node is value, left, right. No other promise: it is not sorted (that’s a BST, plate 112), not complete (that’s a heap, plate 114). Height is longest root-to-leaf. n nodes: height from log n (balanced) to n (a stick).</p>
+    </header>
+    <section class="stage">
+      <div class="stage-inner">
+        <div class="compare">
+          <div class="compare-pane compare-pane--hit">
+            <p class="pane-label">Same keys · height 2</p>
+            <h2 class="pane-title">Bushy</h2>
+            <div class="codeblock ok">      4
+     / \
+    2   7
+   / \
+  1   3
+BST, not a heap
+(4 &gt; 2, 4 &lt; 7)</div>
+            <p class="caption">Null children are the base of recursion. <code>size = 1+size(L)+size(R)</code>. Empty height = −1, so a leaf is 0.</p>
+          </div>
+          <div class="compare-vs">vs</div>
+          <div class="compare-pane">
+            <p class="pane-label">Same keys · height 4</p>
+            <h2 class="pane-title">Stick</h2>
+            <div class="codeblock">1 → 2 → 3 → 4 → 7
+every node only
+a right child
+
+n nodes, height n-1
+search is a scan</div>
+            <p class="caption">Array form <code>i → 2i+1, 2i+2</code> only if you store the holes. A sparse tree in an array skips them wrong.</p>
+          </div>
+        </div>
+        <div class="deck">
+          <div class="deck-row"><span class="deck-k">What</span><p>Recursive structure. Size = 1+size(L)+size(R). Height = 1+max(hL,hR). Traversals on plate 57. Level order uses a queue (plate 107).</p></div>
+          <div class="deck-row"><span class="deck-k">Why</span><p>Invert, diameter, path sum, LCA, serialize — all “recurse both kids, combine.” Draw one node and two boxes before you code.</p></div>
+          <div class="deck-row deck-row--trap"><span class="deck-k">Trap</span><p>Calling a random binary tree a BST. Using <code>2i+1</code> indexing on a sparse tree without placeholders — you skip holes wrong. Returning height 0 for a single node vs 1 — pick a definition and stick to it (empty = −1 or 0).</p></div>
+        </div>
+      </div>
+    </section>
+    <footer class="foot"><p class="one-liner"></p><p class="plate-id">Plate 111 / 200</p></footer>
+  </article>
+</body>
+</html>

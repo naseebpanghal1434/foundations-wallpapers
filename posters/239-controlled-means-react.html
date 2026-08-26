@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PLATE 239 — Controlled means React owns the value.</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@800;900&family=Fraunces:ital,opsz,wght@1,9..144,400;1,9..144,500&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/poster.css">
+</head>
+<body>
+  <article class="poster" data-track="frontend">
+    <span class="mark mark--tl"></span><span class="mark mark--tr"></span><span class="mark mark--bl"></span><span class="mark mark--br"></span>
+    <p class="spine">Foundations series — software engineering mental models</p>
+    <div class="rule"></div><div class="ghost">239</div><div class="vignette"></div>
+    <svg class="grain" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="4" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(#n)"></rect></svg>
+    <header class="mast">
+      <p class="kicker"><span>Frontend</span><span class="dot"></span><span class="whisper">value + onChange</span></p>
+      <h1 class="title">Controlled means React <span class="title-accent">owns the value.</span></h1>
+      <p class="lede">A controlled input is <code>value={state}</code> plus <code>onChange</code> — React owns the value; the DOM is a mirror. Uncontrolled uses <code>defaultValue</code> and a ref; the DOM owns it until you read.</p>
+    </header>
+    <section class="stage">
+      <div class="stage-inner">
+        <div class="compare">
+          <div class="compare-pane compare-pane--hit">
+            <p class="pane-label">React is truth</p>
+            <h2 class="pane-title">Controlled</h2>
+            <div class="codeblock ok">&lt;input
+  value={name}
+  onChange={e => setName(e.target.value)}
+/&gt;
+// keystroke → render</div>
+            <p class="caption">One-way data. Checkboxes use <code>checked</code>, not <code>value</code>.</p>
+          </div>
+          <div class="compare-vs">vs</div>
+          <div class="compare-pane">
+            <p class="pane-label">DOM is truth</p>
+            <h2 class="pane-title">Uncontrolled</h2>
+            <div class="codeblock">&lt;input defaultValue="ada" ref={r} /&gt;
+// submit:
+r.current.value</div>
+            <p class="caption">Native until you ask. File inputs are uncontrolled by spec.</p>
+          </div>
+        </div>
+        <div class="deck">
+          <div class="deck-row"><span class="deck-k">What</span><p>Controlled = React owns the value. Uncontrolled = the DOM owns it until you read. Form libraries pick a side.</p></div>
+          <div class="deck-row"><span class="deck-k">Why</span><p>The “input doesn’t type” bug is <code>value</code> with no setter. Async <code>setState</code> on each letter also jumps the cursor.</p></div>
+          <div class="deck-row deck-row--trap"><span class="deck-k">Trap</span><p><code>value={x}</code> and no <code>onChange</code> freezes the field. Switching uncontrolled → controlled mid-life warns. Do not set both <code>defaultValue</code> and <code>value</code>.</p></div>
+        </div>
+      </div>
+    </section>
+    <footer class="foot"><p class="one-liner"></p><p class="plate-id">Plate 239 / 286</p></footer>
+  </article>
+</body>
+</html>

@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PLATE 305 — CFS tracks vruntime, not a fixed slice.</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@800;900&family=Fraunces:ital,opsz,wght@1,9..144,400;1,9..144,500&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/poster.css">
+</head>
+<body>
+  <article class="poster" data-track="os">
+    <span class="mark mark--tl"></span><span class="mark mark--tr"></span><span class="mark mark--bl"></span><span class="mark mark--br"></span>
+    <p class="spine">Foundations series — software engineering mental models</p>
+    <div class="rule"></div><div class="ghost">305</div><div class="vignette"></div>
+    <svg class="grain" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="4" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(#n)"></rect></svg>
+    <header class="mast">
+      <p class="kicker"><span>OS</span><span class="dot"></span><span class="whisper">vruntime · weight</span></p>
+      <h1 class="title">CFS tracks vruntime, <span class="title-accent">not a fixed slice.</span></h1>
+      <p class="lede">Completely Fair Scheduler: each task’s vruntime increases as it runs, slower if weight is higher (nice −20). Pick the leftmost (lowest vruntime) in the rb tree. <code>sched_latency_ns</code> (~6–24 ms) is the target period to cycle runnable tasks, not a hard slice.</p>
+    </header>
+    <section class="stage">
+      <div class="stage-inner">
+        <div class="compare">
+          <div class="compare-pane compare-pane--hit">
+            <p class="pane-label">Equal weight</p>
+            <h2 class="pane-title">50 / 50</h2>
+            <div class="codeblock">two tasks, nice 0
+weight 1024 each
+vruntime lockstep
+~50% over the period
+sleepers don’t accrue</div>
+          </div>
+          <div class="compare-vs">vs</div>
+          <div class="compare-pane">
+            <p class="pane-label">nice +10 vs 0</p>
+            <h2 class="pane-title">10 / 90</h2>
+            <div class="codeblock">weights 110 / 1024
+share ≈ 9.7% / 90.3%
+nice works via weight
+not a “percent CPU” field</div>
+          </div>
+        </div>
+        <p class="caption">Wakeup catch-up (wakeup preemption). EEVDF (recent Linux) is the CFS successor. 1.25× per nice step.</p>
+        <div class="facts facts-3">
+          <div class="fact fact--hit"><p class="fact-k">sched_latency_ns</p><p class="fact-n">6–24 ms</p><p class="fact-c">Target period, not a hard slice.</p></div>
+          <div class="fact"><p class="fact-k">min_granularity_ns</p><p class="fact-n">~0.75 ms</p><p class="fact-c">Floor. Stops slice from going to zero.</p></div>
+          <div class="fact"><p class="fact-k">nice 0 weight</p><p class="fact-n">1024</p><p class="fact-c">nice +10 = 110. Pick leftmost vruntime.</p></div>
+        </div>
+        <div class="deck">
+          <div class="deck-row"><span class="deck-k">What</span><p>Fairness over a window via virtual time. Sleeping tasks don’t accrue; they get a small catch-up on wakeup.</p></div>
+          <div class="deck-row"><span class="deck-k">Why</span><p>Why a tight loop still shares the CPU. Why nice works without a “percent CPU” field.</p></div>
+          <div class="deck-row deck-row--trap"><span class="deck-k">Trap</span><p>Tuning slices in app code. Expecting 1 ms fairness with 1000 runnable tasks on 1 core (granularity floors).</p></div>
+        </div>
+      </div>
+    </section>
+    <footer class="foot"><p class="one-liner"></p><p class="plate-id">Plate 305 / 375</p></footer>
+  </article>
+</body>
+</html>

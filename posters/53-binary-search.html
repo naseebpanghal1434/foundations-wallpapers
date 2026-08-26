@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PLATE 53 — Binary search needs sorted data.</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@800;900&family=Fraunces:ital,opsz,wght@1,9..144,400;1,9..144,500&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/poster.css">
+</head>
+<body>
+  <article class="poster" data-track="dsa">
+    <span class="mark mark--tl"></span><span class="mark mark--tr"></span><span class="mark mark--bl"></span><span class="mark mark--br"></span>
+    <p class="spine">Foundations series — software engineering mental models</p>
+    <div class="rule"></div><div class="ghost">53</div><div class="vignette"></div>
+    <svg class="grain" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="4" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(#n)"></rect></svg>
+    <header class="mast">
+      <p class="kicker"><span>DSA</span><span class="dot"></span><span class="whisper">The lo / hi invariant</span></p>
+      <h1 class="title">Binary search needs <span class="title-accent">sorted data.</span></h1>
+      <p class="lede">Halve the range only if the array — or the answer space — is ordered. Keep an invariant: the target, if it exists, is inside [lo, hi]. Mid splits; one side dies. O(log n) comparisons. Unsorted input makes the halves meaningless.</p>
+    </header>
+    <section class="stage">
+      <div class="stage-inner">
+        <div class="compare">
+          <div class="compare-pane compare-pane--hit">
+            <p class="pane-label">Monotonic · answer in range</p>
+            <h2 class="pane-title">Invariant</h2>
+            <div class="codeblock ok">lo, hi = 0, n-1
+while lo &lt;= hi:
+  mid = lo + (hi-lo)//2
+  if a[mid] == t: return mid
+  if a[mid] &lt; t: lo = mid+1
+  else:          hi = mid-1</div>
+            <p class="caption">Pick <code>&lt;=</code> vs <code>&lt;</code> and stick to it. Mid must move. First-bad-version is the same idea on a predicate.</p>
+          </div>
+          <div class="compare-vs">trap</div>
+          <div class="compare-pane">
+            <p class="pane-label">Unsorted, or 32-bit mid</p>
+            <h2 class="pane-title">Miss / overflow</h2>
+            <div class="codeblock bad">binary_search([4,1,9], 4)
+# halves are noise; may miss
+
+mid = (lo + hi) / 2
+# 32-bit int: lo+hi wraps
+# then mid is wrong forever</div>
+            <p class="caption"><code>lo + (hi-lo)/2</code> cannot overflow the sum. Infinite loop: <code>hi = mid</code> when mid == hi.</p>
+          </div>
+        </div>
+        <div class="deck">
+          <div class="deck-row"><span class="deck-k">What</span><p>The predicate must be monotonic (false… then true…). Same algorithm on a raw array or on “minimum capacity that works” (binary search the answer). O(log n) time, O(1) extra space.</p></div>
+          <div class="deck-row"><span class="deck-k">Why</span><p>n = 10⁹ brute is dead; ~30 doublings cover it. Screens: search-insert, rotated array, first/last occurrence. State the invariant out loud before you move <code>lo</code>/<code>hi</code>.</p></div>
+          <div class="deck-row deck-row--trap"><span class="deck-k">Trap</span><p>Running it on unsorted data. Off-by-one (<code>lo &lt; hi</code> vs <code>&lt;=</code>, <code>mid+1</code> vs <code>mid</code>). Overflow on <code>(lo+hi)/2</code>. Loop that does not shrink the range.</p></div>
+        </div>
+      </div>
+    </section>
+    <footer class="foot"><p class="one-liner"></p><p class="plate-id">Plate 53 / 100</p></footer>
+  </article>
+</body>
+</html>

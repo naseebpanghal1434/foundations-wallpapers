@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PLATE 180 — Same email? Same person. Union.</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@800;900&family=Fraunces:ital,opsz,wght@1,9..144,400;1,9..144,500&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/poster.css">
+</head>
+<body>
+  <article class="poster" data-track="dsa">
+    <span class="mark mark--tl"></span><span class="mark mark--tr"></span><span class="mark mark--bl"></span><span class="mark mark--br"></span>
+    <p class="spine">Foundations series — software engineering mental models</p>
+    <div class="rule"></div><div class="ghost">180</div><div class="vignette"></div>
+    <svg class="grain" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="4" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(#n)"></rect></svg>
+    <header class="mast">
+      <p class="kicker"><span>DSA</span><span class="dot"></span><span class="whisper">DSU on emails</span></p>
+      <h1 class="title">Same email? Same person. <span class="title-accent">Union.</span></h1>
+      <p class="lede">Accounts merge: if two accounts share an email, they are the same person. Union-Find on emails (or on account ids). Map email→first account id, union when the email is already seen. Then gather emails by <code>find(root)</code>, sort, prefix the name. Graph: emails as nodes, BFS components — same thing.</p>
+    </header>
+    <section class="stage">
+      <div class="stage-inner">
+        <div class="steps">
+          <div class="step"><span class="step-n">1</span><p class="step-copy">Union on emails, never names<span>John: <code>a@, b@</code> and John: <code>b@, c@</code> → one pile <code>{a,b,c}</code>. Two Johns with no shared email stay two people.</span></p><span class="step-meta">email is the key</span></div>
+          <div class="step step--hit"><span class="step-n">2</span><p class="step-copy">email → first account id<span>First time you see <code>b@</code>, remember the id. Second time, <code>union(id, seen[b@])</code>. Mary: <code>d@</code> never collides.</span></p><span class="step-meta">DSU</span></div>
+          <div class="step"><span class="step-n">3</span><p class="step-copy">Group by root, sort, prefix name<span>Output <code>["John", a@, b@, c@]</code>, <code>["Mary", d@]</code>. Same DSU as provinces / redundant connection (plate 119).</span></p><span class="step-meta">undirected =</span></div>
+        </div>
+        <p class="caption">Emails as graph nodes, edge if they co-occur, BFS each component: same answer, more memory. Name is a label. Equality is the email.</p>
+        <div class="deck">
+          <div class="deck-row"><span class="deck-k">What</span><p>Connected components with a dynamic “same as” relation. DSU on the emails (or account ids keyed by email). O(n α(n) + sort). Undirected equality — not a directed “points to.”</p></div>
+          <div class="deck-row"><span class="deck-k">Why</span><p>LeetCode 721. The DSU application problem. Also: stones removed, similar string groups. If they say “merge if they share a key,” you said union-find before you said hashmap-of-lists.</p></div>
+          <div class="deck-row deck-row--trap"><span class="deck-k">Trap</span><p>Union names not emails (two Johns). Forgetting to sort. Directed union. Building n² pairwise email compares instead of a map email→id.</p></div>
+        </div>
+      </div>
+    </section>
+    <footer class="foot"><p class="one-liner"></p><p class="plate-id">Plate 180 / 200</p></footer>
+  </article>
+</body>
+</html>

@@ -1,0 +1,15 @@
+Rewrite EXISTING Foundations plates in place to be more factual.
+
+Keep: file name, data-track, catalog title (h1 visible text MUST still equal the current <title> after the em-dash), plate number/ghost, chrome, poster.css classes only.
+
+Change:
+- Lede = a definition + numbers/units/APIs. Cut metaphors from the body even if the title is metaphorical (“bathroom key”, “rumor”, “door”).
+- Diagram = real values: 4 KiB pages, 64 B cache lines, O() with n, status codes, Redis commands, SQL, syscalls. Prefer facts / compare / steps / codeblock.
+- What = the mechanism. Why = where it shows up (interview, production). Trap = the actual bug, with a concrete failure.
+- Limited analogy. No “imagine a restaurant”.
+- Footer: Plate N / 375
+- Stay on-screen at 3024×1964. Trap must be fully visible.
+- Allowed classes already in poster.css including facts, facts-3, fact, fact-n, fact-k, fact-c, fact--hit.
+- Do not edit catalog.json, poster.css, other plates, or scripts.
+
+When done, list files rewritten.

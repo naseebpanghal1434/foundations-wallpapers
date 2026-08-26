@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PLATE 257 — Hybrid retrieves. A reranker sorts.</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@800;900&family=Fraunces:ital,opsz,wght@1,9..144,400;1,9..144,500&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/poster.css">
+</head>
+<body>
+  <article class="poster" data-track="genai">
+    <span class="mark mark--tl"></span><span class="mark mark--tr"></span><span class="mark mark--bl"></span><span class="mark mark--br"></span>
+    <p class="spine">Foundations series — software engineering mental models</p>
+    <div class="rule"></div><div class="ghost">257</div><div class="vignette"></div>
+    <svg class="grain" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="4" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(#n)"></rect></svg>
+    <header class="mast">
+      <p class="kicker"><span>GenAI</span><span class="dot"></span><span class="whisper">RRF · top k</span></p>
+      <h1 class="title">Hybrid retrieves. <span class="title-accent">A reranker sorts.</span></h1>
+      <p class="lede">Retrieve broadly (BM25 ∪ vectors, k=50), then a reranker (plate 258) scores each pair and keeps 5. First stage is recall; stuffing 50 chunks is hoping, not ranking (plate 253).</p>
+    </header>
+    <section class="stage">
+      <div class="stage-inner">
+        <div class="steps">
+          <div class="step"><span class="step-n">1</span><p class="step-copy">Hybrid retrieve 50<span>BM25 ∪ vectors. Reciprocal Rank Fusion merges two lists without calibrated scores.</span></p><span class="step-meta">recall</span></div>
+          <div class="step step--hit"><span class="step-n">2</span><p class="step-copy">Cross-encoder scores pairs<span>Query against each candidate. Dedup near-duplicates before the model.</span></p><span class="step-meta">precision</span></div>
+          <div class="step"><span class="step-n">3</span><p class="step-copy">Top 5 + citations into the prompt<span>Cheap wide, expensive narrow. The generator never sees the junk if you cut.</span></p><span class="step-meta">k=5</span></div>
+        </div>
+        <div class="deck">
+          <div class="deck-row"><span class="deck-k">What</span><p>Two-stage retrieval. First stage recall; second stage a reranker. Keep a map from the 5 back to the 50.</p></div>
+          <div class="deck-row"><span class="deck-k">Why</span><p>Production RAG. “We retrieve 20” is a smell unless you rerank.</p></div>
+          <div class="deck-row deck-row--trap"><span class="deck-k">Trap</span><p>k=3 from a single vector store and calling it done. Reranking 500 on every keystroke. No citation map from the 5 back to the 50.</p></div>
+        </div>
+      </div>
+    </section>
+    <footer class="foot"><p class="one-liner"></p><p class="plate-id">Plate 257 / 286</p></footer>
+  </article>
+</body>
+</html>

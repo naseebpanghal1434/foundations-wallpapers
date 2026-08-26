@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PLATE 58 — A BST finds. A heap pops min.</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@800;900&family=Fraunces:ital,opsz,wght@1,9..144,400;1,9..144,500&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/poster.css">
+</head>
+<body>
+  <article class="poster" data-track="dsa">
+    <span class="mark mark--tl"></span><span class="mark mark--tr"></span><span class="mark mark--bl"></span><span class="mark mark--br"></span>
+    <p class="spine">Foundations series — software engineering mental models</p>
+    <div class="rule"></div><div class="ghost">58</div><div class="vignette"></div>
+    <svg class="grain" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="4" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(#n)"></rect></svg>
+    <header class="mast">
+      <p class="kicker"><span>DSA</span><span class="dot"></span><span class="whisper">Search vs extract-min</span></p>
+      <h1 class="title">A BST finds. <span class="title-accent">A heap pops min.</span></h1>
+      <p class="lede">A BST is an ordered map: left &lt; node &lt; right. Search, insert, floor, ceil, range — walk a path. A heap is a priority queue: parent ≤ children (min-heap). Extract-min is cheap. “Is 6 in here?” is a scan. They are not interchangeable trees.</p>
+    </header>
+    <section class="stage">
+      <div class="stage-inner">
+        <div class="compare">
+          <div class="compare-pane compare-pane--hit">
+            <p class="pane-label">Left &lt; node &lt; right</p>
+            <h2 class="pane-title">BST</h2>
+            <div class="codeblock ok">      8
+    3    10
+  1   6
+
+find 6:  8 → 3 → 6
+inorder: 1 3 6 8 10   (plate 57)</div>
+            <p class="caption">Path of length height. Balanced (AVL / red-black / <code>TreeMap</code>): O(log n). Sorted inserts with no balance: a linked list.</p>
+          </div>
+          <div class="compare-vs">vs</div>
+          <div class="compare-pane">
+            <p class="pane-label">Parent ≤ kids · array</p>
+            <h2 class="pane-title">Heap</h2>
+            <div class="codeblock">[1, 3, 2, 8, 6, 10]
+ min is index 0
+ pop → heapify  O(log n)
+ find 6 → scan  O(n)
+
+left/right not ordered</div>
+            <p class="caption">Complete tree, so always bushy. Kids at <code>2i+1</code>, <code>2i+2</code>. Fast min/max. No binary search, no inorder.</p>
+          </div>
+        </div>
+        <div class="deck">
+          <div class="deck-row"><span class="deck-k">What</span><p>BST = ordered set/map (predecessor, range). Heap = priority queue (plate 63). Hash set beats both for “is it here?” if you don’t need order or min. Java: <code>TreeMap</code> vs <code>PriorityQueue</code>.</p></div>
+          <div class="deck-row"><span class="deck-k">Why</span><p>Interview fork: “next meeting / autocomplete keys” → BST (or trie, plate 62). “always the smallest deadline / k largest” → heap. Draw the invariant, not the picture of a tree.</p></div>
+          <div class="deck-row deck-row--trap"><span class="deck-k">Trap</span><p>A heap for arbitrary lookup (“binary search the heap”). A raw BST after inserting 1..n — height n, search is O(n). “BST is always log n” is the same lie as “quicksort is always n log n” (plate 64).</p></div>
+        </div>
+      </div>
+    </section>
+    <footer class="foot"><p class="one-liner"></p><p class="plate-id">Plate 58 / 100</p></footer>
+  </article>
+</body>
+</html>

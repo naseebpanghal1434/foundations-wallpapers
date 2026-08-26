@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PLATE 370 — Make is a DAG of files and commands.</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@800;900&family=Fraunces:ital,opsz,wght@1,9..144,400;1,9..144,500&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/poster.css">
+</head>
+<body>
+  <article class="poster" data-track="tools">
+    <span class="mark mark--tl"></span><span class="mark mark--tr"></span><span class="mark mark--bl"></span><span class="mark mark--br"></span>
+    <p class="spine">Foundations series — software engineering mental models</p>
+    <div class="rule"></div><div class="ghost">370</div><div class="vignette"></div>
+    <svg class="grain" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="4" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(#n)"></rect></svg>
+    <header class="mast">
+      <p class="kicker"><span>Tools</span><span class="dot"></span><span class="whisper">target · mtime</span></p>
+      <h1 class="title">Make is a DAG of <span class="title-accent">files and commands.</span></h1>
+      <p class="lede">A rule is <code>target: deps</code> then a recipe. Make compares mtimes: if a dep is newer than the target, it runs the recipe. Cycles are errors; <code>-j</code> is safe iff the DAG is the real deps; phony targets (<code>clean</code>) are names, not files.</p>
+    </header>
+    <section class="stage">
+      <div class="stage-inner">
+        <div class="steps">
+          <div class="step"><span class="step-n">1</span><p class="step-copy">Declare the edge<span><code>a.o: a.c a.h</code> then a tab + recipe. Missing <code>a.h</code> here → stale <code>.o</code> after a header edit.</span></p><span class="step-meta">deps</span></div>
+          <div class="step step--hit"><span class="step-n">2</span><p class="step-copy">mtime decides rebuild<span>If any dep is newer than the target, or the target is missing, run the recipe. Equal mtimes skip.</span></p><span class="step-meta">outdated</span></div>
+          <div class="step"><span class="step-n">3</span><p class="step-copy">Recipe must write the target<span><code>app: a.o b.o</code> then <code>cc -o app a.o b.o</code>. Stamp files (<code>touch $@</code>) for “always consider run.”</span></p><span class="step-meta">recipe</span></div>
+        </div>
+        <p class="caption">ninja/bazel are the same idea with better graphs. Recipe lines start with a tab, not spaces. <code>.PHONY: clean</code>.</p>
+        <div class="deck">
+          <div class="deck-row"><span class="deck-k">What</span><p>Rebuild = outdated edge. The graph is the API: files are nodes, recipes are edge work.</p></div>
+          <div class="deck-row"><span class="deck-k">Why</span><p>Compiles, codegen. Docker layers are the same “newer input → rerun” idea, hashed instead of mtime.</p></div>
+          <div class="deck-row deck-row--trap"><span class="deck-k">Trap</span><p>Missing a header in deps (stale <code>.o</code>). A recipe that never writes the target. Spaces instead of tabs.</p></div>
+        </div>
+      </div>
+    </section>
+    <footer class="foot"><p class="one-liner"></p><p class="plate-id">Plate 370 / 375</p></footer>
+  </article>
+</body>
+</html>

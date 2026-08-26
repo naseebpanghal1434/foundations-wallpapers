@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PLATE 194 — The farthest you can still reach.</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@800;900&family=Fraunces:ital,opsz,wght@1,9..144,400;1,9..144,500&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/poster.css">
+</head>
+<body>
+  <article class="poster" data-track="dsa">
+    <span class="mark mark--tl"></span><span class="mark mark--tr"></span><span class="mark mark--bl"></span><span class="mark mark--br"></span>
+    <p class="spine">Foundations series — software engineering mental models</p>
+    <div class="rule"></div><div class="ghost">194</div><div class="vignette"></div>
+    <svg class="grain" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="4" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(#n)"></rect></svg>
+    <header class="mast">
+      <p class="kicker"><span>DSA</span><span class="dot"></span><span class="whisper">Greedy reach · or DP</span></p>
+      <h1 class="title">The farthest you can <span class="title-accent">still reach.</span></h1>
+      <p class="lede">Jump I: track <code>farthest = max(farthest, i+a[i])</code>. If <code>i &gt; farthest</code> you’re stuck. Jump II: when i hits the layer end, <code>jumps++</code>, <code>end = farthest</code>.</p>
+    </header>
+    <section class="stage">
+      <div class="stage-inner">
+        <div class="compare">
+          <div class="compare-pane compare-pane--hit">
+            <p class="pane-label">Boolean · one number</p>
+            <h2 class="pane-title">Reach</h2>
+            <div class="codeblock ok">[2,3,1,1,4]
+i=0  far=2
+i=1  far=max(2,1+3)=4
+4 ≥ n-1  yes
+
+[3,2,1,0,4]
+far sticks at 3
+i=4 &gt; 3  stuck
+
+a[n-1]=0 is still success
+— you're already there</div>
+            <p class="caption">If i ever sits past farthest, a 0 (or a gap) cut you off. One scan, one integer.</p>
+          </div>
+          <div class="compare-vs">vs</div>
+          <div class="compare-pane">
+            <p class="pane-label">Min jumps · BFS layers</p>
+            <h2 class="pane-title">Jump II</h2>
+            <div class="codeblock">[2,3,1,1,4]  →  2 jumps
+layers [0] | [1,2] | [3,4]
+
+end=0  far=0  jumps=0
+i=0: far=2, i==end → jumps=1, end=2
+i=1: far=4
+i=2: far=4, i==end → jumps=2, end=4
+stop at n-2
+
+DP min-jumps O(n²) works;
+greedy is expected</div>
+            <p class="caption">You do not pick a landing until the layer ends. Updating <code>end</code> every i is the bug.</p>
+          </div>
+        </div>
+        <div class="deck">
+          <div class="deck-row"><span class="deck-k">What</span><p>I is one integer — farthest. II is BFS layers: you don’t pick a landing until the current layer is exhausted.</p></div>
+          <div class="deck-row"><span class="deck-k">Why</span><p>LeetCode 55 / 45. Any index ≤ farthest is reachable, so only the max launch from that prefix matters.</p></div>
+          <div class="deck-row deck-row--trap"><span class="deck-k">Trap</span><p>DFS of every jump — exponential. Updating <code>end</code> every i. Treating <code>a[n-1]=0</code> as failure: you’re already there.</p></div>
+        </div>
+      </div>
+    </section>
+    <footer class="foot"><p class="one-liner"></p><p class="plate-id">Plate 194 / 200</p></footer>
+  </article>
+</body>
+</html>

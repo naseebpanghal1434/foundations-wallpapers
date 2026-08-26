@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PLATE 100 — A short URL is a lookup.</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@800;900&family=Fraunces:ital,opsz,wght@1,9..144,400;1,9..144,500&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/poster.css">
+</head>
+<body>
+  <article class="poster" data-track="system">
+    <span class="mark mark--tl"></span><span class="mark mark--tr"></span><span class="mark mark--bl"></span><span class="mark mark--br"></span>
+    <p class="spine">Foundations series — software engineering mental models</p>
+    <div class="rule"></div><div class="ghost">100</div><div class="vignette"></div>
+    <svg class="grain" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="4" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(#n)"></rect></svg>
+    <header class="mast">
+      <p class="kicker"><span>System</span><span class="dot"></span><span class="whisper">Base62 · 301 vs 302</span></p>
+      <h1 class="title">A short URL is <span class="title-accent">a lookup.</span></h1>
+      <p class="lede">You are not compressing the long URL. You mint a unique slug, store <code>slug → url</code>, and redirect. Encode a numeric id in base62 (<code>0-9a-zA-Z</code>): 7 characters is ~3.5e12 keys. Cache the mapping. Then pick 301 or 302 — 301 is cached by browsers forever, so you lose the click and cannot change the destination.</p>
+    </header>
+    <section class="stage">
+      <div class="stage-inner">
+        <div class="compare">
+          <div class="compare-pane">
+            <p class="pane-label">Guessable + stuck</p>
+            <h2 class="pane-title">/1  /2  /3</h2>
+            <div class="codeblock bad">SERIAL id in the path
+GET /4  →  someone else
+
+301 Location: https://…
+browser caches the
+redirect forever
+your counter never fires
+you cannot retarget</div>
+            <p class="caption">Sequential ids enumerate every private link. 301 is a one-way door (plate 34).</p>
+          </div>
+          <div class="compare-vs">vs</div>
+          <div class="compare-pane compare-pane--hit">
+            <p class="pane-label">Mint, store, 302</p>
+            <h2 class="pane-title">Base62</h2>
+            <div class="codeblock ok">id = snowflake (plate 93)
+slug = base62(id)     bH6kQ3
+or custom alias
+  UNIQUE (slug)
+
+SET slug → url   cache
+GET /bH6kQ3
+302 Location: https://…
+(307 keeps the method)</div>
+            <p class="caption">302/307 if you want counts, expiry, or to change the target. Cache GET. Unique slug is a constraint, not a hope.</p>
+          </div>
+        </div>
+        <div class="deck">
+          <div class="deck-row"><span class="deck-k">What</span><p>Write: generate id → encode → insert with unique slug (custom aliases collide). Read: cache, then DB, then redirect. Rate-limit minting (plate 33). Viral slug is a hot key (plate 94) — the cache is the design, not an extra.</p></div>
+          <div class="deck-row"><span class="deck-k">Why</span><p>This is the default “design a shortener” interview. They want: keyspace math, uniqueness, redirect semantics, cache, not a regex that shrinks the string.</p></div>
+          <div class="deck-row deck-row--trap"><span class="deck-k">Trap</span><p>Sequential guessable ids. 301 because “the URL moved permanently” — true, and now CDNs and Chrome own the mapping. Hashing the long URL without collision handling. No unique index on slug. Putting the destination only in Redis.</p></div>
+        </div>
+      </div>
+    </section>
+    <footer class="foot"><p class="one-liner"></p><p class="plate-id">Plate 100 / 100</p></footer>
+  </article>
+</body>
+</html>

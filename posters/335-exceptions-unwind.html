@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PLATE 335 — Exceptions unwind. Result is a value.</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@800;900&family=Fraunces:ital,opsz,wght@1,9..144,400;1,9..144,500&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/poster.css">
+</head>
+<body>
+  <article class="poster" data-track="lang">
+    <span class="mark mark--tl"></span><span class="mark mark--tr"></span><span class="mark mark--bl"></span><span class="mark mark--br"></span>
+    <p class="spine">Foundations series — software engineering mental models</p>
+    <div class="rule"></div><div class="ghost">335</div><div class="vignette"></div>
+    <svg class="grain" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="4" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(#n)"></rect></svg>
+    <header class="mast">
+      <p class="kicker"><span>Lang</span><span class="dot"></span><span class="whisper">try · Result · errno</span></p>
+      <h1 class="title">Exceptions unwind. <span class="title-accent">Result is a value.</span></h1>
+      <p class="lede"><code>throw</code> walks frames until <code>catch</code>, running destructors/<code>finally</code>. Cost is on the throw path (and it can block inlining). <code>Result</code>/<code>Either</code> is a tagged value you match; nothing unwinds. <code>errno</code> is a thread-local int after a C call. Pick one policy per layer.</p>
+    </header>
+    <section class="stage stage--wide">
+      <div class="stage-inner">
+        <div class="trio">
+          <div class="box">
+            <p class="col-label">Rare · control flow</p>
+            <h2 class="box-title">throw</h2>
+            <div class="codeblock">try { foo() }
+catch (e) { … }
+finally { … }</div>
+            <p class="caption">Unwinds the stack. Cheap if you don’t throw. A thrown 404 in a hot parser is a problem.</p>
+          </div>
+          <div class="box box--pool">
+            <p class="col-label">Expected · a value</p>
+            <h2 class="box-title">Result</h2>
+            <div class="codeblock">Rust Result&lt;T,E&gt;
+Go (val, err)
+match / if err</div>
+            <p class="caption">File-not-found is data. Catching to convert to Result is a boundary, not a style mix inside a function.</p>
+          </div>
+          <div class="box">
+            <p class="col-label">C · thread-local int</p>
+            <h2 class="box-title">errno</h2>
+            <div class="codeblock">n = read(fd, …);
+if (n &lt; 0)
+  errno  // ENOENT…</div>
+            <p class="caption">Return −1, then read <code>errno</code>. Not a global across threads. Ignoring it is a bug.</p>
+          </div>
+        </div>
+        <div class="deck">
+          <div class="deck-row"><span class="deck-k">What</span><p>Control-flow vs data. Exceptions for rare failure; Result for expected failure. Mixing them is a layer boundary, not an accident in the middle of a loop.</p></div>
+          <div class="deck-row"><span class="deck-k">Why</span><p>API design. Why Go doesn’t have exceptions. Why a hot parser that <code>throw</code>s on every bad token is a profile, not a policy.</p></div>
+          <div class="deck-row deck-row--trap"><span class="deck-k">Trap</span><p>Using exceptions for every missing map key. Swallowing <code>catch (Exception e) {}</code>. Ignoring <code>errno</code> after a −1. Checking <code>errno</code> after a success.</p></div>
+        </div>
+      </div>
+    </section>
+    <footer class="foot"><p class="one-liner"></p><p class="plate-id">Plate 335 / 375</p></footer>
+  </article>
+</body>
+</html>

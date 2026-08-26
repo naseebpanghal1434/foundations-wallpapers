@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PLATE 147 — Meet, then walk from head.</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@800;900&family=Fraunces:ital,opsz,wght@1,9..144,400;1,9..144,500&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/poster.css">
+</head>
+<body>
+  <article class="poster" data-track="dsa">
+    <span class="mark mark--tl"></span><span class="mark mark--tr"></span><span class="mark mark--bl"></span><span class="mark mark--br"></span>
+    <p class="spine">Foundations series — software engineering mental models</p>
+    <div class="rule"></div><div class="ghost">147</div><div class="vignette"></div>
+    <svg class="grain" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="4" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(#n)"></rect></svg>
+    <header class="mast">
+      <p class="kicker"><span>DSA</span><span class="dot"></span><span class="whisper">Floyd step two</span></p>
+      <h1 class="title">Meet, then walk <span class="title-accent">from head.</span></h1>
+      <p class="lede">Where the cycle begins: first find a meeting point (plate 144). Then put one pointer at head, keep the other at the meeting point, walk both by one. They meet at the entrance. Why: if head-to-start is <code>a</code>, start-to-meet is <code>b</code>, cycle is <code>c</code>, then <code>a = kc − b</code> — the remaining walk around equals <code>a</code>.</p>
+    </header>
+    <section class="stage">
+      <div class="stage-inner">
+        <div class="steps">
+          <div class="step"><span class="step-n">1</span><p class="step-copy">Phase 1 — detect, don’t locate<span>1→2→3→4→5→3. Slow+1, fast+2, meet at 4. Meeting ≠ start. If you only needed yes/no, stop here (plate 144).</span></p><span class="step-meta">meet</span></div>
+          <div class="step step--hit"><span class="step-n">2</span><p class="step-copy">Phase 2 — one pointer back to head<span><code>p = head</code> (1), <code>q = meet</code> (4). Both step 1: (2,5), then (3,3). Entrance = 3. Speed 2 in phase 2 is the bug.</span></p><span class="step-meta">walk</span></div>
+          <div class="step"><span class="step-n">3</span><p class="step-copy">Same graph, no extra memory<span>Find duplicate number (LC 287): <code>nums[i]</code> as next. Do not mutate <code>next</code> to detect — that ruins the list. Resetting both to head skips the math.</span></p><span class="step-meta">index</span></div>
+        </div>
+        <div class="deck">
+          <div class="deck-row"><span class="deck-k">What</span><p>Two-phase Floyd. Phase 1 detects; phase 2 locates. You do not need to recite the full proof — state <code>a</code> equals the remaining distance around the cycle. O(n) time, O(1) space.</p></div>
+          <div class="deck-row"><span class="deck-k">Why</span><p>LeetCode 142. Also: duplicate in a 1..n array as a linked list of indices. Interviewers want the second phase, not just “I would store nodes in a set.”</p></div>
+          <div class="deck-row deck-row--trap"><span class="deck-k">Trap</span><p>Resetting both pointers to head. Walking fast at speed 2 in phase 2. Treating the meeting node as the entrance. Mutating <code>next</code> to detect (ruins the list). Off-by-one proofs you don’t need — the walk is the proof.</p></div>
+        </div>
+      </div>
+    </section>
+    <footer class="foot"><p class="one-liner"></p><p class="plate-id">Plate 147 / 200</p></footer>
+  </article>
+</body>
+</html>

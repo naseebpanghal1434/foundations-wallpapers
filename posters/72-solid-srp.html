@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PLATE 72 — One reason to change.</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@800;900&family=Fraunces:ital,opsz,wght@1,9..144,400;1,9..144,500&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/poster.css">
+</head>
+<body>
+  <article class="poster" data-track="lang">
+    <span class="mark mark--tl"></span><span class="mark mark--tr"></span><span class="mark mark--bl"></span><span class="mark mark--br"></span>
+    <p class="spine">Foundations series — software engineering mental models</p>
+    <div class="rule"></div><div class="ghost">72</div><div class="vignette"></div>
+    <svg class="grain" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="4" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(#n)"></rect></svg>
+    <header class="mast">
+      <p class="kicker"><span>Language</span><span class="dot"></span><span class="whisper">SRP = one actor</span></p>
+      <h1 class="title">One reason <span class="title-accent">to change.</span></h1>
+      <p class="lede">SOLID is five design constraints. SRP (Single Responsibility): a module has one reason to change — one actor who would request an edit. A class that charges a card, writes a PDF, and emails finance has three actors, so three reasons. Not “one method per file.” Interviews start with S because the God class fails the rest too.</p>
+    </header>
+    <section class="stage stage--wide">
+      <div class="stage-inner">
+        <div class="facts facts-5">
+          <div class="fact fact--hit">
+            <p class="fact-k">S</p>
+            <p class="fact-n">One actor</p>
+            <p class="fact-c">Payroll rules ≠ PDF layout. Split the God class by who asks you to edit it.</p>
+          </div>
+          <div class="fact">
+            <p class="fact-k">O</p>
+            <p class="fact-n">Extend</p>
+            <p class="fact-c">Open for extension, closed for edits. New type, not another <code>if</code> in the switch.</p>
+          </div>
+          <div class="fact">
+            <p class="fact-k">L</p>
+            <p class="fact-n">Substitute</p>
+            <p class="fact-c">Subtype honors the parent. Square is not a Rectangle (plate 66).</p>
+          </div>
+          <div class="fact">
+            <p class="fact-k">I</p>
+            <p class="fact-n">Thin iface</p>
+            <p class="fact-c">Don’t force unused methods. Many small interfaces, not one fat one.</p>
+          </div>
+          <div class="fact">
+            <p class="fact-k">D</p>
+            <p class="fact-n">Inject</p>
+            <p class="fact-c">Depend on an abstraction. <code>new Stripe()</code> inside the class is the smell.</p>
+          </div>
+        </div>
+        <div class="deck">
+          <div class="deck-row"><span class="deck-k">What</span><p>S = one actor, not one function. O = add a plugin (polymorphism, plate 65). L = is-a for real. I = no kitchen-sink interface. D = inject the mailer; the module does not construct its world.</p></div>
+          <div class="deck-row"><span class="deck-k">Why</span><p>God classes collect merge conflicts and bugs. SDE 1/2: define SRP with an example, sketch the other four in a sentence, say when you’d skip them (a 30-line script).</p></div>
+          <div class="deck-row deck-row--trap"><span class="deck-k">Trap</span><p><code>Order</code> that validates, charges, emails, PDFs, and ticks inventory. SRP as “one function per file.” Applying all of SOLID to a weekend script.</p></div>
+        </div>
+      </div>
+    </section>
+    <footer class="foot"><p class="one-liner"></p><p class="plate-id">Plate 72 / 375</p></footer>
+  </article>
+</body>
+</html>

@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PLATE 28 — Who builds the HTML?</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@800;900&family=Fraunces:ital,opsz,wght@1,9..144,400;1,9..144,500&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/poster.css">
+</head>
+<body>
+  <article class="poster" data-track="frontend">
+    <span class="mark mark--tl"></span><span class="mark mark--tr"></span><span class="mark mark--bl"></span><span class="mark mark--br"></span>
+    <p class="spine">Foundations series — software engineering mental models</p>
+    <div class="rule"></div><div class="ghost">28</div><div class="vignette"></div>
+    <svg class="grain" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="4" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(#n)"></rect></svg>
+    <header class="mast">
+      <p class="kicker"><span>Frontend</span><span class="dot"></span><span class="whisper">CSR · SSR · SSG</span></p>
+      <h1 class="title">Who builds <span class="title-accent">the HTML?</span></h1>
+      <p class="lede">Three answers. CSR: the server sends an empty shell, the browser builds the page. SSR: the server renders HTML per request, then the browser hydrates. SSG: HTML is built at deploy time. SEO, first paint, and personalization all hang on this choice.</p>
+    </header>
+    <section class="stage stage--wide">
+      <div class="stage-inner">
+        <div class="trio">
+          <div class="box">
+            <p class="col-label">Browser does it</p>
+            <h2 class="box-title">CSR</h2>
+            <div class="codeblock">&lt;div id="root"&gt;&lt;/div&gt;
++ bundle.js</div>
+            <div class="bullets">
+              <div>Fast deploys. Great for dashboards.</div>
+              <div>First paint waits on JS.</div>
+              <div>Empty HTML for crawlers unless you cheat.</div>
+            </div>
+          </div>
+          <div class="box box--pool">
+            <p class="col-label">Server, each request</p>
+            <h2 class="box-title">SSR</h2>
+            <div class="codeblock">HTML with data
+then hydrate in the browser</div>
+            <div class="bullets">
+              <div>User-specific HTML. Good SEO.</div>
+              <div>TTFB includes your DB.</div>
+              <div>Hydration must match the HTML.</div>
+            </div>
+          </div>
+          <div class="box">
+            <p class="col-label">At build time</p>
+            <h2 class="box-title">SSG</h2>
+            <div class="codeblock">npm run build
+→ /docs/index.html</div>
+            <div class="bullets">
+              <div>CDN-fast. Docs, blogs, marketing.</div>
+              <div>Stale until the next build.</div>
+              <div>Not for per-user data.</div>
+            </div>
+          </div>
+        </div>
+        <div class="deck">
+          <div class="deck-row"><span class="deck-k">What</span><p>CSR = SPA. SSR = HTML on the server now (Next.js server components / <code>getServerSideProps</code>). SSG = HTML at build (or ISR: rebuild in the background). Hydration = attach events to existing HTML.</p></div>
+          <div class="deck-row"><span class="deck-k">Why</span><p>Interviews ask this to see if you know why a blog and a logged-in app should not use the same strategy. Performance and SEO are consequences of <em>who</em> rendered.</p></div>
+          <div class="deck-row deck-row--trap"><span class="deck-k">Trap</span><p>SSR for a page that is all client state (you paid TTFB for empty useful HTML). SSG for prices that change every minute. Hydration mismatch: server HTML ≠ first client render (random ids, <code>Date.now()</code>, <code>window</code>).</p></div>
+        </div>
+      </div>
+    </section>
+    <footer class="foot"><p class="one-liner"></p><p class="plate-id">Plate 28 / 100</p></footer>
+  </article>
+</body>
+</html>

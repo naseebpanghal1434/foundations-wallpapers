@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PLATE 205 — Notify now, or notify later.</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@800;900&family=Fraunces:ital,opsz,wght@1,9..144,400;1,9..144,500&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/poster.css">
+</head>
+<body>
+  <article class="poster" data-track="system">
+    <span class="mark mark--tl"></span><span class="mark mark--tr"></span><span class="mark mark--bl"></span><span class="mark mark--br"></span>
+    <p class="spine">Foundations series — software engineering mental models</p>
+    <div class="rule"></div><div class="ghost">205</div><div class="vignette"></div>
+    <svg class="grain" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="4" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(#n)"></rect></svg>
+    <header class="mast">
+      <p class="kicker"><span>System</span><span class="dot"></span><span class="whisper">Push · email · digest</span></p>
+      <h1 class="title">Notify now, <span class="title-accent">or notify later.</span></h1>
+      <p class="lede">A notification is an event the request must not deliver. Write the row, enqueue. Worker picks APNs/FCM, email, SMS, or in-app. Online + high priority = now; else a digest. Collapse 200 likes → 1 push. Dead token → <code>410 Gone</code>.</p>
+    </header>
+    <section class="stage stage--wide">
+      <div class="stage-inner">
+        <div class="trio">
+          <div class="box">
+            <p class="col-label">Write, then enqueue</p>
+            <h2 class="box-title">Event</h2>
+            <div class="codeblock">like
+comment
+payment
+outbox (plate 224)</div>
+            <p class="caption">Producer does not call APNs. The request commits the event; a worker owns delivery.</p>
+          </div>
+          <div class="box box--pool">
+            <p class="col-label">Prefs · quiet · collapse</p>
+            <h2 class="box-title">Fan-out</h2>
+            <div class="codeblock ok">prefs / channel
+quiet 22:00–08:00
+collapse
+  200 likes → 1
+rate limit (201)</div>
+            <p class="caption">200 like events are one push. Same fork as plate 203. The user is a budget.</p>
+          </div>
+          <div class="box">
+            <p class="col-label">Now, or a digest</p>
+            <h2 class="box-title">Channel</h2>
+            <div class="codeblock">APNs / FCM
+email / SMS
+in-app log
+410 → drop token</div>
+            <p class="caption">Inbox is a log like chat (plate 202). APNs 200 ≠ seen. Idempotent send (plate 225).</p>
+          </div>
+        </div>
+        <div class="deck">
+          <div class="deck-row"><span class="deck-k">What</span><p>Producer writes an event. Preferences live next to the user. Idempotent send so retries do not double-text. In-app inbox is a log, not the push receipt.</p></div>
+          <div class="deck-row"><span class="deck-k">Why</span><p>Notification system design: async, fan-out, collapse, channels, and “the producer is not the pusher.”</p></div>
+          <div class="deck-row deck-row--trap"><span class="deck-k">Trap</span><p>SMTP from the API box. One push per like. No quiet hours. Storing only the push (no in-app history). Treating APNs success as “the user saw it.”</p></div>
+        </div>
+      </div>
+    </section>
+    <footer class="foot"><p class="one-liner"></p><p class="plate-id">Plate 205 / 375</p></footer>
+  </article>
+</body>
+</html>

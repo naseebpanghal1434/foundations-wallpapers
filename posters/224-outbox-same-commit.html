@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PLATE 224 — Write the outbox in the same commit.</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@800;900&family=Fraunces:ital,opsz,wght@1,9..144,400;1,9..144,500&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/poster.css">
+</head>
+<body>
+  <article class="poster" data-track="database">
+    <span class="mark mark--tl"></span><span class="mark mark--tr"></span><span class="mark mark--bl"></span><span class="mark mark--br"></span>
+    <p class="spine">Foundations series — software engineering mental models</p>
+    <div class="rule"></div><div class="ghost">224</div><div class="vignette"></div>
+    <svg class="grain" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="4" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(#n)"></rect></svg>
+    <header class="mast">
+      <p class="kicker"><span>Database</span><span class="dot"></span><span class="whisper">Dual write · poller</span></p>
+      <h1 class="title">Write the outbox <span class="title-accent">in the same commit.</span></h1>
+      <p class="lede">Dual write (<code>COMMIT</code> order, then <code>Kafka.send</code>) can lose or phantom the event. Outbox: <code>INSERT order</code> and <code>INSERT outbox</code> in one COMMIT — that COMMIT is WAL (plate 95). A poller <code>SELECT … FOR UPDATE SKIP LOCKED</code> publishes, then marks sent.</p>
+    </header>
+    <section class="stage">
+      <div class="stage-inner">
+        <div class="compare">
+          <div class="compare-pane">
+            <p class="pane-label">Two writes, two fates</p>
+            <h2 class="pane-title">Dual write</h2>
+            <div class="codeblock bad">COMMIT order
+crash → Kafka never
+  lost event
+
+publish, then crash
+  before COMMIT
+  phantom order</div>
+            <p class="caption">If you say “we’ll publish after commit,” they kill the process in the next sentence. The bus is not in the WAL.</p>
+          </div>
+          <div class="compare-vs">vs</div>
+          <div class="compare-pane compare-pane--hit">
+            <p class="pane-label">One transaction · WAL</p>
+            <h2 class="pane-title">Outbox</h2>
+            <div class="codeblock ok">BEGIN
+  INSERT orders
+  INSERT outbox
+COMMIT  -- fsync WAL
+
+poller:
+  SELECT … FOR UPDATE
+  SKIP LOCKED
+  publish; mark sent</div>
+            <p class="caption">The row and the event share one fsync. CDC / Debezium is the same idea; event order is commit order. Delete or archive after ack.</p>
+          </div>
+        </div>
+        <div class="deck">
+          <div class="deck-row"><span class="deck-k">What</span><p>The database COMMIT is the atomic boundary. The bus is downstream replay, like crash recovery from WAL. Outbox rows are the durable queue.</p></div>
+          <div class="deck-row"><span class="deck-k">Why</span><p>The dual-write question. Same-commit outbox (or CDC) is how the event cannot diverge from the row.</p></div>
+          <div class="deck-row deck-row--trap"><span class="deck-k">Trap</span><p>Publish then commit. Commit then publish without an outbox. Poller without <code>SKIP LOCKED</code> so two publishers double-send. Giant outbox never cleaned.</p></div>
+        </div>
+      </div>
+    </section>
+    <footer class="foot"><p class="one-liner"></p><p class="plate-id">Plate 224 / 375</p></footer>
+  </article>
+</body>
+</html>

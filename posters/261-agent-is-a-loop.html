@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PLATE 261 — An agent is a loop of tools.</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@800;900&family=Fraunces:ital,opsz,wght@1,9..144,400;1,9..144,500&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/poster.css">
+</head>
+<body>
+  <article class="poster" data-track="genai">
+    <span class="mark mark--tl"></span><span class="mark mark--tr"></span><span class="mark mark--bl"></span><span class="mark mark--br"></span>
+    <p class="spine">Foundations series — software engineering mental models</p>
+    <div class="rule"></div><div class="ghost">261</div><div class="vignette"></div>
+    <svg class="grain" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="4" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(#n)"></rect></svg>
+    <header class="mast">
+      <p class="kicker"><span>GenAI</span><span class="dot"></span><span class="whisper">Observe · act · bound</span></p>
+      <h1 class="title">An agent is a loop <span class="title-accent">of tools.</span></h1>
+      <p class="lede">An agent is not a smarter model. It is a loop: model → tool (plate 47) → observation → model, until it stops or you kill it — bound the steps, the tools, and the blast radius (plate 272).</p>
+    </header>
+    <section class="stage">
+      <div class="stage-inner">
+        <div class="steps">
+          <div class="step"><span class="step-n">1</span><p class="step-copy">User asks<span>State is the message list. Logs are the product.</span></p><span class="step-meta">observe</span></div>
+          <div class="step"><span class="step-n">2</span><p class="step-copy">Model: tool search(q)<span>The model proposes a call. It does not run it.</span></p><span class="step-meta">act</span></div>
+          <div class="step step--hit"><span class="step-n">3</span><p class="step-copy">You run search, return hits<span>You execute tools. Then the model clicks an id or answers.</span></p><span class="step-meta">you</span></div>
+          <div class="step"><span class="step-n">4</span><p class="step-copy">Stop at N=8<span>ReAct is this with thoughts. Multi-agent is extra loops and extra failure.</span></p><span class="step-meta">bound</span></div>
+        </div>
+        <div class="deck">
+          <div class="deck-row"><span class="deck-k">What</span><p>LLM + tools + a termination condition. You execute; the model does not.</p></div>
+          <div class="deck-row"><span class="deck-k">Why</span><p>Build an agent only if the task is multi-step and tool-shaped. Otherwise RAG or one tool call.</p></div>
+          <div class="deck-row deck-row--trap"><span class="deck-k">Trap</span><p>Unbounded loops. Tools that can DELETE. No idempotency on the tool side (plate 225). Calling it autonomous when it is a for-loop.</p></div>
+        </div>
+      </div>
+    </section>
+    <footer class="foot"><p class="one-liner"></p><p class="plate-id">Plate 261 / 286</p></footer>
+  </article>
+</body>
+</html>

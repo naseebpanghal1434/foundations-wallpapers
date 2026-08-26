@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PLATE 331 — volatile is for MMIO, not mutexes.</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@800;900&family=Fraunces:ital,opsz,wght@1,9..144,400;1,9..144,500&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/poster.css">
+</head>
+<body>
+  <article class="poster" data-track="lang">
+    <span class="mark mark--tl"></span><span class="mark mark--tr"></span><span class="mark mark--bl"></span><span class="mark mark--br"></span>
+    <p class="spine">Foundations series — software engineering mental models</p>
+    <div class="rule"></div><div class="ghost">331</div><div class="vignette"></div>
+    <svg class="grain" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="4" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(#n)"></rect></svg>
+    <header class="mast">
+      <p class="kicker"><span>Lang</span><span class="dot"></span><span class="whisper">C · not Java</span></p>
+      <h1 class="title">volatile is for MMIO, <span class="title-accent">not mutexes.</span></h1>
+      <p class="lede">C <code>volatile</code>: every access hits memory; the compiler will not reorder those accesses versus other volatiles — for device registers that change without the compiler knowing. It is not atomic and not a barrier for other threads. Java <code>volatile</code> is a different word (visibility ≈ acquire/release).</p>
+    </header>
+    <section class="stage">
+      <div class="stage-inner">
+        <div class="compare">
+          <div class="compare-pane">
+            <p class="pane-label">Wrong · not a lock</p>
+            <h2 class="pane-title">Spin on it</h2>
+            <div class="codeblock">volatile int flag;
+while (!flag) {}
+  // not hoisted — still
+  // not atomic
+  // no acquire
+  // ARM may never see
+  // the other core's 1
+
+plain bool: same bug</div>
+            <p class="caption">Threading needs <code>atomic_int</code> / <code>std::atomic</code> / a mutex (plate 74, 330). MSVC has extra flags; they are still not a mutex.</p>
+          </div>
+          <div class="compare-vs">vs</div>
+          <div class="compare-pane compare-pane--hit">
+            <p class="pane-label">Device register · one location</p>
+            <h2 class="pane-title">MMIO</h2>
+            <div class="codeblock">*(volatile uint32_t*)
+  0x40001000 = 1;
+
+each store must hit
+the register, not a
+cached copy in a GPR
+
+atomic_int flag;
+flag.store(1, release);</div>
+            <p class="caption">The compiler must not coalesce MMIO writes. That is the job. Coherence with another CPU is not.</p>
+          </div>
+        </div>
+        <div class="deck">
+          <div class="deck-row"><span class="deck-k">What</span><p>Compiler I/O to a location. No atomicity, no inter-thread happens-before. Java <code>volatile</code> is the JMM visibility keyword — do not port the word to C.</p></div>
+          <div class="deck-row"><span class="deck-k">Why</span><p>Drivers, embedded, memory-mapped status registers. The #1 C concurrency misconception in interviews.</p></div>
+          <div class="deck-row deck-row--trap"><span class="deck-k">Trap</span><p>Porting Java <code>volatile</code> to C. Signaling a thread with a plain <code>bool</code> on ARM. Using <code>volatile</code> to “keep the compiler from optimizing” locals in a hot loop — that forces RAM (plate 312).</p></div>
+        </div>
+      </div>
+    </section>
+    <footer class="foot"><p class="one-liner"></p><p class="plate-id">Plate 331 / 375</p></footer>
+  </article>
+</body>
+</html>

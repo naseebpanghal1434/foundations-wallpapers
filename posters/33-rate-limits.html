@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PLATE 33 — Rate limits are a budget.</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@800;900&family=Fraunces:ital,opsz,wght@1,9..144,400;1,9..144,500&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/poster.css">
+</head>
+<body>
+  <article class="poster" data-track="backend">
+    <span class="mark mark--tl"></span><span class="mark mark--tr"></span><span class="mark mark--bl"></span><span class="mark mark--br"></span>
+    <p class="spine">Foundations series — software engineering mental models</p>
+    <div class="rule"></div><div class="ghost">33</div><div class="vignette"></div>
+    <svg class="grain" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="4" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(#n)"></rect></svg>
+    <header class="mast">
+      <p class="kicker"><span>Backend</span><span class="dot"></span><span class="whisper">token bucket · 429</span></p>
+      <h1 class="title">Rate limits are <span class="title-accent">a budget.</span></h1>
+      <p class="lede">A rate limit is tokens per subject per window. Token bucket: capacity C (burst), refill r tokens/s, each request spends 1. Empty bucket → HTTP 429 + <code>Retry-After</code>. Store the bucket in Redis so every replica shares one counter — not RAM per process.</p>
+    </header>
+    <section class="stage stage--wide">
+      <div class="stage-inner">
+        <div class="facts">
+          <div class="fact fact--hit">
+            <p class="fact-k">burst C</p>
+            <p class="fact-n">20 tok</p>
+            <p class="fact-c">Bucket capacity. A burst of 20 is allowed immediately; then you wait on refill.</p>
+          </div>
+          <div class="fact">
+            <p class="fact-k">refill r</p>
+            <p class="fact-n">10 /s</p>
+            <p class="fact-c">tok = min(C, tok + r·Δt). 0 tokens → reject. GCRA / leaky bucket is the dual.</p>
+          </div>
+          <div class="fact">
+            <p class="fact-k">reject</p>
+            <p class="fact-n">429</p>
+            <p class="fact-c">Retry-After: 2. X-RateLimit-Limit / Remaining / Reset so honest clients back off.</p>
+          </div>
+          <div class="fact">
+            <p class="fact-k">shared store</p>
+            <p class="fact-n">INCR</p>
+            <p class="fact-c">Redis <code>INCR key</code> + <code>EXPIRE</code> (Lua so check+set is one op). Key: user:42:w or api_key.</p>
+          </div>
+        </div>
+        <div class="deck">
+          <div class="deck-row"><span class="deck-k">What</span><p>Limit by user id, API key, IP, or route. Fixed window is one INCR; it spikes at the seam (100 at 00:59.9 + 100 at 01:00.0 = 200 in 100 ms). Token bucket / sliding window smooth that. Login is a tighter bucket (credential stuffing).</p></div>
+          <div class="deck-row"><span class="deck-k">Why</span><p>Protects the DB pool (plate 03) and the bill. System-design interviews almost always include a limiter: where it lives, the key, atomic increment, 429 vs drop.</p></div>
+          <div class="deck-row deck-row--trap"><span class="deck-k">Trap</span><p>In-memory limits per instance (3 boxes = 3× the budget behind plate 35). IP-only (CGNAT shares one address; mobile IPs rotate). 429 on a charge with no idempotency key (plate 29).</p></div>
+        </div>
+      </div>
+    </section>
+    <footer class="foot"><p class="one-liner"></p><p class="plate-id">Plate 33 / 375</p></footer>
+  </article>
+</body>
+</html>

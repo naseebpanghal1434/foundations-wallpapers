@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PLATE 115 — Always pop the next best.</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@800;900&family=Fraunces:ital,opsz,wght@1,9..144,400;1,9..144,500&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/poster.css">
+</head>
+<body>
+  <article class="poster" data-track="dsa">
+    <span class="mark mark--tl"></span><span class="mark mark--tr"></span><span class="mark mark--bl"></span><span class="mark mark--br"></span>
+    <p class="spine">Foundations series — software engineering mental models</p>
+    <div class="rule"></div><div class="ghost">115</div><div class="vignette"></div>
+    <svg class="grain" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="4" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(#n)"></rect></svg>
+    <header class="mast">
+      <p class="kicker"><span>DSA</span><span class="dot"></span><span class="whisper">Top-k · Dijkstra</span></p>
+      <h1 class="title">Always pop <span class="title-accent">the next best.</span></h1>
+      <p class="lede">A priority queue pops the smallest (or largest) currently stored, not the oldest. Under the hood: a heap. Keep k, don’t sort n (plate 63). Dijkstra pops the closest unsettled node. Merge k lists pops the smallest head (plate 161).</p>
+    </header>
+    <section class="stage stage--wide">
+      <div class="stage-inner">
+        <div class="trio">
+          <div class="box box--pool">
+            <p class="col-label">Min-heap of size k</p>
+            <h2 class="box-title">Top-k</h2>
+            <div class="codeblock">k-frequent on counts
+size k, root = weakest
+if x.count &gt; root:
+  replace root</div>
+            <p class="caption">O(n log k). You did not sort n. k-largest is a <em>min</em>-heap of k.</p>
+          </div>
+          <div class="box">
+            <p class="col-label">Next closest node</p>
+            <h2 class="box-title">Dijkstra</h2>
+            <div class="codeblock">(dist, node)
+pop smallest dist
+relax edges, push
+often push duplicates</div>
+            <p class="caption">Binary heap has no cheap decrease-key — find is O(n). Push again, skip stale pops.</p>
+          </div>
+          <div class="box">
+            <p class="col-label">Next deadline</p>
+            <h2 class="box-title">Schedule</h2>
+            <div class="codeblock">heap of (end, id)
+pop the task that
+must finish next
+meeting rooms II</div>
+            <p class="caption">Min-heap of end times (plate 159). Median stream uses two heaps (plate 164).</p>
+          </div>
+        </div>
+        <p class="caption">Peek is O(1). Push/pop O(log n). Change-priority is not a standard binary-heap op.</p>
+        <div class="deck">
+          <div class="deck-row"><span class="deck-k">What</span><p>Abstract: insert + extract-min. Concrete: binary heap (plate 114). Fibonacci heap is theory. If you need decrease-key often, say so — then you are not in the default Java <code>PriorityQueue</code>.</p></div>
+          <div class="deck-row"><span class="deck-k">Why</span><p>Any “next best” loop: top-k, Dijkstra, merge k lists, meeting rooms. Interviews: name the comparator out loud so they know you didn’t flip min/max.</p></div>
+          <div class="deck-row deck-row--trap"><span class="deck-k">Trap</span><p>Sorting on every insert — O(n) insert. Using a PQ for FIFO (that’s a queue). Forgetting Java <code>PriorityQueue</code> is a min-heap; max needs a comparator or negatives. Same flip as plate 63.</p></div>
+        </div>
+      </div>
+    </section>
+    <footer class="foot"><p class="one-liner"></p><p class="plate-id">Plate 115 / 200</p></footer>
+  </article>
+</body>
+</html>

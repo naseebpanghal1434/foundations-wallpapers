@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PLATE 27 — useEffect is a sync, not mount.</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@800;900&family=Fraunces:ital,opsz,wght@1,9..144,400;1,9..144,500&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/poster.css">
+</head>
+<body>
+  <article class="poster" data-track="frontend">
+    <span class="mark mark--tl"></span><span class="mark mark--tr"></span><span class="mark mark--bl"></span><span class="mark mark--br"></span>
+    <p class="spine">Foundations series — software engineering mental models</p>
+    <div class="rule"></div><div class="ghost">27</div><div class="vignette"></div>
+    <svg class="grain" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="4" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(#n)"></rect></svg>
+    <header class="mast">
+      <p class="kicker"><span>Frontend</span><span class="dot"></span><span class="whisper">React hooks</span></p>
+      <h1 class="title">useEffect is a sync, <span class="title-accent">not mount.</span></h1>
+      <p class="lede"><code>useEffect</code> means: keep this side effect in sync with these values. The dependency array is the list of values. Empty array is not “componentDidMount” — Strict Mode will run it twice in dev to catch missing cleanup.</p>
+    </header>
+    <section class="stage">
+      <div class="stage-inner">
+        <div class="compare">
+          <div class="compare-pane">
+            <p class="pane-label">Wrong mental model</p>
+            <h2 class="pane-title">Lifecycle</h2>
+            <div class="codeblock bad">useEffect(() => {
+  fetch(`/users/${id}`)
+}, [])          // stale id forever
+
+useEffect(() => {
+  fetch(`/users/${id}`)
+})              // fetch every render</div>
+            <p class="caption">[] ignored id. No array = run after every paint. Both hurt.</p>
+          </div>
+          <div class="compare-vs">vs</div>
+          <div class="compare-pane compare-pane--hit">
+            <p class="pane-label">Sync with the world</p>
+            <h2 class="pane-title">Deps + cleanup</h2>
+            <div class="codeblock ok">useEffect(() => {
+  let live = true
+  fetch(`/users/${id}`).then(...)
+  return () => { live = false }
+}, [id])        // re-run when id changes</div>
+            <p class="caption">When <code>id</code> changes, cleanup the old fetch, start the new one.</p>
+          </div>
+        </div>
+        <div class="deck">
+          <div class="deck-row"><span class="deck-k">What</span><p>After paint, React runs effects whose deps changed. The function you return is cleanup for the previous run. If it talks to the world (network, timers, subscriptions), it belongs in an effect. If it computes UI, it does not.</p></div>
+          <div class="deck-row"><span class="deck-k">Why</span><p>Data fetching, event listeners, and <code>document.title</code> are sync problems. Putting fetch in the body of the component fires during render. Missing deps is a stale closure (plate 23).</p></div>
+          <div class="deck-row deck-row--trap"><span class="deck-k">Trap</span><p>Lying to the linter (<code>eslint-disable</code> on deps). Object/array deps created inline change every render. For “mount once” data, prefer a loader / TanStack Query / a key on the component, not empty deps plus a shrug.</p></div>
+        </div>
+      </div>
+    </section>
+    <footer class="foot"><p class="one-liner"></p><p class="plate-id">Plate 27 / 100</p></footer>
+  </article>
+</body>
+</html>

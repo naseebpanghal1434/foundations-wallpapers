@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PLATE 156 — The short side moves.</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@800;900&family=Fraunces:ital,opsz,wght@1,9..144,400;1,9..144,500&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/poster.css">
+</head>
+<body>
+  <article class="poster" data-track="dsa">
+    <span class="mark mark--tl"></span><span class="mark mark--tr"></span><span class="mark mark--bl"></span><span class="mark mark--br"></span>
+    <p class="spine">Foundations series — software engineering mental models</p>
+    <div class="rule"></div><div class="ghost">156</div><div class="vignette"></div>
+    <svg class="grain" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="4" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(#n)"></rect></svg>
+    <header class="mast">
+      <p class="kicker"><span>DSA</span><span class="dot"></span><span class="whisper">Area = min(h) × width</span></p>
+      <h1 class="title">The short side <span class="title-accent">moves.</span></h1>
+      <p class="lede">Container with most water: two lines form a tank, area = <code>min(h[lo], h[hi]) * (hi − lo)</code>. Start at both ends. The water is limited by the shorter line — moving the taller cannot help (width shrinks, min height cannot rise). Move the short side. O(n).</p>
+    </header>
+    <section class="stage">
+      <div class="stage-inner">
+        <div class="compare">
+          <div class="compare-pane compare-pane--hit">
+            <p class="pane-label">One tank · not unit wells</p>
+            <h2 class="pane-title">Move short</h2>
+            <div class="codeblock ok">[1,8,6,2,5,4,8,3,7]
+lo=0 hi=8
+min(1,7)*8 = 8   move lo
+min(8,7)*7 = 49  best
+min(8,3)*6 = 18  move hi
+… best 49</div>
+            <p class="caption">Any pair inside with the current short side is worse: smaller width, height ≤ that short. Greedy on the bottleneck.</p>
+          </div>
+          <div class="compare-vs">vs</div>
+          <div class="compare-pane">
+            <p class="pane-label">Wrong cousins</p>
+            <h2 class="pane-title">Not rain</h2>
+            <div class="codeblock bad">n² all pairs — correct,
+slow
+
+move the tall side —
+width dies, min cannot
+rise. Area only shrinks.
+
+sort the heights —
+destroys width</div>
+            <p class="caption">Not trapping rain (plate 155). One rectangle between two lines, not a well on every index.</p>
+          </div>
+        </div>
+        <div class="deck">
+          <div class="deck-row"><span class="deck-k">What</span><p>Two pointers on unsorted heights (the order is the geometry, not a sort — plate 54). Proof: the current short side cannot form a better tank with anyone inside the range. So it can be discarded.</p></div>
+          <div class="deck-row"><span class="deck-k">Why</span><p>LeetCode 11. Two-pointer poster child. Say “move the short side” before you type the loop. Area is min-height times width, once, for the pair you chose.</p></div>
+          <div class="deck-row deck-row--trap"><span class="deck-k">Trap</span><p>Sorting the heights — destroys indices and width. Moving both pointers. Moving the tall side. Using this for rain water (unit bars, both maxes, plate 155).</p></div>
+        </div>
+      </div>
+    </section>
+    <footer class="foot"><p class="one-liner"></p><p class="plate-id">Plate 156 / 200</p></footer>
+  </article>
+</body>
+</html>

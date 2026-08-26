@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PLATE 185 — One queen per row. Attack is a set.</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@800;900&family=Fraunces:ital,opsz,wght@1,9..144,400;1,9..144,500&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/poster.css">
+</head>
+<body>
+  <article class="poster" data-track="dsa">
+    <span class="mark mark--tl"></span><span class="mark mark--tr"></span><span class="mark mark--bl"></span><span class="mark mark--br"></span>
+    <p class="spine">Foundations series — software engineering mental models</p>
+    <div class="rule"></div><div class="ghost">185</div><div class="vignette"></div>
+    <svg class="grain" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="4" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(#n)"></rect></svg>
+    <header class="mast">
+      <p class="kicker"><span>DSA</span><span class="dot"></span><span class="whisper">Cols · diags</span></p>
+      <h1 class="title">One queen per row. <span class="title-accent">Attack is a set.</span></h1>
+      <p class="lede">N-queens: place n queens so none share row, column, or diagonal. Place row by row (one per row). Sets: cols, diag (<code>r-c</code>), antidiag (<code>r+c</code>). Try each col in this row; if free, insert, recurse row+1, undo. Count vs return boards is the same search. n=8 is 92 solutions; they want the algorithm.</p>
+    </header>
+    <section class="stage">
+      <div class="stage-inner">
+        <div class="compare">
+          <div class="compare-pane compare-pane--hit">
+            <p class="pane-label">n=4 · one solution</p>
+            <h2 class="pane-title">Row by row</h2>
+            <div class="codeblock ok">. Q . .
+. . . Q
+Q . . .
+. . Q .
+
+Q at (0,1):
+  col 1, r-c -1, r+c 1
+in sets → skip that col
+undo on return</div>
+            <div class="bullets">
+              <div>Depth n, branching ≤ n. Prune on attack immediately.</div>
+              <div>LC 52 is the count. Same search, no board strings.</div>
+            </div>
+          </div>
+          <div class="compare-vs">vs</div>
+          <div class="compare-pane">
+            <p class="pane-label">O(1) attack tests</p>
+            <h2 class="pane-title">r-c, r+c</h2>
+            <div class="codeblock">\ diag: r-c constant
+/ diag: r+c constant
+
+bitmasks when n≤32:
+  cols, diag, anti as ints
+  same idea, tighter
+
+Sudoku: cell, digits,
+row/col/box sets, undo</div>
+            <div class="bullets">
+              <div>Don’t scan the whole board each try.</div>
+              <div>n=1 is one queen. They usually want all solutions.</div>
+            </div>
+          </div>
+        </div>
+        <div class="deck">
+          <div class="deck-row"><span class="deck-k">What</span><p>Backtracking with O(1) attack tests via sets: col, <code>r-c</code>, <code>r+c</code>. One queen per row so you never need a row set. Insert, recurse, undo — plate 181 with geometry.</p></div>
+          <div class="deck-row"><span class="deck-k">Why</span><p>LeetCode 51/52. The showcase backtrack. Sudoku solver is the same: choose a cell, try digits, undo, with row/col/box sets. n=8 → 92 is trivia; the sets are the point.</p></div>
+          <div class="deck-row deck-row--trap"><span class="deck-k">Trap</span><p>Checking the whole board each time instead of sets. Forgetting one diagonal family. Placing two in a row. Returning the first solution when they asked all.</p></div>
+        </div>
+      </div>
+    </section>
+    <footer class="foot"><p class="one-liner"></p><p class="plate-id">Plate 185 / 200</p></footer>
+  </article>
+</body>
+</html>

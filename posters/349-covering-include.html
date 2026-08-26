@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PLATE 349 — INCLUDE makes an index covering without extra sort keys.</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@800;900&family=Fraunces:ital,opsz,wght@1,9..144,400;1,9..144,500&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/poster.css">
+</head>
+<body>
+  <article class="poster" data-track="database">
+    <span class="mark mark--tl"></span><span class="mark mark--tr"></span><span class="mark mark--bl"></span><span class="mark mark--br"></span>
+    <p class="spine">Foundations series — software engineering mental models</p>
+    <div class="rule"></div><div class="ghost">349</div><div class="vignette"></div>
+    <svg class="grain" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="4" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(#n)"></rect></svg>
+    <header class="mast">
+      <p class="kicker"><span>Database</span><span class="dot"></span><span class="whisper">Index Only Scan</span></p>
+      <h1 class="title">INCLUDE makes an index covering <span class="title-accent">without extra sort keys.</span></h1>
+      <p class="lede">A covering index contains every column the query needs → Index Only Scan (visibility map permitting). Extra columns in the key affect sort and uniqueness. <code>INCLUDE</code> (Postgres 11+) stores them in the leaf only. <code>SELECT id, email WHERE email=?</code> → <code>INDEX (email) INCLUDE (id)</code>.</p>
+    </header>
+    <section class="stage">
+      <div class="stage-inner">
+        <div class="compare">
+          <div class="compare-pane">
+            <p class="pane-label">Both columns in the key</p>
+            <h2 class="pane-title">INDEX(email, id)</h2>
+            <div class="codeblock">unique / order
+  on email then id
+
+fanout pays for id
+in every internal node
+
+WHERE email = ?
+  still works
+WHERE id = ?
+  does not (plate 97)</div>
+            <p class="caption">Use two key columns when you <code>ORDER BY</code> or constrain both.</p>
+          </div>
+          <div class="compare-vs">vs</div>
+          <div class="compare-pane compare-pane--hit">
+            <p class="pane-label">Lookup key + leaf payload</p>
+            <h2 class="pane-title">INCLUDE (id)</h2>
+            <div class="codeblock ok">INDEX (email)
+  INCLUDE (id)
+
+seek on email
+id in the leaf
+no heap fetch
+
+Index Only Scan
+  if VM bit is set</div>
+            <p class="caption">Heap fetches if the visibility map bit is not set — you still need VACUUM (plate 341).</p>
+          </div>
+        </div>
+        <div class="deck">
+          <div class="deck-row"><span class="deck-k">What</span><p>Leaf payload vs key. Covering avoids heap I/O. <code>INCLUDE</code> does not change uniqueness or sort order.</p></div>
+          <div class="deck-row"><span class="deck-k">Why</span><p>Hot read paths. EXPLAIN should say Index Only Scan, not Index Scan plus a heap fetch per row (plate 339).</p></div>
+          <div class="deck-row deck-row--trap"><span class="deck-k">Trap</span><p>Including a 2 KiB text column (fat leaves, fanout dies — plate 337). Expecting Index Only Scan on a never-vacuumed table: VM bits stay off.</p></div>
+        </div>
+      </div>
+    </section>
+    <footer class="foot"><p class="one-liner"></p><p class="plate-id">Plate 349 / 375</p></footer>
+  </article>
+</body>
+</html>

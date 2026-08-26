@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PLATE 181 — Choose. Recurse. Undo.</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@800;900&family=Fraunces:ital,opsz,wght@1,9..144,400;1,9..144,500&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/poster.css">
+</head>
+<body>
+  <article class="poster" data-track="dsa">
+    <span class="mark mark--tl"></span><span class="mark mark--tr"></span><span class="mark mark--bl"></span><span class="mark mark--br"></span>
+    <p class="spine">Foundations series — software engineering mental models</p>
+    <div class="rule"></div><div class="ghost">181</div><div class="vignette"></div>
+    <svg class="grain" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="4" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(#n)"></rect></svg>
+    <header class="mast">
+      <p class="kicker"><span>DSA</span><span class="dot"></span><span class="whisper">The template</span></p>
+      <h1 class="title">Choose. Recurse. <span class="title-accent">Undo.</span></h1>
+      <p class="lede">Backtracking is DFS on a decision tree. Template: if done, record a copy of path; for each choice: append, recurse, pop. The pop is the whole trick — mutate one array, don’t copy at every step. Prune when a partial path cannot succeed. Time is the size of the tree (often exponential).</p>
+    </header>
+    <section class="stage">
+      <div class="stage-inner">
+        <div class="steps">
+          <div class="step"><span class="step-n">1</span><p class="step-copy">Choose, recurse, undo<span><code>[1,2]</code> subsets: <code>[] → +1 → +2 → pop 2 → pop 1 → +2</code>. One array. The pop restores the room for the next sibling.</span></p><span class="step-meta">mutate</span></div>
+          <div class="step step--hit"><span class="step-n">2</span><p class="step-copy">Copy the path when you record<span><code>ans.append(path[:])</code> — not <code>ans.append(path)</code>. Without the copy, every answer is a pointer to the last state.</span></p><span class="step-meta">path[:]</span></div>
+          <div class="step"><span class="step-n">3</span><p class="step-copy">Prune. Then pick the loop<span>Combination sum: skip if remain &lt; 0. Permutations vs subsets is whether you start the loop at <code>i+1</code> or at 0 with a <code>used[]</code>. Plates 182–186.</span></p><span class="step-meta">cut the tree</span></div>
+        </div>
+        <p class="caption">State = path + index/used. Recursion depth = path length. List-all is backtrack. Count/opt is DP — unless they want the lists.</p>
+        <div class="deck">
+          <div class="deck-row"><span class="deck-k">What</span><p>DFS on choices. Undo restores state so the next sibling sees a clean path. You copy only when recording an answer. Time is the tree, often 2<sup>n</sup> or n! — say it.</p></div>
+          <div class="deck-row"><span class="deck-k">Why</span><p>The parent of plates 182–186. If they say “all configurations,” this, not DP. DP is count/opt. Backtrack is the list. Name the choice, the undo, the prune in that order.</p></div>
+          <div class="deck-row deck-row--trap"><span class="deck-k">Trap</span><p>Appending <code>path</code> without copying. Forgetting pop. Using DP tables to list exponential answers. Sorting needed for skip-dups — and not sorting.</p></div>
+        </div>
+      </div>
+    </section>
+    <footer class="foot"><p class="one-liner"></p><p class="plate-id">Plate 181 / 200</p></footer>
+  </article>
+</body>
+</html>

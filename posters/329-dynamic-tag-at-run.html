@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PLATE 329 — A dynamic type is a tag at run.</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@800;900&family=Fraunces:ital,opsz,wght@1,9..144,400;1,9..144,500&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/poster.css">
+</head>
+<body>
+  <article class="poster" data-track="lang">
+    <span class="mark mark--tl"></span><span class="mark mark--tr"></span><span class="mark mark--bl"></span><span class="mark mark--br"></span>
+    <p class="spine">Foundations series — software engineering mental models</p>
+    <div class="rule"></div><div class="ghost">329</div><div class="vignette"></div>
+    <svg class="grain" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="4" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(#n)"></rect></svg>
+    <header class="mast">
+      <p class="kicker"><span>Lang</span><span class="dot"></span><span class="whisper">PyObject · boxed</span></p>
+      <h1 class="title">A dynamic type is <span class="title-accent">a tag at run.</span></h1>
+      <p class="lede">CPython: every value is a <code>PyObject*</code> with <code>ob_type</code>. <code>1+1</code> looks up <code>nb_add</code>. The 3.11+ specializer shortens the common path; it does not make the language statically typed. Boxing: a 64-bit int is a heap object unless interned (−5…256). That’s the 10–100× vs C.</p>
+    </header>
+    <section class="stage">
+      <div class="stage-inner">
+        <div class="steps">
+          <div class="step">
+            <span class="step-n">1</span>
+            <p class="step-copy">Box the literal<span><code>PyLong_FromLong(3)</code> — header + digits on the heap, not a machine <code>int64</code> in a register.</span></p>
+            <span class="step-meta">PyObject*</span>
+          </div>
+          <div class="step">
+            <span class="step-n">2</span>
+            <p class="step-copy">Dispatch on the tag<span><code>BINARY_OP</code> add. Read <code>ob_type</code> → <code>nb_add</code>. Open world: a new type can appear here.</span></p>
+            <span class="step-meta">nb_add</span>
+          </div>
+          <div class="step step--hit">
+            <span class="step-n">3</span>
+            <p class="step-copy">Type-check, unbox, add, box<span>The arithmetic is a few cycles. The tag dance is the rest. JS: tagged pointers (SMI / NaN-box). Lua: tagged union.</span></p>
+            <span class="step-meta">10–100×</span>
+          </div>
+        </div>
+        <div class="deck">
+          <div class="deck-row"><span class="deck-k">What</span><p>Values carry their operations. Open-world: new types at runtime. A static type (plate 328) erases this lookup from the hot path.</p></div>
+          <div class="deck-row"><span class="deck-k">Why</span><p>Python feels fast for I/O (the kernel dominates) and slow for inner loops (this plate). A JIT (plate 323, 336) exists to hide the tag after types stabilize.</p></div>
+          <div class="deck-row deck-row--trap"><span class="deck-k">Trap</span><p>Microbenchmarking Python arithmetic against C and calling the language “slow” as if I/O were the same. Monkey-patching <code>nb_add</code> as architecture.</p></div>
+        </div>
+      </div>
+    </section>
+    <footer class="foot"><p class="one-liner"></p><p class="plate-id">Plate 329 / 375</p></footer>
+  </article>
+</body>
+</html>

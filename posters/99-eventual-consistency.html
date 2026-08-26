@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PLATE 99 — The replica is allowed to lag.</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@800;900&family=Fraunces:ital,opsz,wght@1,9..144,400;1,9..144,500&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/poster.css">
+</head>
+<body>
+  <article class="poster" data-track="system">
+    <span class="mark mark--tl"></span><span class="mark mark--tr"></span><span class="mark mark--bl"></span><span class="mark mark--br"></span>
+    <p class="spine">Foundations series — software engineering mental models</p>
+    <div class="rule"></div><div class="ghost">99</div><div class="vignette"></div>
+    <svg class="grain" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="4" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(#n)"></rect></svg>
+    <header class="mast">
+      <p class="kicker"><span>System</span><span class="dot"></span><span class="whisper">Replica lag</span></p>
+      <h1 class="title">The replica is <span class="title-accent">allowed to lag.</span></h1>
+      <p class="lede">Eventual consistency: if writes stop, replicas converge. Until they do, a read can be stale. Async Postgres replicas, Dynamo, DNS, caches. The product-shaped name is read-your-writes: after I save, my next GET should see it. A replica does not promise that.</p>
+    </header>
+    <section class="stage">
+      <div class="stage-inner">
+        <div class="compare">
+          <div class="compare-pane">
+            <p class="pane-label">POST /profile then GET</p>
+            <h2 class="pane-title">Replica</h2>
+            <div class="codeblock bad">WRITE  primary   Ada=70
+READ   replica   Ada=100
+                 lag 240ms
+
+signup → redirect /me
+/me hits the replica
+404  or the old name</div>
+            <p class="caption">The write succeeded. The read is allowed to lie for a window. This is the default read-after-write bug.</p>
+          </div>
+          <div class="compare-vs">vs</div>
+          <div class="compare-pane compare-pane--hit">
+            <p class="pane-label">Session / primary</p>
+            <h2 class="pane-title">Read-your-writes</h2>
+            <div class="codeblock ok">after write:
+  read the primary
+  or sticky to the
+     replica that applied it
+  or wait until LSN ≥ T
+
+eventual is fine for
+  followers, search, counts</div>
+            <p class="caption">Quorum (W+R &gt; N) is a stronger sibling. Sync replica is CAP-CP (plate 11): you wait, or you error.</p>
+          </div>
+        </div>
+        <div class="deck">
+          <div class="deck-row"><span class="deck-k">What</span><p>Eventual = copies catch up; no bound unless you add one. Read-your-writes / session / monotonic reads are extra guarantees you design (route, wait, or version). Replica lag is the concrete number (seconds under load, not “eventually a few ms”).</p></div>
+          <div class="deck-row"><span class="deck-k">Why</span><p>Replicas scale reads (plate 37). They also serve yesterday. Interviews: don’t say “eventual means incorrect.” Say who can see stale, for how long, and where you refuse to (checkout, the profile you just saved).</p></div>
+          <div class="deck-row deck-row--trap"><span class="deck-k">Trap</span><p>Read-after-write on a replica (LB round-robin after POST). Treating eventual as ACID-C (plate 41). Assuming the lag is always tiny. Caching on top of a replica and stacking two windows of stale.</p></div>
+        </div>
+      </div>
+    </section>
+    <footer class="foot"><p class="one-liner"></p><p class="plate-id">Plate 99 / 100</p></footer>
+  </article>
+</body>
+</html>

@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PLATE 348 — Random UUIDs as PKs scatter the B+tree.</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@800;900&family=Fraunces:ital,opsz,wght@1,9..144,400;1,9..144,500&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/poster.css">
+</head>
+<body>
+  <article class="poster" data-track="database">
+    <span class="mark mark--tl"></span><span class="mark mark--tr"></span><span class="mark mark--bl"></span><span class="mark mark--br"></span>
+    <p class="spine">Foundations series — software engineering mental models</p>
+    <div class="rule"></div><div class="ghost">348</div><div class="vignette"></div>
+    <svg class="grain" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="4" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(#n)"></rect></svg>
+    <header class="mast">
+      <p class="kicker"><span>Database</span><span class="dot"></span><span class="whisper">uuid4 · ulid · identity</span></p>
+      <h1 class="title">Random UUIDs as PKs scatter <span class="title-accent">the B+tree.</span></h1>
+      <p class="lede">A btree inserts at the rightmost leaf if keys increase (identity, snowflake plate 93, ULID, uuid v7). uuid4 is random: each insert splits a random leaf, dirtying many 8 KiB pages, killing cache. Fine for small tables; painful at 1e8 rows.</p>
+    </header>
+    <section class="stage">
+      <div class="stage-inner">
+        <div class="compare">
+          <div class="compare-pane">
+            <p class="pane-label">16 B random key</p>
+            <h2 class="pane-title">uuid4</h2>
+            <div class="codeblock bad">INSERT
+  random leaf
+  random leaf
+  random leaf
+
+page splits everywhere
+cache miss × N
+WAL full-page images
+fanout worse (16 B)</div>
+            <p class="caption">“For security” on a hot events PK. Then <code>CLUSTER</code> on it. Write amp, bloat, checkpoint spikes.</p>
+          </div>
+          <div class="compare-vs">vs</div>
+          <div class="compare-pane compare-pane--hit">
+            <p class="pane-label">Monotonic right edge</p>
+            <h2 class="pane-title">Append</h2>
+            <div class="codeblock ok">bigserial / identity
+snowflake (plate 93)
+ULID, uuid v7
+
+INSERT → rightmost leaf
+one hot page
+sequential WAL</div>
+            <p class="caption">Need an unguessable public id? Secondary unique, not the PK (plate 100).</p>
+          </div>
+        </div>
+        <div class="deck">
+          <div class="deck-row"><span class="deck-k">What</span><p>Index locality follows key order. Random PKs randomize writes. uuid4 also widens every secondary index that includes the PK.</p></div>
+          <div class="deck-row"><span class="deck-k">Why</span><p>Write amplification, index bloat, checkpoint I/O. The B+ wants append (plate 337), not scatter.</p></div>
+          <div class="deck-row deck-row--trap"><span class="deck-k">Trap</span><p><code>uuid_generate_v4()</code> as PK on a hot events table. v1/v4 “because UUID.” v7 exists; use it if you must have a UUID.</p></div>
+        </div>
+      </div>
+    </section>
+    <footer class="foot"><p class="one-liner"></p><p class="plate-id">Plate 348 / 375</p></footer>
+  </article>
+</body>
+</html>

@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PLATE 39 — Stop calling a sick dependency.</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@800;900&family=Fraunces:ital,opsz,wght@1,9..144,400;1,9..144,500&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/poster.css">
+</head>
+<body>
+  <article class="poster" data-track="system">
+    <span class="mark mark--tl"></span><span class="mark mark--tr"></span><span class="mark mark--bl"></span><span class="mark mark--br"></span>
+    <p class="spine">Foundations series — software engineering mental models</p>
+    <div class="rule"></div><div class="ghost">39</div><div class="vignette"></div>
+    <svg class="grain" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="4" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(#n)"></rect></svg>
+    <header class="mast">
+      <p class="kicker"><span>System</span><span class="dot"></span><span class="whisper">closed · open · half-open</span></p>
+      <h1 class="title">Stop calling a <span class="title-accent">sick dependency.</span></h1>
+      <p class="lede">A circuit breaker is a state machine in front of an RPC. Closed: calls flow; trip if e.g. 50% of the last 20 fail or p99 &gt; 2 s. Open: fail immediately (503 / fallback) for 30 s — don’t occupy a thread. Half-open: 1–5 probes; success closes, failure reopens.</p>
+    </header>
+    <section class="stage stage--wide">
+      <div class="stage-inner">
+        <div class="trio">
+          <div class="box box--pool">
+            <p class="col-label">Healthy · traffic flows</p>
+            <h2 class="box-title">Closed</h2>
+            <p class="caption">Count failures in a sliding window. Trip: 50% of last 20, or 5 consecutive, or timeout budget. Timeouts still apply (e.g. 2 s).</p>
+          </div>
+          <div class="box">
+            <p class="col-label">Sick · fail fast</p>
+            <h2 class="box-title">Open</h2>
+            <p class="caption">Do not dial. Return fallback or 503 now. 200 threads × 30 s hang is the outage; 0 calls is the recovery window.</p>
+          </div>
+          <div class="box">
+            <p class="col-label">Probe after cooldown</p>
+            <h2 class="box-title">Half-open</h2>
+            <p class="caption">After 30 s, allow 1–5 calls. Success → closed. Failure → open again. Resilience4j / Hystrix picture.</p>
+          </div>
+        </div>
+        <div class="deck">
+          <div class="deck-row"><span class="deck-k">What</span><p>State machine wrapping an RPC. Pair with bulkheads (separate pools) so payments dying does not exhaust the app’s connections (plate 03). Fallback: last-good cache, default, or error — pick one on purpose.</p></div>
+          <div class="deck-row"><span class="deck-k">Why</span><p>Cascading failure: A waits on B, A’s threads fill, C waits on A, the site is gone. The breaker isolates. Interview staple next to retries and timeouts.</p></div>
+          <div class="deck-row deck-row--trap"><span class="deck-k">Trap</span><p>Opening on 1 error. No fallback (empty 500 vs cached last-good). One global breaker for all tenants. Retrying after the breaker already failed fast — undoes the protection.</p></div>
+        </div>
+      </div>
+    </section>
+    <footer class="foot"><p class="one-liner"></p><p class="plate-id">Plate 39 / 375</p></footer>
+  </article>
+</body>
+</html>

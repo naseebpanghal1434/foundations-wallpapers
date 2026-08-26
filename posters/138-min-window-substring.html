@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PLATE 138 — Cover t. Then shrink. That's the window.</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@800;900&family=Fraunces:ital,opsz,wght@1,9..144,400;1,9..144,500&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/poster.css">
+</head>
+<body>
+  <article class="poster" data-track="dsa">
+    <span class="mark mark--tl"></span><span class="mark mark--tr"></span><span class="mark mark--bl"></span><span class="mark mark--br"></span>
+    <p class="spine">Foundations series — software engineering mental models</p>
+    <div class="rule"></div><div class="ghost">138</div><div class="vignette"></div>
+    <svg class="grain" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="4" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(#n)"></rect></svg>
+    <header class="mast">
+      <p class="kicker"><span>DSA</span><span class="dot"></span><span class="whisper">Need vs have counts</span></p>
+      <h1 class="title">Cover t. Then shrink. <span class="title-accent">That's the window.</span></h1>
+      <p class="lede">Minimum window substring: smallest slice of <code>s</code> that covers every char of <code>t</code> — with counts, not as a set. Expand <code>r</code>; bump <code>have</code> only when a needed char's window count first equals <code>need[c]</code>. When <code>have == need_n</code>, shrink <code>l</code>, record best, then break the cover and repeat. O(|s|+|t|).</p>
+    </header>
+    <section class="stage">
+      <div class="stage-inner">
+        <div class="compare">
+          <div class="compare-pane compare-pane--hit">
+            <p class="pane-label">s=ADOBECODEBANC · t=ABC</p>
+            <h2 class="pane-title">Cover, shrink</h2>
+            <div class="codeblock ok">need A1 B1 C1   need_n=3
+ADOBEC   have=3  len 6
+  A required — cannot drop
+CODEBA   have=3  len 6
+BANC     have=3  len 4  ← min
+
+window[c]+=1
+if c in need and window[c]==need[c]:
+  have+=1               # not &gt;=</div>
+            <p class="caption">Each index enters and leaves once. Among valids, take smallest <code>r-l+1</code> (leftmost on a tie).</p>
+          </div>
+          <div class="compare-vs">trap</div>
+          <div class="compare-pane">
+            <p class="pane-label">have is requirements met</p>
+            <h2 class="pane-title">Not letters</h2>
+            <div class="codeblock bad">have ≠ raw match count
+t=AABC  need A:2 B:1 C:1
+window A=1  → have not +1
+window A=2  → have +1
+
+# if window_map == need_map
+# every step: slow, easy to miss
+# t-dups treated as a set</div>
+            <p class="caption"><code>have</code> is how many of the <code>need</code> keys are currently satisfied. Shrink past a required char → decrement <code>have</code>.</p>
+          </div>
+        </div>
+        <div class="deck">
+          <div class="deck-row"><span class="deck-k">What</span><p>Two maps (or a deficit array) plus two ints. Window is valid iff every t-char is covered at its required count. Then minimize length. Find-all-anagrams is the same counter with a fixed width <code>|p|</code>.</p></div>
+          <div class="deck-row"><span class="deck-k">Why</span><p>LeetCode 76. The hard variable window: “smallest slice that satisfies a counter.” Say <code>have</code>/<code>need</code> out loud before you touch <code>l</code>.</p></div>
+          <div class="deck-row deck-row--trap"><span class="deck-k">Trap</span><p>Comparing full maps every step. Shrinking past a required char without decrementing <code>have</code>. Treating <code>t</code> as a set when it has duplicates. Case folding when the spec is case-sensitive.</p></div>
+        </div>
+      </div>
+    </section>
+    <footer class="foot"><p class="one-liner"></p><p class="plate-id">Plate 138 / 200</p></footer>
+  </article>
+</body>
+</html>

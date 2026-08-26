@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PLATE 233 — SameSite is the CSRF cookie.</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@800;900&family=Fraunces:ital,opsz,wght@1,9..144,400;1,9..144,500&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/poster.css">
+</head>
+<body>
+  <article class="poster" data-track="frontend">
+    <span class="mark mark--tl"></span><span class="mark mark--tr"></span><span class="mark mark--bl"></span><span class="mark mark--br"></span>
+    <p class="spine">Foundations series — software engineering mental models</p>
+    <div class="rule"></div><div class="ghost">233</div><div class="vignette"></div>
+    <svg class="grain" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="4" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(#n)"></rect></svg>
+    <header class="mast">
+      <p class="kicker"><span>Frontend</span><span class="dot"></span><span class="whisper">Strict · Lax · None</span></p>
+      <h1 class="title">SameSite is <span class="title-accent">the CSRF cookie.</span></h1>
+      <p class="lede">SameSite tells the browser when to attach a cookie on cross-site requests (CSRF, plate 30). Lax (default) sends it on top-level GET, not on cross-site POST; Strict never; None always — and must be Secure.</p>
+    </header>
+    <section class="stage stage--wide">
+      <div class="stage-inner">
+        <div class="trio">
+          <div class="box">
+            <p class="col-label">Never cross-site</p>
+            <h2 class="box-title">Strict</h2>
+            <div class="codeblock">no cookie on
+any cross-site
+including a link to you</div>
+            <p class="caption">Clicking from email into your app arrives logged out. First-party only.</p>
+          </div>
+          <div class="box box--pool">
+            <p class="col-label">Default · CSRF seatbelt</p>
+            <h2 class="box-title">Lax</h2>
+            <div class="codeblock">link GET: cookie
+evil POST: no
+subresource GET: no</div>
+            <p class="caption">Top-level GET still sends it. Cross-site <code>fetch</code>/POST does not. Site = eTLD+1, not origin.</p>
+          </div>
+          <div class="box">
+            <p class="col-label">Always · must be Secure</p>
+            <h2 class="box-title">None</h2>
+            <div class="codeblock">None; Secure
+iframes / APIs
+token still required</div>
+            <p class="caption">Cross-site SPA → <code>api.other.com</code> needs None, or no cookies (Authorization header).</p>
+          </div>
+        </div>
+        <div class="deck">
+          <div class="deck-row"><span class="deck-k">What</span><p>Same-site ≠ same-origin. Lax is the CSRF seatbelt for cookie sessions. <code>app.foo.com</code> vs <code>bar.foo.com</code> is same-site.</p></div>
+          <div class="deck-row"><span class="deck-k">Why</span><p>Modern CSRF. A token is still wise for None and for extra-sensitive POST.</p></div>
+          <div class="deck-row deck-row--trap"><span class="deck-k">Trap</span><p>SameSite=None without Secure — rejected. Thinking Lax blocks a GET <code>/delete?id=</code> from an <code>&lt;img&gt;</code> — Lax sends cookies on top-level GET, not on subresource GET.</p></div>
+        </div>
+      </div>
+    </section>
+    <footer class="foot"><p class="one-liner"></p><p class="plate-id">Plate 233 / 286</p></footer>
+  </article>
+</body>
+</html>

@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PLATE 61 — Recursion plus memory. That's DP.</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@800;900&family=Fraunces:ital,opsz,wght@1,9..144,400;1,9..144,500&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/poster.css">
+</head>
+<body>
+  <article class="poster" data-track="dsa">
+    <span class="mark mark--tl"></span><span class="mark mark--tr"></span><span class="mark mark--bl"></span><span class="mark mark--br"></span>
+    <p class="spine">Foundations series — software engineering mental models</p>
+    <div class="rule"></div><div class="ghost">61</div><div class="vignette"></div>
+    <svg class="grain" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="4" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(#n)"></rect></svg>
+    <header class="mast">
+      <p class="kicker"><span>DSA</span><span class="dot"></span><span class="whisper">Overlapping subproblems</span></p>
+      <h1 class="title">Recursion plus memory. <span class="title-accent">That's DP.</span></h1>
+      <p class="lede">Dynamic programming is not a mystic table. You write a recurrence, you notice the same subproblem shows up more than once, you remember the answer. Top-down: memo on the recursive function. Bottom-up: fill an array in order. Time = number of states × work per state. No overlap? That’s just recursion.</p>
+    </header>
+    <section class="stage">
+      <div class="stage-inner">
+        <div class="steps">
+          <div class="step"><span class="step-n">1</span><p class="step-copy">Write the recurrence<span><code>fib(n) = fib(n-1) + fib(n-2)</code>. Base: 0, 1. Climbing stairs, house robber, coin change — same shape.</span></p><span class="step-meta">recurrence</span></div>
+          <div class="step step--hit"><span class="step-n">2</span><p class="step-copy">See the overlap<span><code>fib(5)</code> computes <code>fib(3)</code> twice, <code>fib(2)</code> many times. Merge sort’s halves do <em>not</em> overlap. That’s the test.</span></p><span class="step-meta">overlap</span></div>
+          <div class="step"><span class="step-n">3</span><p class="step-copy">Remember it<span><code>memo[n]</code> or <code>dp[i]</code>. n states → O(n). 2D: <code>dp[i][j]</code>, O(n·m). If you cannot name the state, you cannot DP it.</span></p><span class="step-meta">memory</span></div>
+        </div>
+        <div class="deck">
+          <div class="deck-row"><span class="deck-k">What</span><p>Two ingredients: overlapping subproblems + optimal substructure (best of n is built from best of smaller). Memo and tabulation are the same DAG of states; one starts at the top. Space can often drop to the last row / two variables (fib).</p></div>
+          <div class="deck-row"><span class="deck-k">Why</span><p>Naive recursion is exponential because it redoes work. Interviews: say the state, the transition, the base, the order. “I’ll memoize” is not a plan until you can write <code>dp[…]</code>.</p></div>
+          <div class="deck-row deck-row--trap"><span class="deck-k">Trap</span><p>Calling all recursion DP. Tree recursion with independent halves (merge sort, most divide-and-conquer) has no overlap — memo does nothing. Also: DP-ing a greedy problem, or filling a table without a recurrence you could recurse.</p></div>
+        </div>
+      </div>
+    </section>
+    <footer class="foot"><p class="one-liner"></p><p class="plate-id">Plate 61 / 100</p></footer>
+  </article>
+</body>
+</html>

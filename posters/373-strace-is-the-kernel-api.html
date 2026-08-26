@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PLATE 373 — strace prints the syscalls. That is the kernel API.</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@800;900&family=Fraunces:ital,opsz,wght@1,9..144,400;1,9..144,500&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/poster.css">
+</head>
+<body>
+  <article class="poster" data-track="tools">
+    <span class="mark mark--tl"></span><span class="mark mark--tr"></span><span class="mark mark--bl"></span><span class="mark mark--br"></span>
+    <p class="spine">Foundations series — software engineering mental models</p>
+    <div class="rule"></div><div class="ghost">373</div><div class="vignette"></div>
+    <svg class="grain" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="4" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(#n)"></rect></svg>
+    <header class="mast">
+      <p class="kicker"><span>Tools</span><span class="dot"></span><span class="whisper">ptrace · -e trace=</span></p>
+      <h1 class="title">strace prints the syscalls. <span class="title-accent">That is the kernel API.</span></h1>
+      <p class="lede"><code>strace -p PID</code> (or <code>strace cmd</code>) uses ptrace to log every syscall: name, args, return, errno, time. That is the process↔kernel interface (plate 287), independent of language. <code>-e trace=file|network</code> filters; the overhead is real — don’t leave it on in prod.</p>
+    </header>
+    <section class="stage">
+      <div class="stage-inner">
+        <div class="compare">
+          <div class="compare-pane compare-pane--hit">
+            <p class="pane-label">-e trace=file</p>
+            <h2 class="pane-title">openat</h2>
+            <div class="codeblock">openat(AT_FDCWD,
+  "/etc/passwd",
+  O_RDONLY) = 3
+openat(AT_FDCWD, "/nope",
+  O_RDONLY) = -1 ENOENT</div>
+            <p class="caption">“What file is it looking for?” A failed open is not always the one that mattered.</p>
+          </div>
+          <div class="compare-vs">vs</div>
+          <div class="compare-pane">
+            <p class="pane-label">-e trace=network</p>
+            <h2 class="pane-title">connect</h2>
+            <div class="codeblock">socket(AF_INET, …) = 5
+connect(5, {sin_port=443,
+  sin_addr="203.0.113.9"},
+  16) = 0
+
+or -1 ECONNREFUSED</div>
+            <p class="caption">ltrace is libc. dtruss/ktrace on BSD. perf/ebpf for less tax.</p>
+          </div>
+        </div>
+        <div class="deck">
+          <div class="deck-row"><span class="deck-k">What</span><p>A trace of traps. Arguments may be truncated pointers. Return <code>= 0</code> or a fd is success; <code>-1 ENOENT</code> is not.</p></div>
+          <div class="deck-row"><span class="deck-k">Why</span><p>First debugging tool on Linux: which path, which host, which errno — regardless of the language.</p></div>
+          <div class="deck-row deck-row--trap"><span class="deck-k">Trap</span><p>Reading errno as success. Following children (<code>-f</code>) on a thread storm. Treating the first failed open as the bug — a later one succeeded.</p></div>
+        </div>
+      </div>
+    </section>
+    <footer class="foot"><p class="one-liner"></p><p class="plate-id">Plate 373 / 375</p></footer>
+  </article>
+</body>
+</html>

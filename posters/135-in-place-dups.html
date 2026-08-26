@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PLATE 135 — A write head. A read head.</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@800;900&family=Fraunces:ital,opsz,wght@1,9..144,400;1,9..144,500&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/poster.css">
+</head>
+<body>
+  <article class="poster" data-track="dsa">
+    <span class="mark mark--tl"></span><span class="mark mark--tr"></span><span class="mark mark--bl"></span><span class="mark mark--br"></span>
+    <p class="spine">Foundations series — software engineering mental models</p>
+    <div class="rule"></div><div class="ghost">135</div><div class="vignette"></div>
+    <svg class="grain" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="4" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(#n)"></rect></svg>
+    <header class="mast">
+      <p class="kicker"><span>DSA</span><span class="dot"></span><span class="whisper">Slow writes · fast reads</span></p>
+      <h1 class="title">A write head. <span class="title-accent">A read head.</span></h1>
+      <p class="lede">Remove duplicates (or zeroes, or a value) in-place on a sorted array: one pointer writes the next kept slot, the other reads. Fast scans; slow only advances when you keep. Order of kept items stays. Return the new length; the tail is garbage.</p>
+    </header>
+    <section class="stage">
+      <div class="stage-inner">
+        <div class="steps">
+          <div class="step step--hit"><span class="step-n">1</span><p class="step-copy">Sorted dups<span><code>[0,0,1,1,1,2,2]</code>. slow=0. fast=1..: when <code>a[fast]!=a[slow]</code>, slow++, then <code>a[slow]=a[fast]</code>. Result <code>[0,1,2,…]</code> len=3.</span></p><span class="step-meta">LC 26</span></div>
+          <div class="step"><span class="step-n">2</span><p class="step-copy">Move zeroes<span>Write non-zeros forward (read anything, write if <code>!=0</code>). Then fill the rest with 0. Same two heads, same direction (plate 54).</span></p><span class="step-meta">LC 283</span></div>
+          <div class="step"><span class="step-n">3</span><p class="step-copy">Remove element val<span>Write if <code>a[fast]!=val</code>. Unsorted is fine — the keep test is not “equal to previous.” At most twice (LC 80): compare <code>a[slow-2]</code>.</span></p><span class="step-meta">LC 27 / 80</span></div>
+        </div>
+        <div class="deck">
+          <div class="deck-row"><span class="deck-k">What</span><p>O(n) time, O(1) extra. Sorted is what makes “equal to previous kept” the dup test. Unsorted dups need a set (extra space) or sort first. Return the new length; do not shrink the allocation.</p></div>
+          <div class="deck-row"><span class="deck-k">Why</span><p>LeetCode 26 / 27 / 283. The write/read split shows up in any compact-the-array problem. Say which pointer is the next open slot, which one scans.</p></div>
+          <div class="deck-row deck-row--trap"><span class="deck-k">Trap</span><p>Deleting from a list while indexing forward (you skip the next). Using an extra array after in-place was required. For “at most twice” (LC 80): compare with <code>a[slow-2]</code>, not <code>a[slow-1]</code>.</p></div>
+        </div>
+      </div>
+    </section>
+    <footer class="foot"><p class="one-liner"></p><p class="plate-id">Plate 135 / 200</p></footer>
+  </article>
+</body>
+</html>

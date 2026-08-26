@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PLATE 76 — Write if the version still matches.</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@800;900&family=Fraunces:ital,opsz,wght@1,9..144,400;1,9..144,500&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/poster.css">
+</head>
+<body>
+  <article class="poster" data-track="database">
+    <span class="mark mark--tl"></span><span class="mark mark--tr"></span><span class="mark mark--bl"></span><span class="mark mark--br"></span>
+    <p class="spine">Foundations series — software engineering mental models</p>
+    <div class="rule"></div><div class="ghost">76</div><div class="vignette"></div>
+    <svg class="grain" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="4" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(#n)"></rect></svg>
+    <header class="mast">
+      <p class="kicker"><span>Database</span><span class="dot"></span><span class="whisper">UPDATE … WHERE version · 409</span></p>
+      <h1 class="title">Write if the version <span class="title-accent">still matches.</span></h1>
+      <p class="lede">Don’t hold a row lock while the user thinks. Read the row and its version. Write with <code>UPDATE … WHERE id = $1 AND version = $old</code>. <code>rowcount = 0</code> means someone else committed — HTTP 409, re-read, retry. HTTP twin: <code>If-Match</code> / ETag. Missing the WHERE is plate 73’s lost update, in SQL.</p>
+    </header>
+    <section class="stage">
+      <div class="stage-inner">
+        <div class="compare">
+          <div class="compare-pane">
+            <p class="pane-label">Hold the row the whole time</p>
+            <h2 class="pane-title">Pessimistic</h2>
+            <div class="codeblock">BEGIN;
+SELECT qty FROM items
+WHERE id=7
+FOR UPDATE;
+-- user confirms…
+-- Stripe… seconds
+UPDATE items SET qty=11;
+COMMIT;</div>
+            <p class="caption">Fine for a 2 ms txn. Blocks every other writer of row 7. Don’t wait on the network while you hold it.</p>
+          </div>
+          <div class="compare-vs">or</div>
+          <div class="compare-pane compare-pane--hit">
+            <p class="pane-label">Compare-and-swap the row</p>
+            <h2 class="pane-title">Optimistic</h2>
+            <div class="codeblock ok">SELECT qty, version
+FROM items WHERE id=7;
+-- qty=12  version=4
+
+UPDATE items
+SET qty=11, version=5
+WHERE id=7 AND version=4;
+
+-- 0 rows → 409 Conflict
+-- re-read, re-apply, retry</div>
+            <p class="caption">The WHERE is the lock. Cap retries. <code>updated_at</code> works if you treat it as opaque.</p>
+          </div>
+        </div>
+        <div class="deck">
+          <div class="deck-row"><span class="deck-k">What</span><p>A <code>version int</code> on the row. Commit only if it still equals what you read. Retry is: read again, re-apply the business rule, UPDATE again — not “return 409 and stop.”</p></div>
+          <div class="deck-row"><span class="deck-k">Why</span><p>Editors, carts, inventory — overlapping writes with think-time. Pessimistic serializes them; optimistic lets them overlap and pays a retry on true conflict.</p></div>
+          <div class="deck-row deck-row--trap"><span class="deck-k">Trap</span><p>409 with no re-read. Bumping <code>version</code> in the SET but leaving it out of the WHERE — you never notice the collision. Holding <code>FOR UPDATE</code> across Stripe.</p></div>
+        </div>
+      </div>
+    </section>
+    <footer class="foot"><p class="one-liner"></p><p class="plate-id">Plate 76 / 375</p></footer>
+  </article>
+</body>
+</html>

@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PLATE 77 — A name becomes an IP.</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@800;900&family=Fraunces:ital,opsz,wght@1,9..144,400;1,9..144,500&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/poster.css">
+</head>
+<body>
+  <article class="poster" data-track="network">
+    <span class="mark mark--tl"></span><span class="mark mark--tr"></span><span class="mark mark--bl"></span><span class="mark mark--br"></span>
+    <p class="spine">Foundations series — software engineering mental models</p>
+    <div class="rule"></div><div class="ghost">77</div><div class="vignette"></div>
+    <svg class="grain" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="4" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(#n)"></rect></svg>
+    <header class="mast">
+      <p class="kicker"><span>Network</span><span class="dot"></span><span class="whisper">UDP/53 · TTL seconds</span></p>
+      <h1 class="title">A name becomes <span class="title-accent">an IP.</span></h1>
+      <p class="lede">DNS maps a hostname to an address: <code>api.shop.io A 203.0.113.10</code> (AAAA for IPv6). The stub asks a recursive resolver (UDP/53, or DoT 853 / DoH 443); the recursor walks root → TLD → auth NS and caches each RR for its TTL. <code>getaddrinfo(3)</code> is the libc call. TTL 86400 = a day of stale answers after you move the IP.</p>
+    </header>
+    <section class="stage stage--wide">
+      <div class="stage-inner">
+        <div class="facts facts-3">
+          <div class="fact fact--hit">
+            <p class="fact-k">Address</p>
+            <p class="fact-n">A / AAAA</p>
+            <p class="fact-c"><code>api.shop.io A 203.0.113.10</code><br>AAAA <code>2001:db8::10</code>. What TCP dials. Plate 13 starts here.</p>
+          </div>
+          <div class="fact">
+            <p class="fact-k">Alias</p>
+            <p class="fact-n">CNAME</p>
+            <p class="fact-c"><code>www CNAME shop.cdn.net</code> then another lookup. Cannot sit next to an A at the zone apex.</p>
+          </div>
+          <div class="fact">
+            <p class="fact-k">Cache</p>
+            <p class="fact-n">TTL 86400</p>
+            <p class="fact-c">Resolver, OS, browser each keep a copy. Drop to 300 <em>before</em> cutover. NXDOMAIN ≠ SERVFAIL.</p>
+          </div>
+        </div>
+        <div class="deck">
+          <div class="deck-row"><span class="deck-k">What</span><p>Stub → recursor → root → TLD → auth NS. Also MX, NS, TXT. NXDOMAIN is “no such name.” SERVFAIL is “the lookup broke.” Negative answers have their own TTL (SOA minimum).</p></div>
+          <div class="deck-row"><span class="deck-k">Why</span><p>A site that “is down” is often a name still pointing at a dead box, or a cache that hasn’t expired. Deploy is not done until DNS and its TTL agree.</p></div>
+          <div class="deck-row deck-row--trap"><span class="deck-k">Trap</span><p>Cutover with TTL 86400 — resolvers keep the old A for a day. Flushing only your laptop and calling DNS “updated.” Also: CNAME at the apex next to SOA/NS, which most zones forbid.</p></div>
+        </div>
+      </div>
+    </section>
+    <footer class="foot"><p class="one-liner"></p><p class="plate-id">Plate 77 / 375</p></footer>
+  </article>
+</body>
+</html>

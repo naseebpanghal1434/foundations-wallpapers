@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PLATE 326 — ABI is which register is arg0.</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@800;900&family=Fraunces:ital,opsz,wght@1,9..144,400;1,9..144,500&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/poster.css">
+</head>
+<body>
+  <article class="poster" data-track="lang">
+    <span class="mark mark--tl"></span><span class="mark mark--tr"></span><span class="mark mark--bl"></span><span class="mark mark--br"></span>
+    <p class="spine">Foundations series — software engineering mental models</p>
+    <div class="rule"></div><div class="ghost">326</div><div class="vignette"></div>
+    <svg class="grain" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="4" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(#n)"></rect></svg>
+    <header class="mast">
+      <p class="kicker"><span>Lang</span><span class="dot"></span><span class="whisper">SysV · Win64 · aapcs</span></p>
+      <h1 class="title">ABI is which register <span class="title-accent">is arg0.</span></h1>
+      <p class="lede">Application Binary Interface: sizes, alignment, who saves which register, how a struct is returned, how syscalls look. SysV AMD64: arg0=<code>rdi</code>, 1=<code>rsi</code>, 2=<code>rdx</code>, 3=<code>rcx</code>, 4=<code>r8</code>, 5=<code>r9</code>, rest on the stack; return <code>rax</code>. Win64: <code>rcx rdx r8 r9</code>. Mix two ABIs in one process = corruption.</p>
+    </header>
+    <section class="stage">
+      <div class="stage-inner">
+        <div class="compare">
+          <div class="compare-pane compare-pane--hit">
+            <p class="pane-label">SysV AMD64 · Linux / macOS</p>
+            <h2 class="pane-title">rdi = arg0</h2>
+            <div class="codeblock">write(fd, buf, n)
+  rdi  fd      arg0
+  rsi  buf     arg1
+  rdx  n       arg2
+  rcx r8 r9    3..5
+  stack        6+
+return rax</div>
+            <p class="caption">8-byte slots. 16-byte <code>RSP</code> alignment at the <code>call</code>. aapcs64: <code>x0</code>–<code>x7</code>.</p>
+          </div>
+          <div class="compare-vs">vs</div>
+          <div class="compare-pane">
+            <p class="pane-label">Win64 · MSVC</p>
+            <h2 class="pane-title">rcx = arg0</h2>
+            <div class="codeblock">WriteFile(h, buf, n)
+  rcx  handle  arg0
+  rdx  buf     arg1
+  r8   n       arg2
+  r9           arg3
+  32 B shadow  home
+return rax</div>
+            <p class="caption"><code>extern "C"</code> kills C++ name mangling, not the register contract.</p>
+          </div>
+        </div>
+        <div class="deck">
+          <div class="deck-row"><span class="deck-k">What</span><p>The calling convention plus type layout. Compilers on one platform agree so <code>.o</code> files combine (plate 325). Caller- vs callee-saved, struct return in <code>rax</code> or a hidden pointer.</p></div>
+          <div class="deck-row"><span class="deck-k">Why</span><p>FFI, assembly, kernel ABI vs user. Why an MSVC C library may not link with MinGW. Linux syscalls use the same SysV regs except <code>r10</code> in place of <code>rcx</code>.</p></div>
+          <div class="deck-row deck-row--trap"><span class="deck-k">Trap</span><p>Passing a Go string (<code>ptr+len</code>, two words) to a C <code>char*</code> as if it were one pointer. Forgetting the 16-byte stack alignment and crashing in an XMM spill.</p></div>
+        </div>
+      </div>
+    </section>
+    <footer class="foot"><p class="one-liner"></p><p class="plate-id">Plate 326 / 375</p></footer>
+  </article>
+</body>
+</html>

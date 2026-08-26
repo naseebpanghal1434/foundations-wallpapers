@@ -1,0 +1,2099 @@
+{
+  "series": "Foundations",
+  "tagline": "Software engineering mental models",
+  "playlists": [
+    {
+      "id": "all",
+      "title": "All plates"
+    },
+    {
+      "id": "cs",
+      "title": "CS foundations",
+      "tracks": [
+        "os",
+        "arch"
+      ]
+    },
+    {
+      "id": "os",
+      "title": "Operating systems",
+      "tracks": [
+        "os"
+      ]
+    },
+    {
+      "id": "arch",
+      "title": "Architecture",
+      "tracks": [
+        "arch"
+      ]
+    },
+    {
+      "id": "lang",
+      "title": "Languages & runtime",
+      "tracks": [
+        "lang"
+      ]
+    },
+    {
+      "id": "tools",
+      "title": "Unix & tools",
+      "tracks": [
+        "tools"
+      ]
+    },
+    {
+      "id": "sde1",
+      "title": "SDE-1",
+      "tracks": [
+        "dsa",
+        "lang",
+        "frontend"
+      ]
+    },
+    {
+      "id": "sde2",
+      "title": "SDE-2",
+      "tracks": [
+        "network",
+        "database",
+        "backend",
+        "system",
+        "genai",
+        "os"
+      ]
+    },
+    {
+      "id": "mix",
+      "title": "Interview mix",
+      "mode": "interleave"
+    },
+    {
+      "id": "dsa",
+      "title": "DSA",
+      "tracks": [
+        "dsa"
+      ]
+    },
+    {
+      "id": "frontend",
+      "title": "Frontend + JS",
+      "tracks": [
+        "frontend",
+        "lang"
+      ]
+    },
+    {
+      "id": "genai",
+      "title": "GenAI",
+      "tracks": [
+        "genai"
+      ]
+    },
+    {
+      "id": "systems",
+      "title": "SDE-2 systems",
+      "tracks": [
+        "network",
+        "database",
+        "backend",
+        "system"
+      ]
+    },
+    {
+      "id": "backend",
+      "title": "Backend",
+      "tracks": [
+        "backend"
+      ]
+    },
+    {
+      "id": "database",
+      "title": "Database",
+      "tracks": [
+        "database"
+      ]
+    },
+    {
+      "id": "network",
+      "title": "Network",
+      "tracks": [
+        "network"
+      ]
+    },
+    {
+      "id": "design",
+      "title": "System design",
+      "ids": [
+        "100-url-shortener",
+        "201-limiter-at-the-door",
+        "202-chat-is-a-log",
+        "203-fanout-write-or-read",
+        "204-feed-is-a-mix",
+        "205-notify-now-or-later",
+        "206-typeahead-at-the-edge",
+        "207-api-not-the-file",
+        "208-video-is-chunks",
+        "209-crawler-polite-bfs",
+        "210-nearby-is-geohash",
+        "211-reserve-then-charge",
+        "212-name-the-eviction",
+        "213-one-door-many-rooms",
+        "214-leaderboard-sorted-set",
+        "215-money-is-a-ledger",
+        "216-socket-map-who-where",
+        "217-search-is-tokens",
+        "218-comments-are-a-tree",
+        "219-labels-explode",
+        "220-flag-is-a-remote-if",
+        "221-job-with-a-clock",
+        "222-presence-is-ttl",
+        "223-user-has-a-home",
+        "224-outbox-same-commit",
+        "225-idempotency-key"
+      ]
+    },
+    {
+      "id": "security",
+      "title": "Security",
+      "ids": [
+        "09-js-cannot-keep-a-secret",
+        "14-who-vs-what-you-may",
+        "15-cors-is-the-browser",
+        "16-never-glue-sql",
+        "30-csrf-is-the-other-site",
+        "31-hash-passwords",
+        "46-prompt-injection",
+        "85-config-and-env",
+        "231-cookies-vs-storage",
+        "232-httponly-cookie",
+        "233-samesite-cookie",
+        "234-xss-their-script",
+        "264-guardrails-wrap",
+        "271-pii-in-the-prompt",
+        "272-text-to-sql-blast",
+        "280-set-cookie-attrs",
+        "352-origin-scheme-host-port",
+        "353-csp-who-runs-script",
+        "354-bcrypt-cost-2n",
+        "355-jwt-three-parts",
+        "356-prepared-not-concat",
+        "357-dot-dot-is-not-a-name",
+        "358-ssrf-your-server-fetches",
+        "359-constant-time-compare",
+        "360-hsts-remembers-https",
+        "361-confused-deputy",
+        "362-two-keys-during-rotation",
+        "363-auth-code-not-the-token"
+      ]
+    },
+    {
+      "id": "concurrency",
+      "title": "Concurrency",
+      "ids": [
+        "04-one-thread-a-queue",
+        "43-deadlock",
+        "73-race-condition",
+        "74-locks-and-mutex",
+        "75-process-vs-thread",
+        "76-optimistic-locking",
+        "80-context-switch",
+        "289-scheduler-picks-thread",
+        "299-blocking-sleeps-thread",
+        "300-epoll-many-fds",
+        "306-cgroups-cap-cpu-ram",
+        "311-false-sharing",
+        "330-acquire-sees-the-store",
+        "331-volatile-is-mmio"
+      ]
+    },
+    {
+      "id": "encoding",
+      "title": "Numbers & encoding",
+      "ids": [
+        "313-little-endian",
+        "314-twos-complement",
+        "315-ieee754-float",
+        "322-utf8-1-to-4",
+        "334-js-length-is-utf16"
+      ]
+    }
+  ],
+  "plates": [
+    {
+      "id": "01-http-rides-on-tcp",
+      "track": "network",
+      "title": "HTTP rides on TCP."
+    },
+    {
+      "id": "02-an-index-is-extra-storage",
+      "track": "database",
+      "title": "An index is extra storage."
+    },
+    {
+      "id": "03-dont-connect-borrow",
+      "track": "backend",
+      "title": "Don't connect. Borrow."
+    },
+    {
+      "id": "04-one-thread-a-queue",
+      "track": "backend",
+      "title": "One thread. A queue."
+    },
+    {
+      "id": "05-pull-push-or-a-pipe",
+      "track": "network",
+      "title": "Pull, push, or a pipe."
+    },
+    {
+      "id": "06-call-or-leave-a-message",
+      "track": "backend",
+      "title": "Call, or leave a message."
+    },
+    {
+      "id": "07-all-of-it-or-none",
+      "track": "database",
+      "title": "All of it, or none."
+    },
+    {
+      "id": "08-the-cache-is-a-rumor",
+      "track": "backend",
+      "title": "The cache is a rumor."
+    },
+    {
+      "id": "09-js-cannot-keep-a-secret",
+      "track": "backend",
+      "title": "JS cannot keep a secret."
+    },
+    {
+      "id": "10-n-plus-1-is-a-loop",
+      "track": "database",
+      "title": "N+1 is a loop."
+    },
+    {
+      "id": "11-the-network-will-split",
+      "track": "system",
+      "title": "The network will split."
+    },
+    {
+      "id": "12-the-model-forgets",
+      "track": "genai",
+      "title": "The model forgets."
+    },
+    {
+      "id": "13-a-click-is-a-trip",
+      "track": "network",
+      "title": "A click is a trip."
+    },
+    {
+      "id": "14-who-vs-what-you-may",
+      "track": "backend",
+      "title": "Who you are is not what you may do."
+    },
+    {
+      "id": "15-cors-is-the-browser",
+      "track": "network",
+      "title": "CORS is the browser saying no."
+    },
+    {
+      "id": "16-never-glue-sql",
+      "track": "database",
+      "title": "Never glue SQL with strings."
+    },
+    {
+      "id": "17-a-foreign-key-is-a-promise",
+      "track": "database",
+      "title": "A foreign key is a promise."
+    },
+    {
+      "id": "18-a-join-is-a-match",
+      "track": "database",
+      "title": "A JOIN is a match."
+    },
+    {
+      "id": "19-time-out-then-back-off",
+      "track": "system",
+      "title": "Time out. Then back off."
+    },
+    {
+      "id": "20-bigger-or-more",
+      "track": "system",
+      "title": "Bigger machine, or more machines?"
+    },
+    {
+      "id": "21-the-model-reads-pieces",
+      "track": "genai",
+      "title": "The model reads pieces, not pages."
+    },
+    {
+      "id": "22-meaning-as-a-point",
+      "track": "genai",
+      "title": "Meaning as a point in space."
+    },
+    {
+      "id": "23-closures-remember-the-room",
+      "track": "frontend",
+      "title": "A closure remembers the room."
+    },
+    {
+      "id": "24-debounce-vs-throttle",
+      "track": "frontend",
+      "title": "Debounce waits. Throttle caps."
+    },
+    {
+      "id": "25-how-a-page-paints",
+      "track": "frontend",
+      "title": "How a page paints."
+    },
+    {
+      "id": "26-keys-tell-react-which",
+      "track": "frontend",
+      "title": "Keys tell React which child."
+    },
+    {
+      "id": "27-useeffect-is-a-sync",
+      "track": "frontend",
+      "title": "useEffect is a sync, not mount."
+    },
+    {
+      "id": "28-csr-ssr-ssg",
+      "track": "frontend",
+      "title": "Who builds the HTML?"
+    },
+    {
+      "id": "29-idempotent-means-twice",
+      "track": "backend",
+      "title": "Idempotent means do it twice."
+    },
+    {
+      "id": "30-csrf-is-the-other-site",
+      "track": "backend",
+      "title": "CSRF is the other site."
+    },
+    {
+      "id": "31-hash-passwords",
+      "track": "backend",
+      "title": "Hash passwords. Don't encrypt them."
+    },
+    {
+      "id": "32-offset-pagination-lies",
+      "track": "backend",
+      "title": "Offset pagination lies."
+    },
+    {
+      "id": "33-rate-limits",
+      "track": "backend",
+      "title": "Rate limits are a budget."
+    },
+    {
+      "id": "34-status-codes",
+      "track": "backend",
+      "title": "Status codes are a contract."
+    },
+    {
+      "id": "35-load-balancer",
+      "track": "system",
+      "title": "A load balancer is a door."
+    },
+    {
+      "id": "36-cdn-near-the-user",
+      "track": "system",
+      "title": "A CDN is a cache near the user."
+    },
+    {
+      "id": "37-replica-vs-shard",
+      "track": "system",
+      "title": "Copy the data, or split it."
+    },
+    {
+      "id": "38-latency-vs-throughput",
+      "track": "system",
+      "title": "Latency is not throughput."
+    },
+    {
+      "id": "39-circuit-breaker",
+      "track": "system",
+      "title": "Stop calling a sick dependency."
+    },
+    {
+      "id": "40-isolation-levels",
+      "track": "database",
+      "title": "Isolation is what others see."
+    },
+    {
+      "id": "41-acid",
+      "track": "database",
+      "title": "ACID is four promises."
+    },
+    {
+      "id": "42-normalize-vs-denormalize",
+      "track": "database",
+      "title": "Normalize for writes. Denormalize for reads."
+    },
+    {
+      "id": "43-deadlock",
+      "track": "database",
+      "title": "Deadlock is a cycle of waits."
+    },
+    {
+      "id": "44-temperature-is-not-creativity",
+      "track": "genai",
+      "title": "Temperature is not creativity."
+    },
+    {
+      "id": "45-hallucination-is-a-guess",
+      "track": "genai",
+      "title": "Hallucination is a confident guess."
+    },
+    {
+      "id": "46-prompt-injection",
+      "track": "genai",
+      "title": "Untrusted text is instructions."
+    },
+    {
+      "id": "47-tools-are-functions",
+      "track": "genai",
+      "title": "Tools are functions the model calls."
+    },
+    {
+      "id": "48-prompt-rag-finetune",
+      "track": "genai",
+      "title": "Prompt, RAG, or fine-tune."
+    },
+    {
+      "id": "49-big-o",
+      "track": "dsa",
+      "title": "Big O is the growth, not the stopwatch."
+    },
+    {
+      "id": "50-array-vs-linked-list",
+      "track": "dsa",
+      "title": "Arrays index. Lists hop."
+    },
+    {
+      "id": "51-hash-map",
+      "track": "dsa",
+      "title": "Hash into buckets."
+    },
+    {
+      "id": "52-stack-vs-queue",
+      "track": "dsa",
+      "title": "Stack is LIFO. Queue is FIFO."
+    },
+    {
+      "id": "53-binary-search",
+      "track": "dsa",
+      "title": "Binary search needs sorted data."
+    },
+    {
+      "id": "54-two-pointers",
+      "track": "dsa",
+      "title": "Opposite ends, or slow and fast."
+    },
+    {
+      "id": "55-sliding-window",
+      "track": "dsa",
+      "title": "Expand right. Shrink left."
+    },
+    {
+      "id": "56-recursion-is-a-stack",
+      "track": "dsa",
+      "title": "Recursion is a stack."
+    },
+    {
+      "id": "57-tree-traversals",
+      "track": "dsa",
+      "title": "Pre, in, post. Inorder is sorted."
+    },
+    {
+      "id": "58-bst-vs-heap",
+      "track": "dsa",
+      "title": "A BST finds. A heap pops min."
+    },
+    {
+      "id": "59-bfs-vs-dfs",
+      "track": "dsa",
+      "title": "BFS is a queue. DFS is a stack."
+    },
+    {
+      "id": "60-graphs",
+      "track": "dsa",
+      "title": "List the neighbors, or a matrix."
+    },
+    {
+      "id": "61-dynamic-programming",
+      "track": "dsa",
+      "title": "Recursion plus memory. That's DP."
+    },
+    {
+      "id": "62-tries",
+      "track": "dsa",
+      "title": "A trie is a prefix tree."
+    },
+    {
+      "id": "63-heaps",
+      "track": "dsa",
+      "title": "Keep k. Don't sort n."
+    },
+    {
+      "id": "64-sorting",
+      "track": "dsa",
+      "title": "n log n, or n squared."
+    },
+    {
+      "id": "65-oop-four-pillars",
+      "track": "lang",
+      "title": "OOP is four sentences."
+    },
+    {
+      "id": "66-composition-over-inheritance",
+      "track": "lang",
+      "title": "Has-a beats is-a."
+    },
+    {
+      "id": "67-equals-and-strict",
+      "track": "frontend",
+      "title": "== converts. === does not."
+    },
+    {
+      "id": "68-pass-by-value",
+      "track": "lang",
+      "title": "Pass the reference by value."
+    },
+    {
+      "id": "69-stack-vs-heap-memory",
+      "track": "lang",
+      "title": "Frames die. Heap objects live."
+    },
+    {
+      "id": "70-garbage-collection",
+      "track": "lang",
+      "title": "Garbage is the unreachable."
+    },
+    {
+      "id": "71-immutability",
+      "track": "lang",
+      "title": "const is not a freeze."
+    },
+    {
+      "id": "72-solid-srp",
+      "track": "lang",
+      "title": "One reason to change."
+    },
+    {
+      "id": "73-race-condition",
+      "track": "backend",
+      "title": "Two writers. No referee."
+    },
+    {
+      "id": "74-locks-and-mutex",
+      "track": "backend",
+      "title": "A mutex is a bathroom key."
+    },
+    {
+      "id": "75-process-vs-thread",
+      "track": "backend",
+      "title": "Processes isolate. Threads share."
+    },
+    {
+      "id": "76-optimistic-locking",
+      "track": "database",
+      "title": "Write if the version still matches."
+    },
+    {
+      "id": "77-dns",
+      "track": "network",
+      "title": "A name becomes an IP."
+    },
+    {
+      "id": "78-tls-handshake",
+      "track": "network",
+      "title": "Cert, keys, then encrypted HTTP."
+    },
+    {
+      "id": "79-virtual-memory",
+      "track": "system",
+      "title": "The address is not the RAM."
+    },
+    {
+      "id": "80-context-switch",
+      "track": "system",
+      "title": "Save the registers. Restore later."
+    },
+    {
+      "id": "81-middleware",
+      "track": "backend",
+      "title": "The request walks an onion."
+    },
+    {
+      "id": "82-webhooks",
+      "track": "backend",
+      "title": "They POST to you."
+    },
+    {
+      "id": "83-api-versioning",
+      "track": "backend",
+      "title": "Don't break /v1 in place."
+    },
+    {
+      "id": "84-logs-metrics-traces",
+      "track": "backend",
+      "title": "Logs tell. Metrics count. Traces follow."
+    },
+    {
+      "id": "85-config-and-env",
+      "track": "backend",
+      "title": "Secrets do not live in git."
+    },
+    {
+      "id": "86-graceful-shutdown",
+      "track": "backend",
+      "title": "Drain, then close the pool."
+    },
+    {
+      "id": "87-rest-vs-graphql",
+      "track": "backend",
+      "title": "Resources, or a query."
+    },
+    {
+      "id": "88-layered-architecture",
+      "track": "backend",
+      "title": "The route does not speak SQL."
+    },
+    {
+      "id": "89-unit-vs-integration",
+      "track": "backend",
+      "title": "Mocks are not the database."
+    },
+    {
+      "id": "90-ci-cd",
+      "track": "backend",
+      "title": "Don't deploy from a laptop."
+    },
+    {
+      "id": "91-consistent-hashing",
+      "track": "system",
+      "title": "Only 1/N keys should move."
+    },
+    {
+      "id": "92-at-least-once",
+      "track": "system",
+      "title": "At least once means twice."
+    },
+    {
+      "id": "93-snowflake-ids",
+      "track": "system",
+      "title": "Time, worker, sequence."
+    },
+    {
+      "id": "94-cache-stampede",
+      "track": "system",
+      "title": "A miss is a crowd."
+    },
+    {
+      "id": "95-write-ahead-log",
+      "track": "database",
+      "title": "Log first. Then the pages."
+    },
+    {
+      "id": "96-mvcc",
+      "track": "database",
+      "title": "Readers don't block writers."
+    },
+    {
+      "id": "97-composite-index",
+      "track": "database",
+      "title": "INDEX(a, b) is not INDEX(b)."
+    },
+    {
+      "id": "98-explain-analyze",
+      "track": "database",
+      "title": "EXPLAIN is a guess. ANALYZE ran it."
+    },
+    {
+      "id": "99-eventual-consistency",
+      "track": "system",
+      "title": "The replica is allowed to lag."
+    },
+    {
+      "id": "100-url-shortener",
+      "track": "system",
+      "title": "A short URL is a lookup."
+    },
+    {
+      "id": "101-array-index",
+      "track": "dsa",
+      "title": "Index is address plus i."
+    },
+    {
+      "id": "102-dynamic-array",
+      "track": "dsa",
+      "title": "Capacity doubles. Append is cheap."
+    },
+    {
+      "id": "103-singly-linked-list",
+      "track": "dsa",
+      "title": "A dummy node saves the empty case."
+    },
+    {
+      "id": "104-doubly-linked-list",
+      "track": "dsa",
+      "title": "Prev makes splice O(1)."
+    },
+    {
+      "id": "105-circular-buffer",
+      "track": "dsa",
+      "title": "Head and tail walk a circle."
+    },
+    {
+      "id": "106-stack-lifo",
+      "track": "dsa",
+      "title": "The last in is the first out."
+    },
+    {
+      "id": "107-queue-fifo",
+      "track": "dsa",
+      "title": "The first in is the first out."
+    },
+    {
+      "id": "108-deque",
+      "track": "dsa",
+      "title": "Both ends are doors."
+    },
+    {
+      "id": "109-hashmap-lookup",
+      "track": "dsa",
+      "title": "Need a pair? Store the complement."
+    },
+    {
+      "id": "110-hashset-seen",
+      "track": "dsa",
+      "title": "Have I seen this?"
+    },
+    {
+      "id": "111-binary-tree",
+      "track": "dsa",
+      "title": "Two children. That's the tree."
+    },
+    {
+      "id": "112-bst-search",
+      "track": "dsa",
+      "title": "Left is less. Right is more."
+    },
+    {
+      "id": "113-balanced-bst",
+      "track": "dsa",
+      "title": "Height must stay log n."
+    },
+    {
+      "id": "114-heap-as-array",
+      "track": "dsa",
+      "title": "Parent is at (i-1)/2."
+    },
+    {
+      "id": "115-priority-queue",
+      "track": "dsa",
+      "title": "Always pop the next best."
+    },
+    {
+      "id": "116-adjacency-list",
+      "track": "dsa",
+      "title": "Name the neighbors."
+    },
+    {
+      "id": "117-adjacency-matrix",
+      "track": "dsa",
+      "title": "An edge is a cell."
+    },
+    {
+      "id": "118-grid-as-graph",
+      "track": "dsa",
+      "title": "A grid is a graph of cells."
+    },
+    {
+      "id": "119-union-find",
+      "track": "dsa",
+      "title": "Find the root. Merge the smaller."
+    },
+    {
+      "id": "120-segment-tree",
+      "track": "dsa",
+      "title": "Each node is a range."
+    },
+    {
+      "id": "121-fenwick-tree",
+      "track": "dsa",
+      "title": "The index holds a prefix of bits."
+    },
+    {
+      "id": "122-sparse-table",
+      "track": "dsa",
+      "title": "If it never updates, precompute."
+    },
+    {
+      "id": "123-bloom-filter",
+      "track": "dsa",
+      "title": "Maybe. Never a false no."
+    },
+    {
+      "id": "124-skip-list",
+      "track": "dsa",
+      "title": "Express lanes over a list."
+    },
+    {
+      "id": "125-ordered-map",
+      "track": "dsa",
+      "title": "Keys stay sorted."
+    },
+    {
+      "id": "126-prefix-sum",
+      "track": "dsa",
+      "title": "A range is two prefix lookups."
+    },
+    {
+      "id": "127-difference-array",
+      "track": "dsa",
+      "title": "A range add is two point writes."
+    },
+    {
+      "id": "128-kadane",
+      "track": "dsa",
+      "title": "Best ending here, or start over."
+    },
+    {
+      "id": "129-two-sum",
+      "track": "dsa",
+      "title": "Remember what you already saw."
+    },
+    {
+      "id": "130-three-sum",
+      "track": "dsa",
+      "title": "Sort. Then two pointers for three."
+    },
+    {
+      "id": "131-product-except-self",
+      "track": "dsa",
+      "title": "Prefix times suffix. Skip i."
+    },
+    {
+      "id": "132-dutch-flag",
+      "track": "dsa",
+      "title": "Three pointers. Three colors."
+    },
+    {
+      "id": "133-rotate-array",
+      "track": "dsa",
+      "title": "Reverse all. Reverse the parts."
+    },
+    {
+      "id": "134-merge-sorted-arrays",
+      "track": "dsa",
+      "title": "Fill from the back."
+    },
+    {
+      "id": "135-in-place-dups",
+      "track": "dsa",
+      "title": "A write head. A read head."
+    },
+    {
+      "id": "136-sliding-window-max",
+      "track": "dsa",
+      "title": "The deque front is the max."
+    },
+    {
+      "id": "137-longest-no-repeat",
+      "track": "dsa",
+      "title": "Grow until a repeat. Then shrink."
+    },
+    {
+      "id": "138-min-window-substring",
+      "track": "dsa",
+      "title": "Cover t. Then shrink. That's the window."
+    },
+    {
+      "id": "139-char-replacement",
+      "track": "dsa",
+      "title": "You may flip k. That's still a window."
+    },
+    {
+      "id": "140-first-last-occurrence",
+      "track": "dsa",
+      "title": "The first true. The last true."
+    },
+    {
+      "id": "141-search-rotated",
+      "track": "dsa",
+      "title": "One half is sorted. Search there."
+    },
+    {
+      "id": "142-binary-search-answer",
+      "track": "dsa",
+      "title": "Binary search the answer, not the array."
+    },
+    {
+      "id": "143-peak-element",
+      "track": "dsa",
+      "title": "A peak is bigger than both neighbors."
+    },
+    {
+      "id": "144-linked-list-cycle",
+      "track": "dsa",
+      "title": "If they meet, there is a cycle."
+    },
+    {
+      "id": "145-reverse-linked-list",
+      "track": "dsa",
+      "title": "Three pointers reverse a list."
+    },
+    {
+      "id": "146-merge-two-lists",
+      "track": "dsa",
+      "title": "Dummy head. Pick the smaller."
+    },
+    {
+      "id": "147-cycle-start",
+      "track": "dsa",
+      "title": "Meet, then walk from head."
+    },
+    {
+      "id": "148-list-intersection",
+      "track": "dsa",
+      "title": "Same leftover length. Then they meet."
+    },
+    {
+      "id": "149-reorder-list",
+      "track": "dsa",
+      "title": "Split. Reverse the back. Weave."
+    },
+    {
+      "id": "150-lru-cache",
+      "track": "dsa",
+      "title": "Hash finds. The list splices."
+    },
+    {
+      "id": "151-min-stack",
+      "track": "dsa",
+      "title": "Store the min with the value."
+    },
+    {
+      "id": "152-valid-parentheses",
+      "track": "dsa",
+      "title": "Push opens. Pop must match."
+    },
+    {
+      "id": "153-next-greater",
+      "track": "dsa",
+      "title": "A decreasing stack remembers who waits."
+    },
+    {
+      "id": "154-largest-rectangle",
+      "track": "dsa",
+      "title": "Bars wait for the first smaller."
+    },
+    {
+      "id": "155-trapping-rain",
+      "track": "dsa",
+      "title": "Water is min of both maxes, minus height."
+    },
+    {
+      "id": "156-container-water",
+      "track": "dsa",
+      "title": "The short side moves."
+    },
+    {
+      "id": "157-merge-intervals",
+      "track": "dsa",
+      "title": "Sort by start. Extend or emit."
+    },
+    {
+      "id": "158-insert-interval",
+      "track": "dsa",
+      "title": "Left of new. Overlap. Right of new."
+    },
+    {
+      "id": "159-meeting-rooms",
+      "track": "dsa",
+      "title": "A min-heap of end times."
+    },
+    {
+      "id": "160-erase-overlap",
+      "track": "dsa",
+      "title": "Drop the interval that ends later."
+    },
+    {
+      "id": "161-merge-k-lists",
+      "track": "dsa",
+      "title": "A heap of k heads."
+    },
+    {
+      "id": "162-top-k-frequent",
+      "track": "dsa",
+      "title": "Count. Then a heap of size k."
+    },
+    {
+      "id": "163-kth-largest",
+      "track": "dsa",
+      "title": "Partition like quicksort. Stop at k."
+    },
+    {
+      "id": "164-median-stream",
+      "track": "dsa",
+      "title": "Two heaps. Balanced sizes."
+    },
+    {
+      "id": "165-invert-tree",
+      "track": "dsa",
+      "title": "Swap left and right. Recurse."
+    },
+    {
+      "id": "166-level-order",
+      "track": "dsa",
+      "title": "A queue of the current level."
+    },
+    {
+      "id": "167-tree-diameter",
+      "track": "dsa",
+      "title": "Height of left plus height of right."
+    },
+    {
+      "id": "168-lowest-common-ancestor",
+      "track": "dsa",
+      "title": "Split? This node. Else walk that side."
+    },
+    {
+      "id": "169-validate-bst",
+      "track": "dsa",
+      "title": "Inorder must increase. Or bounds."
+    },
+    {
+      "id": "170-serialize-tree",
+      "track": "dsa",
+      "title": "Preorder plus nulls. That's enough."
+    },
+    {
+      "id": "171-path-sum",
+      "track": "dsa",
+      "title": "A path down, or a path through."
+    },
+    {
+      "id": "172-build-tree-pre-in",
+      "track": "dsa",
+      "title": "Preorder names the root. Inorder splits."
+    },
+    {
+      "id": "173-number-of-islands",
+      "track": "dsa",
+      "title": "DFS a 1. Mark it 0. That's an island."
+    },
+    {
+      "id": "174-surrounded-regions",
+      "track": "dsa",
+      "title": "Fill from the border. The rest drowns."
+    },
+    {
+      "id": "175-clone-graph",
+      "track": "dsa",
+      "title": "Hash the old node to the new one."
+    },
+    {
+      "id": "176-course-schedule",
+      "track": "dsa",
+      "title": "Edges are prereqs. A cycle is a no."
+    },
+    {
+      "id": "177-word-ladder",
+      "track": "dsa",
+      "title": "BFS words one letter apart."
+    },
+    {
+      "id": "178-pacific-atlantic",
+      "track": "dsa",
+      "title": "Two oceans. BFS from both shores."
+    },
+    {
+      "id": "179-dijkstra",
+      "track": "dsa",
+      "title": "A min-heap of (dist, node)."
+    },
+    {
+      "id": "180-accounts-merge",
+      "track": "dsa",
+      "title": "Same email? Same person. Union."
+    },
+    {
+      "id": "181-backtracking",
+      "track": "dsa",
+      "title": "Choose. Recurse. Undo."
+    },
+    {
+      "id": "182-subsets",
+      "track": "dsa",
+      "title": "For each item: in, or out."
+    },
+    {
+      "id": "183-permutations",
+      "track": "dsa",
+      "title": "Swap i with each later j."
+    },
+    {
+      "id": "184-combination-sum",
+      "track": "dsa",
+      "title": "Pick a coin. Stay, or move on."
+    },
+    {
+      "id": "185-n-queens",
+      "track": "dsa",
+      "title": "One queen per row. Attack is a set."
+    },
+    {
+      "id": "186-word-search",
+      "track": "dsa",
+      "title": "DFS the board. Mark the cell."
+    },
+    {
+      "id": "187-knapsack",
+      "track": "dsa",
+      "title": "Take or skip. Capacity is the other index."
+    },
+    {
+      "id": "188-coin-change",
+      "track": "dsa",
+      "title": "Coins may repeat. Walk amounts up."
+    },
+    {
+      "id": "189-lis",
+      "track": "dsa",
+      "title": "Patience, or DP of tails."
+    },
+    {
+      "id": "190-lcs",
+      "track": "dsa",
+      "title": "Match, or skip one side."
+    },
+    {
+      "id": "191-edit-distance",
+      "track": "dsa",
+      "title": "Insert, delete, replace. Min of three."
+    },
+    {
+      "id": "192-house-robber",
+      "track": "dsa",
+      "title": "Rob i, skip i-1. Or skip i."
+    },
+    {
+      "id": "193-unique-paths",
+      "track": "dsa",
+      "title": "From left, or from above."
+    },
+    {
+      "id": "194-jump-game",
+      "track": "dsa",
+      "title": "The farthest you can still reach."
+    },
+    {
+      "id": "195-word-break",
+      "track": "dsa",
+      "title": "A word ends here. Then start again."
+    },
+    {
+      "id": "196-xor-tricks",
+      "track": "dsa",
+      "title": "XOR cancels pairs."
+    },
+    {
+      "id": "197-rotate-matrix",
+      "track": "dsa",
+      "title": "Transpose, then reverse each row."
+    },
+    {
+      "id": "198-time-based-kv",
+      "track": "dsa",
+      "title": "Binary search the timestamps."
+    },
+    {
+      "id": "199-alien-dictionary",
+      "track": "dsa",
+      "title": "Letters have order. That's a graph."
+    },
+    {
+      "id": "200-pick-the-pattern",
+      "track": "dsa",
+      "title": "Name the pattern before you type."
+    },
+    {
+      "id": "201-limiter-at-the-door",
+      "track": "backend",
+      "title": "Put the limiter at the door."
+    },
+    {
+      "id": "202-chat-is-a-log",
+      "track": "system",
+      "title": "Chat is a log, not a row."
+    },
+    {
+      "id": "203-fanout-write-or-read",
+      "track": "system",
+      "title": "Fan-out on write, or on read."
+    },
+    {
+      "id": "204-feed-is-a-mix",
+      "track": "system",
+      "title": "The feed is a mix, not a query."
+    },
+    {
+      "id": "205-notify-now-or-later",
+      "track": "system",
+      "title": "Notify now, or notify later."
+    },
+    {
+      "id": "206-typeahead-at-the-edge",
+      "track": "system",
+      "title": "Typeahead is a trie at the edge."
+    },
+    {
+      "id": "207-api-not-the-file",
+      "track": "system",
+      "title": "The API does not hold the file."
+    },
+    {
+      "id": "208-video-is-chunks",
+      "track": "system",
+      "title": "Video is chunks, not a file."
+    },
+    {
+      "id": "209-crawler-polite-bfs",
+      "track": "system",
+      "title": "A crawler is polite BFS."
+    },
+    {
+      "id": "210-nearby-is-geohash",
+      "track": "system",
+      "title": "Nearby is a geo hash, not a scan."
+    },
+    {
+      "id": "211-reserve-then-charge",
+      "track": "system",
+      "title": "Reserve the seat. Then charge."
+    },
+    {
+      "id": "212-name-the-eviction",
+      "track": "backend",
+      "title": "Name the eviction before the cache."
+    },
+    {
+      "id": "213-one-door-many-rooms",
+      "track": "system",
+      "title": "One door. Many rooms."
+    },
+    {
+      "id": "214-leaderboard-sorted-set",
+      "track": "system",
+      "title": "A leaderboard is a sorted set."
+    },
+    {
+      "id": "215-money-is-a-ledger",
+      "track": "database",
+      "title": "Money is a ledger, not a field."
+    },
+    {
+      "id": "216-socket-map-who-where",
+      "track": "network",
+      "title": "A socket needs a map of who is where."
+    },
+    {
+      "id": "217-search-is-tokens",
+      "track": "system",
+      "title": "Search is tokens pointing at docs."
+    },
+    {
+      "id": "218-comments-are-a-tree",
+      "track": "system",
+      "title": "Comments are a tree, served as a page."
+    },
+    {
+      "id": "219-labels-explode",
+      "track": "backend",
+      "title": "Labels explode the time series."
+    },
+    {
+      "id": "220-flag-is-a-remote-if",
+      "track": "backend",
+      "title": "A flag is a remote if."
+    },
+    {
+      "id": "221-job-with-a-clock",
+      "track": "backend",
+      "title": "A job is a message with a clock."
+    },
+    {
+      "id": "222-presence-is-ttl",
+      "track": "system",
+      "title": "Presence is a TTL, not a boolean."
+    },
+    {
+      "id": "223-user-has-a-home",
+      "track": "system",
+      "title": "The user has a home region."
+    },
+    {
+      "id": "224-outbox-same-commit",
+      "track": "database",
+      "title": "Write the outbox in the same commit."
+    },
+    {
+      "id": "225-idempotency-key",
+      "track": "backend",
+      "title": "Idempotency is a key you store."
+    },
+    {
+      "id": "226-event-loop-stack",
+      "track": "frontend",
+      "title": "The stack runs. Then the queue."
+    },
+    {
+      "id": "227-microtask-before-timer",
+      "track": "frontend",
+      "title": "Promises drain before timers."
+    },
+    {
+      "id": "228-capture-then-bubble",
+      "track": "frontend",
+      "title": "Capture down. Bubble up."
+    },
+    {
+      "id": "229-prevent-vs-stop",
+      "track": "frontend",
+      "title": "preventDefault is not stopPropagation."
+    },
+    {
+      "id": "230-one-listener-parent",
+      "track": "frontend",
+      "title": "One listener. Many children."
+    },
+    {
+      "id": "231-cookies-vs-storage",
+      "track": "frontend",
+      "title": "Cookies travel. Storage stays."
+    },
+    {
+      "id": "232-httponly-cookie",
+      "track": "frontend",
+      "title": "httpOnly means JS cannot read it."
+    },
+    {
+      "id": "233-samesite-cookie",
+      "track": "frontend",
+      "title": "SameSite is the CSRF cookie."
+    },
+    {
+      "id": "234-xss-their-script",
+      "track": "frontend",
+      "title": "XSS is their script on your origin."
+    },
+    {
+      "id": "235-hydration-must-match",
+      "track": "frontend",
+      "title": "Hydration must match the HTML."
+    },
+    {
+      "id": "236-fiber-keys-name",
+      "track": "frontend",
+      "title": "Fiber walks. Keys name the nodes."
+    },
+    {
+      "id": "237-memo-new-object",
+      "track": "frontend",
+      "title": "memo loses if the object is new."
+    },
+    {
+      "id": "238-context-is-broadcast",
+      "track": "frontend",
+      "title": "Context is a broadcast, not a store."
+    },
+    {
+      "id": "239-controlled-means-react",
+      "track": "frontend",
+      "title": "Controlled means React owns the value."
+    },
+    {
+      "id": "240-suspense-is-a-pause",
+      "track": "frontend",
+      "title": "Suspense is a pause, not a spinner."
+    },
+    {
+      "id": "241-read-then-write-layout",
+      "track": "frontend",
+      "title": "Read layout. Then write. Not both."
+    },
+    {
+      "id": "242-specificity-is-a-score",
+      "track": "frontend",
+      "title": "Specificity is a score."
+    },
+    {
+      "id": "243-stacking-context",
+      "track": "frontend",
+      "title": "A stacking context is a new z-world."
+    },
+    {
+      "id": "244-cache-control-permission",
+      "track": "frontend",
+      "title": "Cache-Control is permission to keep it."
+    },
+    {
+      "id": "245-etag-has-it-changed",
+      "track": "frontend",
+      "title": "ETag asks: has this changed?"
+    },
+    {
+      "id": "246-service-worker-proxy",
+      "track": "frontend",
+      "title": "A service worker is a proxy in the browser."
+    },
+    {
+      "id": "247-url-is-state",
+      "track": "frontend",
+      "title": "The URL is a state, not always a file."
+    },
+    {
+      "id": "248-await-is-then",
+      "track": "frontend",
+      "title": "await is then, with a stack."
+    },
+    {
+      "id": "249-this-is-the-caller",
+      "track": "frontend",
+      "title": "this is the caller, unless you bind it."
+    },
+    {
+      "id": "250-esm-is-static",
+      "track": "frontend",
+      "title": "ESM is static. CJS is now."
+    },
+    {
+      "id": "251-listener-you-never-remove",
+      "track": "frontend",
+      "title": "A leak is a listener you never remove."
+    },
+    {
+      "id": "252-token-is-not-a-word",
+      "track": "genai",
+      "title": "A token is not a word."
+    },
+    {
+      "id": "253-window-is-a-budget",
+      "track": "genai",
+      "title": "The window is a token budget."
+    },
+    {
+      "id": "254-kv-cache-paid-once",
+      "track": "genai",
+      "title": "KV cache is the past, paid once."
+    },
+    {
+      "id": "255-chunk-so-retrieval-hits",
+      "track": "genai",
+      "title": "Chunk so retrieval can hit."
+    },
+    {
+      "id": "256-words-or-meaning",
+      "track": "genai",
+      "title": "Words, or meaning. Then both."
+    },
+    {
+      "id": "257-hybrid-then-rerank",
+      "track": "genai",
+      "title": "Hybrid retrieves. A reranker sorts."
+    },
+    {
+      "id": "258-reranker-second-model",
+      "track": "genai",
+      "title": "A reranker is a second, smaller model."
+    },
+    {
+      "id": "259-rag-fails-at-chunk",
+      "track": "genai",
+      "title": "RAG fails at the chunk, not the prose."
+    },
+    {
+      "id": "260-schema-not-a-plea",
+      "track": "genai",
+      "title": "Structured output is a schema, not a plea."
+    },
+    {
+      "id": "261-agent-is-a-loop",
+      "track": "genai",
+      "title": "An agent is a loop of tools."
+    },
+    {
+      "id": "262-evals-golden-set",
+      "track": "genai",
+      "title": "Evals are a golden set, not a vibe."
+    },
+    {
+      "id": "263-judge-has-a-bias",
+      "track": "genai",
+      "title": "A judge model has a bias too."
+    },
+    {
+      "id": "264-guardrails-wrap",
+      "track": "genai",
+      "title": "Guardrails wrap the model."
+    },
+    {
+      "id": "265-prompt-cache-prefix",
+      "track": "genai",
+      "title": "Prompt cache is prefix reuse."
+    },
+    {
+      "id": "266-ttft-vs-tps",
+      "track": "genai",
+      "title": "TTFT is wait. TPS is the stream."
+    },
+    {
+      "id": "267-batch-the-cheap",
+      "track": "genai",
+      "title": "Batch the cheap calls."
+    },
+    {
+      "id": "268-lora-is-a-delta",
+      "track": "genai",
+      "title": "LoRA is a small delta, not a new brain."
+    },
+    {
+      "id": "269-pixels-are-tokens-too",
+      "track": "genai",
+      "title": "Pixels arrive as tokens too."
+    },
+    {
+      "id": "270-cite-or-it-didnt",
+      "track": "genai",
+      "title": "Cite it, or it didn't happen."
+    },
+    {
+      "id": "271-pii-in-the-prompt",
+      "track": "genai",
+      "title": "PII in the prompt is PII in the logs."
+    },
+    {
+      "id": "272-text-to-sql-blast",
+      "track": "genai",
+      "title": "Text-to-SQL has a blast radius."
+    },
+    {
+      "id": "273-tokens-are-the-bill",
+      "track": "genai",
+      "title": "Tokens are the bill."
+    },
+    {
+      "id": "274-http2-multiplex",
+      "track": "network",
+      "title": "HTTP/2 multiplexes. HTTP/1 lined up."
+    },
+    {
+      "id": "275-http3-quic-udp",
+      "track": "network",
+      "title": "HTTP/3 is QUIC on UDP."
+    },
+    {
+      "id": "276-tcp-slow-start",
+      "track": "network",
+      "title": "Slow start is TCP feeling the pipe."
+    },
+    {
+      "id": "277-keepalive-is-reuse",
+      "track": "network",
+      "title": "Keep-alive is reuse, not magic."
+    },
+    {
+      "id": "278-dns-ttl-is-a-lie",
+      "track": "network",
+      "title": "DNS TTL is how long the lie lasts."
+    },
+    {
+      "id": "279-tls13-one-rtt",
+      "track": "network",
+      "title": "TLS 1.3 is one round trip."
+    },
+    {
+      "id": "280-set-cookie-attrs",
+      "track": "network",
+      "title": "Secure, HttpOnly, Path. That's the cookie."
+    },
+    {
+      "id": "281-304-is-not-a-body",
+      "track": "network",
+      "title": "304 is not a body."
+    },
+    {
+      "id": "282-grpc-is-protobuf-h2",
+      "track": "network",
+      "title": "gRPC is protobuf on HTTP/2."
+    },
+    {
+      "id": "283-udp-has-no-apology",
+      "track": "network",
+      "title": "UDP has no apology."
+    },
+    {
+      "id": "284-nat-many-one",
+      "track": "network",
+      "title": "NAT is many insides, one outside."
+    },
+    {
+      "id": "285-one-stall-the-line",
+      "track": "network",
+      "title": "One stall. The whole line waits."
+    },
+    {
+      "id": "286-one-connection-many-hosts",
+      "track": "network",
+      "title": "One connection can serve many hosts."
+    },
+    {
+      "id": "287-syscall-trap",
+      "track": "os",
+      "title": "A syscall is a trap into the kernel."
+    },
+    {
+      "id": "288-process-address-space",
+      "track": "os",
+      "title": "A process is an address space."
+    },
+    {
+      "id": "289-scheduler-picks-thread",
+      "track": "os",
+      "title": "The scheduler picks the next thread."
+    },
+    {
+      "id": "290-page-4kib-tlb",
+      "track": "os",
+      "title": "A page is 4 KiB. The TLB caches translations."
+    },
+    {
+      "id": "291-page-fault-miss",
+      "track": "os",
+      "title": "A page fault is a miss in the map."
+    },
+    {
+      "id": "292-cow-fork",
+      "track": "os",
+      "title": "fork copies the map. Writes copy the page."
+    },
+    {
+      "id": "293-mmap-file",
+      "track": "os",
+      "title": "mmap maps a file into the address space."
+    },
+    {
+      "id": "294-fd-is-an-int",
+      "track": "os",
+      "title": "A file descriptor is an int in a table."
+    },
+    {
+      "id": "295-inode-is-the-file",
+      "track": "os",
+      "title": "The inode is the file. The name is a link."
+    },
+    {
+      "id": "296-pipe-kernel-buffer",
+      "track": "os",
+      "title": "A pipe is a kernel ring buffer."
+    },
+    {
+      "id": "297-signal-async",
+      "track": "os",
+      "title": "A signal is an async interrupt to a process."
+    },
+    {
+      "id": "298-interrupt-preempts-cpu",
+      "track": "os",
+      "title": "An interrupt preempts the CPU, not your if."
+    },
+    {
+      "id": "299-blocking-sleeps-thread",
+      "track": "os",
+      "title": "Blocking I/O sleeps the thread."
+    },
+    {
+      "id": "300-epoll-many-fds",
+      "track": "os",
+      "title": "epoll waits on many fds. select does not scale."
+    },
+    {
+      "id": "301-user-and-kernel-stack",
+      "track": "os",
+      "title": "Each thread has a user stack and a kernel stack."
+    },
+    {
+      "id": "302-nice-vs-fifo",
+      "track": "os",
+      "title": "nice is a hint. SCHED_FIFO is a promise."
+    },
+    {
+      "id": "303-proc-is-kernel",
+      "track": "os",
+      "title": "/proc is the kernel exported as files."
+    },
+    {
+      "id": "304-capabilities-split-root",
+      "track": "os",
+      "title": "Capabilities split root into bits."
+    },
+    {
+      "id": "305-cfs-vruntime",
+      "track": "os",
+      "title": "CFS tracks vruntime, not a fixed slice."
+    },
+    {
+      "id": "306-cgroups-cap-cpu-ram",
+      "track": "os",
+      "title": "cgroups cap CPU and RAM. Docker uses them."
+    },
+    {
+      "id": "307-fetch-decode-execute",
+      "track": "arch",
+      "title": "Fetch, decode, execute. Then write back."
+    },
+    {
+      "id": "308-latency-hierarchy",
+      "track": "arch",
+      "title": "L1 is ~1 ns. Disk is ~10 ms."
+    },
+    {
+      "id": "309-cache-line-64b",
+      "track": "arch",
+      "title": "A cache line is 64 bytes."
+    },
+    {
+      "id": "310-spatial-temporal",
+      "track": "arch",
+      "title": "Spatial is the next line. Temporal is reuse."
+    },
+    {
+      "id": "311-false-sharing",
+      "track": "arch",
+      "title": "False sharing is two cores, one line."
+    },
+    {
+      "id": "312-registers-are-working-set",
+      "track": "arch",
+      "title": "Registers are the working set. RAM is far."
+    },
+    {
+      "id": "313-little-endian",
+      "track": "arch",
+      "title": "Little-endian stores the low byte first."
+    },
+    {
+      "id": "314-twos-complement",
+      "track": "arch",
+      "title": "-1 is all bits set."
+    },
+    {
+      "id": "315-ieee754-float",
+      "track": "arch",
+      "title": "float: 1 sign, 8 exp, 23 mantissa."
+    },
+    {
+      "id": "316-hdd-ssd-ram",
+      "track": "arch",
+      "title": "HDD seeks ~10 ms. NVMe is ~100 µs."
+    },
+    {
+      "id": "317-dma-skips-cpu",
+      "track": "arch",
+      "title": "DMA moves bytes without the CPU."
+    },
+    {
+      "id": "318-numa-local-ram",
+      "track": "arch",
+      "title": "Local RAM is faster than the other socket."
+    },
+    {
+      "id": "319-mispredict-is-15-cycles",
+      "track": "arch",
+      "title": "A mispredict is ~15 cycles."
+    },
+    {
+      "id": "320-unaligned-splits-the-load",
+      "track": "arch",
+      "title": "Unaligned access splits the load."
+    },
+    {
+      "id": "321-simd-n-lanes",
+      "track": "arch",
+      "title": "SIMD is one instruction, N lanes."
+    },
+    {
+      "id": "322-utf8-1-to-4",
+      "track": "arch",
+      "title": "UTF-8 is 1–4 bytes. ASCII is unchanged."
+    },
+    {
+      "id": "323-compile-interpret-jit",
+      "track": "lang",
+      "title": "Compile ahead. Interpret each form. JIT both."
+    },
+    {
+      "id": "324-bytecode-portable-isa",
+      "track": "lang",
+      "title": "Bytecode is a portable ISA."
+    },
+    {
+      "id": "325-linker-resolves-names",
+      "track": "lang",
+      "title": "The linker resolves names to addresses."
+    },
+    {
+      "id": "326-abi-arg0-is-rdi",
+      "track": "lang",
+      "title": "ABI is which register is arg0."
+    },
+    {
+      "id": "327-ub-is-a-license",
+      "track": "lang",
+      "title": "UB is a license, not a crash."
+    },
+    {
+      "id": "328-static-type-before-run",
+      "track": "lang",
+      "title": "A static type is checked before run."
+    },
+    {
+      "id": "329-dynamic-tag-at-run",
+      "track": "lang",
+      "title": "A dynamic type is a tag at run."
+    },
+    {
+      "id": "330-acquire-sees-the-store",
+      "track": "lang",
+      "title": "Acquire sees the store. Relaxed does not."
+    },
+    {
+      "id": "331-volatile-is-mmio",
+      "track": "lang",
+      "title": "volatile is for MMIO, not mutexes."
+    },
+    {
+      "id": "332-struct-padding",
+      "track": "lang",
+      "title": "The compiler inserts padding for alignment."
+    },
+    {
+      "id": "333-null-vs-undefined",
+      "track": "lang",
+      "title": "null is a pointer. undefined is a JS hole."
+    },
+    {
+      "id": "334-js-length-is-utf16",
+      "track": "lang",
+      "title": "JS length is UTF-16 code units."
+    },
+    {
+      "id": "335-exceptions-unwind",
+      "track": "lang",
+      "title": "Exceptions unwind. Result is a value."
+    },
+    {
+      "id": "336-jit-deopt",
+      "track": "lang",
+      "title": "JIT compiles the hot path and may undo it."
+    },
+    {
+      "id": "337-bplus-tree-wide-short",
+      "track": "database",
+      "title": "A B+ tree is wide and short. Leaves hold rows."
+    },
+    {
+      "id": "338-postgres-8kb-pages",
+      "track": "database",
+      "title": "Postgres reads 8 KiB pages, not rows."
+    },
+    {
+      "id": "339-seq-scan-vs-index",
+      "track": "database",
+      "title": "Seq scan is n pages. Index is log n then heap."
+    },
+    {
+      "id": "340-bitmap-index-scan",
+      "track": "database",
+      "title": "Bitmap AND of two indexes, then heap."
+    },
+    {
+      "id": "341-vacuum-dead-tuples",
+      "track": "database",
+      "title": "VACUUM marks dead tuples reusable."
+    },
+    {
+      "id": "342-xid-wraparound",
+      "track": "database",
+      "title": "Transaction IDs wrap. Freeze is not optional."
+    },
+    {
+      "id": "343-checkpoint-flushes-pages",
+      "track": "database",
+      "title": "Checkpoint flushes dirty pages. WAL already is durable."
+    },
+    {
+      "id": "344-logical-vs-physical-repl",
+      "track": "database",
+      "title": "Physical ships pages. Logical ships rows."
+    },
+    {
+      "id": "345-partition-is-routing",
+      "track": "database",
+      "title": "Partitioning is routing, not a free index."
+    },
+    {
+      "id": "346-max-connections-is-ram",
+      "track": "database",
+      "title": "max_connections is RAM. Pool in the app."
+    },
+    {
+      "id": "347-jsonb-is-binary",
+      "track": "database",
+      "title": "jsonb is binary and indexable. json is text."
+    },
+    {
+      "id": "348-uuid-pk-scatters",
+      "track": "database",
+      "title": "Random UUIDs as PKs scatter the B+tree."
+    },
+    {
+      "id": "349-covering-include",
+      "track": "database",
+      "title": "INCLUDE makes an index covering without extra sort keys."
+    },
+    {
+      "id": "350-hot-update",
+      "track": "database",
+      "title": "HOT updates skip the indexes if indexed cols didn't change."
+    },
+    {
+      "id": "351-xmin-xmax-snapshot",
+      "track": "database",
+      "title": "A tuple is (xmin, xmax). Readers see a snapshot."
+    },
+    {
+      "id": "352-origin-scheme-host-port",
+      "track": "backend",
+      "title": "Origin is scheme, host, and port."
+    },
+    {
+      "id": "353-csp-who-runs-script",
+      "track": "backend",
+      "title": "CSP lists who may run script."
+    },
+    {
+      "id": "354-bcrypt-cost-2n",
+      "track": "backend",
+      "title": "bcrypt cost 12 is 2^12 iterations."
+    },
+    {
+      "id": "355-jwt-three-parts",
+      "track": "backend",
+      "title": "JWT is header.payload.signature."
+    },
+    {
+      "id": "356-prepared-not-concat",
+      "track": "database",
+      "title": "A prepared statement parses once. $1 is data."
+    },
+    {
+      "id": "357-dot-dot-is-not-a-name",
+      "track": "backend",
+      "title": "../ is not a filename."
+    },
+    {
+      "id": "358-ssrf-your-server-fetches",
+      "track": "backend",
+      "title": "SSRF is your server fetching their URL."
+    },
+    {
+      "id": "359-constant-time-compare",
+      "track": "backend",
+      "title": "memcmp returns early. Secrets must not."
+    },
+    {
+      "id": "360-hsts-remembers-https",
+      "track": "backend",
+      "title": "HSTS remembers HTTPS. The first HTTP visit is still open."
+    },
+    {
+      "id": "361-confused-deputy",
+      "track": "backend",
+      "title": "The confused deputy has your power, their intent."
+    },
+    {
+      "id": "362-two-keys-during-rotation",
+      "track": "backend",
+      "title": "Two keys live during rotation. One dies after."
+    },
+    {
+      "id": "363-auth-code-not-the-token",
+      "track": "backend",
+      "title": "The auth code is not the token."
+    },
+    {
+      "id": "364-git-blob-tree-commit",
+      "track": "tools",
+      "title": "Git stores blobs, trees, commits. Not diffs."
+    },
+    {
+      "id": "365-index-is-the-next-commit",
+      "track": "tools",
+      "title": "The index is the next commit."
+    },
+    {
+      "id": "366-merge-adds-rebase-rewrites",
+      "track": "tools",
+      "title": "merge adds a node. rebase rewrites hashes."
+    },
+    {
+      "id": "367-head-is-a-pointer",
+      "track": "tools",
+      "title": "HEAD is a pointer. A branch is a name."
+    },
+    {
+      "id": "368-stdout-is-data",
+      "track": "tools",
+      "title": "stdout is data. stderr is diagnostics."
+    },
+    {
+      "id": "369-exit-zero-succeeded",
+      "track": "tools",
+      "title": "0 succeeded. Nonzero is the error code."
+    },
+    {
+      "id": "370-make-is-a-dag",
+      "track": "tools",
+      "title": "Make is a DAG of files and commands."
+    },
+    {
+      "id": "371-so-relocated-at-load",
+      "track": "tools",
+      "title": "A .so is relocated at load. A .a is copied in."
+    },
+    {
+      "id": "372-container-ns-cgroup",
+      "track": "tools",
+      "title": "A container is namespaces plus cgroups, not a VM."
+    },
+    {
+      "id": "373-strace-is-the-kernel-api",
+      "track": "tools",
+      "title": "strace prints the syscalls. That is the kernel API."
+    },
+    {
+      "id": "374-core-dump-is-the-map",
+      "track": "tools",
+      "title": "A core dump is the address space at death."
+    },
+    {
+      "id": "375-shebang-kernel-line",
+      "track": "tools",
+      "title": "#! is the kernel's interpreter line."
+    }
+  ]
+}

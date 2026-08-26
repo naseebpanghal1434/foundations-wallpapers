@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PLATE 151 — Store the min with the value.</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@800;900&family=Fraunces:ital,opsz,wght@1,9..144,400;1,9..144,500&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/poster.css">
+</head>
+<body>
+  <article class="poster" data-track="dsa">
+    <span class="mark mark--tl"></span><span class="mark mark--tr"></span><span class="mark mark--bl"></span><span class="mark mark--br"></span>
+    <p class="spine">Foundations series — software engineering mental models</p>
+    <div class="rule"></div><div class="ghost">151</div><div class="vignette"></div>
+    <svg class="grain" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="4" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(#n)"></rect></svg>
+    <header class="mast">
+      <p class="kicker"><span>DSA</span><span class="dot"></span><span class="whisper">Push O(1) · getMin O(1)</span></p>
+      <h1 class="title">Store the min <span class="title-accent">with the value.</span></h1>
+      <p class="lede">Min stack: push, pop, top, getMin all O(1). Each node (or a parallel stack) stores the min of everything at or below it. Push <code>x</code> with <code>new_min = min(x, current_min)</code>; pop one pair. A second stack that only pushes when <code>x ≤ current min</code> also works — and saves space on increasing sequences.</p>
+    </header>
+    <section class="stage">
+      <div class="stage-inner">
+        <div class="compare">
+          <div class="compare-pane compare-pane--hit">
+            <p class="pane-label">Each depth carries its min</p>
+            <h2 class="pane-title">Pairs</h2>
+            <div class="codeblock ok">push -2  (-2, min=-2)
+push  0  ( 0, min=-2)
+push -3  (-3, min=-3)
+getMin   -3
+pop
+getMin   -2   still there</div>
+            <p class="caption">You never scan. Same bones: a max stack. Queue-min is a monotonic deque (plate 136).</p>
+          </div>
+          <div class="compare-vs">or</div>
+          <div class="compare-pane">
+            <p class="pane-label">Push a min only on ≤</p>
+            <h2 class="pane-title">Two stacks</h2>
+            <div class="codeblock">vals: -2, 0, -3
+mins: -2,    -3
+
+pop: if x == mins.top:
+       mins.pop()
+push: if x &lt;= mins.top
+       mins.push(x)</div>
+            <p class="caption"><code>≤</code> not <code>&lt;</code> — two copies of the min each get a slot, so a pop cannot lose the other.</p>
+          </div>
+        </div>
+        <div class="deck">
+          <div class="deck-row"><span class="deck-k">What</span><p>Auxiliary min at each depth. The live min is always the top of that channel. One variable is not enough: a pop has to restore the previous min without a scan.</p></div>
+          <div class="deck-row"><span class="deck-k">Why</span><p>LeetCode 155. Tests that O(1) min cannot be “look at every item.” Interview follow-up: max, or min in a queue (deque, not this).</p></div>
+          <div class="deck-row deck-row--trap"><span class="deck-k">Trap</span><p>Scanning the stack on <code>getMin</code>. Using <code>&lt;</code> so two copies of the min, pop one, min is gone. Updating a single <code>min</code> variable on pop without knowing what the previous min was.</p></div>
+        </div>
+      </div>
+    </section>
+    <footer class="foot"><p class="one-liner"></p><p class="plate-id">Plate 151 / 200</p></footer>
+  </article>
+</body>
+</html>

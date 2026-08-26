@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PLATE 251 — A leak is a listener you never remove.</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@800;900&family=Fraunces:ital,opsz,wght@1,9..144,400;1,9..144,500&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/poster.css">
+</head>
+<body>
+  <article class="poster" data-track="frontend">
+    <span class="mark mark--tl"></span><span class="mark mark--tr"></span><span class="mark mark--bl"></span><span class="mark mark--br"></span>
+    <p class="spine">Foundations series — software engineering mental models</p>
+    <div class="rule"></div><div class="ghost">251</div><div class="vignette"></div>
+    <svg class="grain" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="4" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(#n)"></rect></svg>
+    <header class="mast">
+      <p class="kicker"><span>Frontend</span><span class="dot"></span><span class="whisper">useEffect cleanup · SPA</span></p>
+      <h1 class="title">A leak is a listener <span class="title-accent">you never remove.</span></h1>
+      <p class="lede">In an SPA the page never unloads. A window listener, a <code>setInterval</code>, a subscription — they live until you cut them. <code>useEffect</code>’s return is the cut.</p>
+    </header>
+    <section class="stage">
+      <div class="stage-inner">
+        <div class="steps">
+          <div class="step"><span class="step-n">1</span><p class="step-copy">Subscribe on setup<span><code>const id = setInterval(…)</code>. <code>window.addEventListener('resize', onR)</code>. Empty deps: once per mount.</span></p><span class="step-meta">setup</span></div>
+          <div class="step step--hit"><span class="step-n">2</span><p class="step-copy">Return the cut<span><code>clearInterval(id)</code>. <code>removeEventListener('resize', onR)</code> — same function reference, not a new arrow.</span></p><span class="step-meta">cleanup</span></div>
+          <div class="step"><span class="step-n">3</span><p class="step-copy">Leave without it, keep the tree<span>Navigate away and you duplicate listeners or retain the old fiber. <code>AbortController</code> for fetch. Closures hold props (plate 23).</span></p><span class="step-meta">SPA</span></div>
+        </div>
+        <div class="deck">
+          <div class="deck-row"><span class="deck-k">What</span><p>Cleanup mirrors setup. Detached DOM + a listener is a leak. Closures hold the fiber’s props.</p></div>
+          <div class="deck-row"><span class="deck-k">Why</span><p>SPAs don’t get the free GC of a full navigation (plate 70). Slow after 20 route changes.</p></div>
+          <div class="deck-row deck-row--trap"><span class="deck-k">Trap</span><p><code>addEventListener</code> in render. <code>remove</code> with a different arrow. <code>setInterval</code> without <code>clear</code>. Subscribing to a store in an effect with no unsubscribe.</p></div>
+        </div>
+      </div>
+    </section>
+    <footer class="foot"><p class="one-liner"></p><p class="plate-id">Plate 251 / 286</p></footer>
+  </article>
+</body>
+</html>

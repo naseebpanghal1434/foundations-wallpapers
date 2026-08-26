@@ -1,0 +1,17 @@
+Foundations wave 3 — plates 226–286
+Write posters/{id}.html only. Do not edit catalog, css, index, other plates, or scripts.
+
+Chrome: copy posters/23-closures-remember-the-room.html or posters/12-the-model-forgets.html.
+- data-track from spec: frontend | genai | network
+- kicker left word from spec.kicker: Frontend | GenAI | Network
+- Footer: Plate N / 286
+- Ghost: unpadded N
+- Title = spec.title exactly, via spec.lead + <span class="title-accent">spec.accent</span>
+- whisper, lede from spec (tighten wording ok, keep facts)
+- Keep SHORT: lede 2 sentences, What/Why/Trap 1–2 sentences. 14" artboard is 1964px; overflow clips Trap.
+- layout: compare | trio | steps. stage--wide only for trio.
+- Allowed classes: compare, compare-pane, compare-pane--hit, compare-vs, pane-label, pane-title, trio, box, box--pool, col-label, box-title, steps, step, step--hit, step-n, step-copy, step-meta, codeblock, caption, deck, deck-row, deck-k, deck-row--trap. No new CSS.
+- Escape &lt; &gt; &amp;. Cross-ref "plate 23" not links.
+- Accuracy over slogans. These extend existing thin tracks; do not retitle plates 12, 15, 21–28, 44–48, 67, 77–78.
+
+When done, list files and confirm titles match spec.

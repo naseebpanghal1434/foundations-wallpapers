@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PLATE 177 — BFS words one letter apart.</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@800;900&family=Fraunces:ital,opsz,wght@1,9..144,400;1,9..144,500&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/poster.css">
+</head>
+<body>
+  <article class="poster" data-track="dsa">
+    <span class="mark mark--tl"></span><span class="mark mark--tr"></span><span class="mark mark--bl"></span><span class="mark mark--br"></span>
+    <p class="spine">Foundations series — software engineering mental models</p>
+    <div class="rule"></div><div class="ghost">177</div><div class="vignette"></div>
+    <svg class="grain" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="4" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(#n)"></rect></svg>
+    <header class="mast">
+      <p class="kicker"><span>DSA</span><span class="dot"></span><span class="whisper">Implicit graph · shortest</span></p>
+      <h1 class="title">BFS words <span class="title-accent">one letter apart.</span></h1>
+      <p class="lede">Word ladder: shortest transformation begin→end, changing one letter, each intermediate in the word list. That’s unweighted shortest path — BFS. Nodes are words. Neighbors: all one-letter mutations in the dictionary. Trick: bucket by wildcard pattern <code>h*t</code>, <code>*ot</code>, <code>ho*</code> so you don’t scan the whole list per word. Bidirectional BFS from both ends on large lists.</p>
+    </header>
+    <section class="stage">
+      <div class="stage-inner">
+        <div class="steps">
+          <div class="step"><span class="step-n">1</span><p class="step-copy">hit → hot → dot → dog → cog<span>Length 5 (words in the sequence, not edits). If <code>end</code> is not in the list, 0.</span></p><span class="step-meta">unweighted</span></div>
+          <div class="step step--hit"><span class="step-n">2</span><p class="step-copy">Queue (word, dist). Mark on enqueue<span>Remaining-words set: remove when you push, not when you pop — else the same word sits in the queue ten times.</span></p><span class="step-meta">visited early</span></div>
+          <div class="step"><span class="step-n">3</span><p class="step-copy">Pattern buckets, not n² scans<span><code>*ot: hot, dot, lot</code>. Mutate L letters × 26, or group by wildcards once. Don’t DFS — you want shortest, not any path.</span></p><span class="step-meta">implicit graph</span></div>
+        </div>
+        <p class="caption">126 asks all shortest paths: BFS + parent lists, then DFS reconstruct. Bidirectional BFS when the list is huge. Same BFS as plate 59, nodes you never stored.</p>
+        <div class="deck">
+          <div class="deck-row"><span class="deck-k">What</span><p>O(n · L · 26) with mutation, or O(n L) with patterns. Visited must be marked when enqueueing or the queue explodes. The graph is implicit: one letter apart, dictionary membership is the edge test.</p></div>
+          <div class="deck-row"><span class="deck-k">Why</span><p>LeetCode 127/126. BFS on an implicit graph. The follow-up (all ladders) is still BFS first — DFS only to emit the parent DAG of shortest paths.</p></div>
+          <div class="deck-row deck-row--trap"><span class="deck-k">Trap</span><p>DFS/backtracking as the main search (exponential, not shortest). Generating neighbors by scanning every word every time without a plan. Marking visited late. Assuming case doesn’t matter.</p></div>
+        </div>
+      </div>
+    </section>
+    <footer class="foot"><p class="one-liner"></p><p class="plate-id">Plate 177 / 200</p></footer>
+  </article>
+</body>
+</html>

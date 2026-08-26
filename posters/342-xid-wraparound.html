@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PLATE 342 — Transaction IDs wrap. Freeze is not optional.</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@800;900&family=Fraunces:ital,opsz,wght@1,9..144,400;1,9..144,500&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/poster.css">
+</head>
+<body>
+  <article class="poster" data-track="database">
+    <span class="mark mark--tl"></span><span class="mark mark--tr"></span><span class="mark mark--bl"></span><span class="mark mark--br"></span>
+    <p class="spine">Foundations series — software engineering mental models</p>
+    <div class="rule"></div><div class="ghost">342</div><div class="vignette"></div>
+    <svg class="grain" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="4" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(#n)"></rect></svg>
+    <header class="mast">
+      <p class="kicker"><span>Database</span><span class="dot"></span><span class="whisper">2^32 · autovacuum_freeze</span></p>
+      <h1 class="title">Transaction IDs wrap. <span class="title-accent">Freeze is not optional.</span></h1>
+      <p class="lede">Postgres tuple xids are 32-bit. Age past ~2e9 and unfrozen tuples look in the future — rows appear to vanish. <code>VACUUM FREEZE</code> writes frozen xids. <code>autovacuum_freeze_max_age</code> (default 200e6) must run. Watch <code>txid_current()</code> and <code>age(datfrozenxid)</code>.</p>
+    </header>
+    <section class="stage">
+      <div class="stage-inner">
+        <div class="steps">
+          <div class="step">
+            <span class="step-n">1</span>
+            <p class="step-copy">xid ticks every write txn<span>32-bit counter on the tuple (<code>xmin</code>/<code>xmax</code>). Read-only txns do not consume xids in modern PG.</span></p>
+            <span class="step-meta">2^32</span>
+          </div>
+          <div class="step step--hit">
+            <span class="step-n">2</span>
+            <p class="step-copy">Freeze old tuples<span>VACUUM writes FrozenXid before age ~2e9. Default freeze_max_age = 200 million.</span></p>
+            <span class="step-meta">VACUUM</span>
+          </div>
+          <div class="step">
+            <span class="step-n">3</span>
+            <p class="step-copy">Fail to freeze → shutdown<span>Wraparound protection stops new writes so data does not look empty. This is an outage.</span></p>
+            <span class="step-meta">halt</span>
+          </div>
+        </div>
+        <div class="deck">
+          <div class="deck-row"><span class="deck-k">What</span><p>A circular 32-bit counter plus freeze. Operational, not academic. Frozen means “older than every snapshot, stop comparing xid.”</p></div>
+          <div class="deck-row"><span class="deck-k">Why</span><p>The outage that looks like “the table is empty” or “cannot start transactions.” Logs screamed about wraparound for days first.</p></div>
+          <div class="deck-row deck-row--trap"><span class="deck-k">Trap</span><p>A long-open transaction blocking freeze. Ignoring wraparound warnings. A replica or forgotten database that never vacuums.</p></div>
+        </div>
+      </div>
+    </section>
+    <footer class="foot"><p class="one-liner"></p><p class="plate-id">Plate 342 / 375</p></footer>
+  </article>
+</body>
+</html>

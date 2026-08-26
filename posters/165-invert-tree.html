@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PLATE 165 — Swap left and right. Recurse.</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@800;900&family=Fraunces:ital,opsz,wght@1,9..144,400;1,9..144,500&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/poster.css">
+</head>
+<body>
+  <article class="poster" data-track="dsa">
+    <span class="mark mark--tl"></span><span class="mark mark--tr"></span><span class="mark mark--bl"></span><span class="mark mark--br"></span>
+    <p class="spine">Foundations series — software engineering mental models</p>
+    <div class="rule"></div><div class="ghost">165</div><div class="vignette"></div>
+    <svg class="grain" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="4" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(#n)"></rect></svg>
+    <header class="mast">
+      <p class="kicker"><span>DSA</span><span class="dot"></span><span class="whisper">Mirror</span></p>
+      <h1 class="title">Swap left and right. <span class="title-accent">Recurse.</span></h1>
+      <p class="lede">Invert a binary tree: swap the left and right <em>child pointers</em> on every node. Recurse both children — swap first is the usual picture; recurse-then-swap is the same mirror. Iterative: a queue or stack of nodes, swap as you go. Time O(n), space O(h).</p>
+    </header>
+    <section class="stage">
+      <div class="stage-inner">
+        <div class="compare">
+          <div class="compare-pane">
+            <p class="pane-label">Before</p>
+            <h2 class="pane-title">Original</h2>
+            <div class="codeblock">      4
+    /   \
+   2     7
+  / \   / \
+ 1   3 6   9
+
+swap pointers
+not values</div>
+            <p class="caption">A single swap at the root leaves 1,3,6,9 in place. That is not invert.</p>
+          </div>
+          <div class="compare-vs">vs</div>
+          <div class="compare-pane compare-pane--hit">
+            <p class="pane-label">Every node mirrored</p>
+            <h2 class="pane-title">Invert</h2>
+            <div class="codeblock ok">      4
+    /   \
+   7     2
+  / \   / \
+ 9   6 3   1
+
+null → null
+return the root</div>
+            <p class="caption">Pre-order or post-order, as long as you visit every node. BFS swap is fine.</p>
+          </div>
+        </div>
+        <div class="deck">
+          <div class="deck-row"><span class="deck-k">What</span><p><code>node.left, node.right = node.right, node.left</code>, then both kids. Base: null returns null. You are rewriting edges, not shuffling stored values. Same tree object, mirrored shape.</p></div>
+          <div class="deck-row"><span class="deck-k">Why</span><p>LeetCode 226. Warm-up tree recursion. Interviewers use it to see if you draw the tree. Symmetric tree (LC 101) is the cousin: “is this already a mirror?” — two pointers, not a mutate.</p></div>
+          <div class="deck-row deck-row--trap"><span class="deck-k">Trap</span><p>Swapping values instead of child pointers. Recursing only one side. Returning the left child, not the root. A deep stick and recursion limits — iterate with a queue (plate 56).</p></div>
+        </div>
+      </div>
+    </section>
+    <footer class="foot"><p class="one-liner"></p><p class="plate-id">Plate 165 / 200</p></footer>
+  </article>
+</body>
+</html>

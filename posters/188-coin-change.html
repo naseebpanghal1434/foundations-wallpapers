@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PLATE 188 — Coins may repeat. Walk amounts up.</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@800;900&family=Fraunces:ital,opsz,wght@1,9..144,400;1,9..144,500&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/poster.css">
+</head>
+<body>
+  <article class="poster" data-track="dsa">
+    <span class="mark mark--tl"></span><span class="mark mark--tr"></span><span class="mark mark--bl"></span><span class="mark mark--br"></span>
+    <p class="spine">Foundations series — software engineering mental models</p>
+    <div class="rule"></div><div class="ghost">188</div><div class="vignette"></div>
+    <svg class="grain" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="4" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(#n)"></rect></svg>
+    <header class="mast">
+      <p class="kicker"><span>DSA</span><span class="dot"></span><span class="whisper">Unbounded · dp[x] min coins</span></p>
+      <h1 class="title">Coins may repeat. <span class="title-accent">Walk amounts up.</span></h1>
+      <p class="lede">Coin change: fewest coins to make amount, coins reusable. <code>dp[x] = min</code> over coins c of <code>dp[x-c]+1</code>, <code>dp[0]=0</code>, rest ∞. Fill 1..amount. O(amount · n). Combination count (LC 518): <code>dp[x]+=dp[x-c]</code>, iterate coins outer so order doesn’t count as extra. Greedy (biggest first) is wrong for arbitrary coin systems.</p>
+    </header>
+    <section class="stage">
+      <div class="stage-inner">
+        <div class="steps">
+          <div class="step"><span class="step-n">1</span><p class="step-copy">Greedy dies here<span>Coins <code>[1,3,4]</code>, amount 6. Biggest-first: 4+1+1 = 3 coins. Optimal: 3+3 = 2. US coins happen to be canonical; interviews pick this set.</span></p><span class="step-meta">not greedy</span></div>
+          <div class="step step--hit"><span class="step-n">2</span><p class="step-copy">Min coins, amounts up<span><code>dp[0]=0</code>, rest ∞. <code>x: 0 1 2 3 4 5 6</code> → <code>0,1,2,1,1,2,2</code>. Unbounded: walk amounts up (or coins inner — min doesn’t care). Need the coins? Store a parent.</span></p><span class="step-meta">LC 322</span></div>
+          <div class="step"><span class="step-n">3</span><p class="step-copy">518: coins outer<span>Count combinations, not permutations. Coins outer, amounts up: <code>[1,2]</code> amount 3 → 2 ways (<code>1+1+1</code>, <code>1+2</code>). Amounts outer counts <code>2+1</code> as a third.</span></p><span class="step-meta">combinations</span></div>
+        </div>
+        <div class="deck">
+          <div class="deck-row"><span class="deck-k">What</span><p>Unbounded knapsack. State is remaining amount. Each coin may be used again, so the 1D loop walks <em>up</em>. 0/1 (each coin once) is the backward knapsack loop from plate 187. Impossible → −1, not ∞.</p></div>
+          <div class="deck-row"><span class="deck-k">Why</span><p>LeetCode 322 / 518. The “greedy fails” example. Interview: US coins greedy works; they will pick <code>[1,3,4]</code>. Amount 0 is 0 coins, not −1.</p></div>
+          <div class="deck-row deck-row--trap"><span class="deck-k">Trap</span><p>Greedy. Coins inner vs outer for counting (permutations vs combinations). <code>dp[0]=∞</code>. Amount=0 → 0, not −1. Negative coins. Mixing the 0/1 backward walk with this one.</p></div>
+        </div>
+      </div>
+    </section>
+    <footer class="foot"><p class="one-liner"></p><p class="plate-id">Plate 188 / 200</p></footer>
+  </article>
+</body>
+</html>

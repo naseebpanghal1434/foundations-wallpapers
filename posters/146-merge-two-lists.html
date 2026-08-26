@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PLATE 146 — Dummy head. Pick the smaller.</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@800;900&family=Fraunces:ital,opsz,wght@1,9..144,400;1,9..144,500&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/poster.css">
+</head>
+<body>
+  <article class="poster" data-track="dsa">
+    <span class="mark mark--tl"></span><span class="mark mark--tr"></span><span class="mark mark--bl"></span><span class="mark mark--br"></span>
+    <p class="spine">Foundations series — software engineering mental models</p>
+    <div class="rule"></div><div class="ghost">146</div><div class="vignette"></div>
+    <svg class="grain" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="4" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(#n)"></rect></svg>
+    <header class="mast">
+      <p class="kicker"><span>DSA</span><span class="dot"></span><span class="whisper">Two sorted lists</span></p>
+      <h1 class="title">Dummy head. <span class="title-accent">Pick the smaller.</span></h1>
+      <p class="lede">Merge two sorted linked lists into one sorted list. Dummy sentinel, tail walks. Each step: attach the smaller head, advance that list. Then attach whatever remains. O(m+n), O(1) extra. Do not allocate new nodes unless asked — relink.</p>
+    </header>
+    <section class="stage">
+      <div class="stage-inner">
+        <div class="steps">
+          <div class="step step--hit"><span class="step-n">1</span><p class="step-copy">Dummy so the empty case is free<span><code>dummy = Node(0); tail = dummy</code>. Never special-case “the result was empty.” Return <code>dummy.next</code> — returning <code>dummy</code> is the bug.</span></p><span class="step-meta">sentinel</span></div>
+          <div class="step"><span class="step-n">2</span><p class="step-copy">1→4→5 and 1→2→3→6. Pick min<span>Attach 1 (a), 1 (b), 2, 3, 4, 5, 6. Compare <code>a.val</code> vs <code>b.val</code>, not the nodes. <code>tail.next = smaller; tail = tail.next</code>.</span></p><span class="step-meta">relink</span></div>
+          <div class="step"><span class="step-n">3</span><p class="step-copy">Leftover tail hangs on in one write<span><code>tail.next = a or b</code>. Merge k lists is this in a heap (plate 161) or pairwise. Recursion: return the smaller node, its next = merge(rest) — O(n) stack.</span></p><span class="step-meta">rest</span></div>
+        </div>
+        <div class="deck">
+          <div class="deck-row"><span class="deck-k">What</span><p>Same as merging arrays from the front (you own new links, no clobber — unlike plate 134’s fill-from-the-back). Relink existing nodes. Dummy is one code path for empty and non-empty.</p></div>
+          <div class="deck-row"><span class="deck-k">Why</span><p>LeetCode 21. Foundation for merge sort on lists (LC 148) and k-way merge. Interviews watch whether you allocate a parallel list of new nodes, and whether you return <code>dummy</code>.</p></div>
+          <div class="deck-row deck-row--trap"><span class="deck-k">Trap</span><p>Forgetting the leftover tail. Using a dummy and returning <code>dummy</code> not <code>dummy.next</code>. Comparing node vs <code>node.val</code>. Creating new nodes when relink was enough.</p></div>
+        </div>
+      </div>
+    </section>
+    <footer class="foot"><p class="one-liner"></p><p class="plate-id">Plate 146 / 200</p></footer>
+  </article>
+</body>
+</html>

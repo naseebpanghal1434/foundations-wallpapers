@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PLATE 101 — Index is address plus i.</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@800;900&family=Fraunces:ital,opsz,wght@1,9..144,400;1,9..144,500&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/poster.css">
+</head>
+<body>
+  <article class="poster" data-track="dsa">
+    <span class="mark mark--tl"></span><span class="mark mark--tr"></span><span class="mark mark--bl"></span><span class="mark mark--br"></span>
+    <p class="spine">Foundations series — software engineering mental models</p>
+    <div class="rule"></div><div class="ghost">101</div><div class="vignette"></div>
+    <svg class="grain" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="4" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(#n)"></rect></svg>
+    <header class="mast">
+      <p class="kicker"><span>DSA</span><span class="dot"></span><span class="whisper">Contiguous · O(1) get</span></p>
+      <h1 class="title">Index is <span class="title-accent">address plus i.</span></h1>
+      <p class="lede">An array is one block. Slot <code>i</code> lives at <code>base + i × size</code> — O(1), no hop. Append at the end is O(1) if capacity remains. Insert or delete in the middle shifts the tail — O(n). Binary search, two pointers, prefix sums all assume this layout.</p>
+    </header>
+    <section class="stage">
+      <div class="stage-inner">
+        <div class="compare">
+          <div class="compare-pane compare-pane--hit">
+            <p class="pane-label">One block · arithmetic</p>
+            <h2 class="pane-title">Index</h2>
+            <div class="codeblock ok">[ 7 | 2 | 9 | 4 ]
+  0   1   2   3
+a[2] → addr + 2×4
+     → 9            O(1)
+insert at 1         O(n) shift
+push at end         O(1) if cap</div>
+            <p class="caption">Ints of 4 bytes. The next index is the next cache line. 2D row-major: <code>a[r][c]</code> is <code>a[r*cols+c]</code>.</p>
+          </div>
+          <div class="compare-vs">e.g.</div>
+          <div class="compare-pane">
+            <p class="pane-label">Rotate right by k=2</p>
+            <h2 class="pane-title">In-place</h2>
+            <div class="codeblock">[1 2 3 4 5]   k=2
+rev all    5 4 3 2 1
+rev [0,k)  4 5 3 2 1
+rev [k,n)  4 5 1 2 3</div>
+            <p class="caption">Three reverses, O(n) time, O(1) extra space. Same block, mutated. <code>k %= n</code> first.</p>
+          </div>
+        </div>
+        <div class="deck">
+          <div class="deck-row"><span class="deck-k">What</span><p>Fixed-size or dynamic contiguous slots of one type. Get/set O(1). Scan O(n). Cache-friendly because the next index is the next cache line. 2D row-major: <code>a[r][c]</code> is <code>a[r*cols+c]</code>.</p></div>
+          <div class="deck-row"><span class="deck-k">Why</span><p>Default structure in screens. Rotate array, move zeroes, Dutch flag, prefix sums — they mutate the block. Say index, length, in-place vs extra array.</p></div>
+          <div class="deck-row deck-row--trap"><span class="deck-k">Trap</span><p><code>a[n]</code> is out of bounds — last index is <code>n-1</code>. “Insert is O(1)” — only at the end, and only with spare capacity. Treating a Python <code>list</code> as a linked list: it is a dynamic array (plate 102).</p></div>
+        </div>
+      </div>
+    </section>
+    <footer class="foot"><p class="one-liner"></p><p class="plate-id">Plate 101 / 200</p></footer>
+  </article>
+</body>
+</html>

@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PLATE 332 — The compiler inserts padding for alignment.</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@800;900&family=Fraunces:ital,opsz,wght@1,9..144,400;1,9..144,500&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/poster.css">
+</head>
+<body>
+  <article class="poster" data-track="lang">
+    <span class="mark mark--tl"></span><span class="mark mark--tr"></span><span class="mark mark--bl"></span><span class="mark mark--br"></span>
+    <p class="spine">Foundations series — software engineering mental models</p>
+    <div class="rule"></div><div class="ghost">332</div><div class="vignette"></div>
+    <svg class="grain" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="4" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(#n)"></rect></svg>
+    <header class="mast">
+      <p class="kicker"><span>Lang</span><span class="dot"></span><span class="whisper">sizeof · offsetof</span></p>
+      <h1 class="title">The compiler inserts padding <span class="title-accent">for alignment.</span></h1>
+      <p class="lede"><code>struct { char c; int32_t x; }</code> is 8 bytes, not 5: 3 pad so <code>x</code> sits at offset 4 (plate 320). Order fields decreasing size to shrink. <code>packed</code> removes pad and may split loads. JSON and protobuf do not use C layout.</p>
+    </header>
+    <section class="stage">
+      <div class="stage-inner">
+        <div class="compare">
+          <div class="compare-pane compare-pane--hit">
+            <p class="pane-label">char then int32 · not 5</p>
+            <h2 class="pane-title">sizeof 8</h2>
+            <div class="codeblock">offset 0     c
+       1–3   pad
+       4–7   x
+
+alignof = 4
+offsetof(x) = 4
+64-bit ptr = 8</div>
+            <p class="caption">Natural align = size. An unaligned <code>int32</code> splits the load (plate 320).</p>
+          </div>
+          <div class="compare-vs">vs</div>
+          <div class="compare-pane">
+            <p class="pane-label">int32 then char · still 8</p>
+            <h2 class="pane-title">Tail pad</h2>
+            <div class="codeblock">offset 0–3   x
+       4     c
+       5–7   pad
+
+struct align
+  = max member
+array[N] = N×8</div>
+            <p class="caption">C does not reorder fields. Java/Go may. <code>packed</code> is a wire format, not a hot in-memory layout.</p>
+          </div>
+        </div>
+        <div class="deck">
+          <div class="deck-row"><span class="deck-k">What</span><p>ABI layout: <code>sizeof</code>, <code>alignof</code>, <code>offsetof</code>. An array of structs multiplies the padding. Cache-line packing is 64 B (plate 309).</p></div>
+          <div class="deck-row"><span class="deck-k">Why</span><p>Wire vs in-memory. A 1-byte flag next to a pointer is 1+7+8 on SysV AMD64. Measure with <code>sizeof</code>, not by adding field sizes.</p></div>
+          <div class="deck-row deck-row--trap"><span class="deck-k">Trap</span><p><code>fwrite(&amp;s, sizeof s, 1, f)</code> as a file format (pad, endian, align). <code>memcmp</code> of structs — padding bytes are garbage. Then “it failed on the other compiler.”</p></div>
+        </div>
+      </div>
+    </section>
+    <footer class="foot"><p class="one-liner"></p><p class="plate-id">Plate 332 / 375</p></footer>
+  </article>
+</body>
+</html>

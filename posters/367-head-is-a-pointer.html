@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PLATE 367 — HEAD is a pointer. A branch is a name.</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@800;900&family=Fraunces:ital,opsz,wght@1,9..144,400;1,9..144,500&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/poster.css">
+</head>
+<body>
+  <article class="poster" data-track="tools">
+    <span class="mark mark--tl"></span><span class="mark mark--tr"></span><span class="mark mark--bl"></span><span class="mark mark--br"></span>
+    <p class="spine">Foundations series — software engineering mental models</p>
+    <div class="rule"></div><div class="ghost">367</div><div class="vignette"></div>
+    <svg class="grain" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="4" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(#n)"></rect></svg>
+    <header class="mast">
+      <p class="kicker"><span>Tools</span><span class="dot"></span><span class="whisper">refs/heads · detached</span></p>
+      <h1 class="title">HEAD is a pointer. <span class="title-accent">A branch is a name.</span></h1>
+      <p class="lede"><code>refs/heads/main</code> is a file holding a commit hash. HEAD is usually a symbolic ref to that name. Detached HEAD means HEAD is a raw hash — new commits are reachable only via that hash or the reflog until you name them; tags don’t move unless <code>-f</code>.</p>
+    </header>
+    <section class="stage">
+      <div class="stage-inner">
+        <div class="steps">
+          <div class="step step--hit"><span class="step-n">1</span><p class="step-copy">HEAD → refs/heads/main → 9c3<span><code>.git/HEAD</code> contains <code>ref: refs/heads/main</code>. A commit updates the name, not HEAD’s text.</span></p><span class="step-meta">attached</span></div>
+          <div class="step"><span class="step-n">2</span><p class="step-copy">checkout 9c3^ — detached<span>HEAD now stores 40 hex chars. Commits you make hang off that hash only.</span></p><span class="step-meta">raw hash</span></div>
+          <div class="step"><span class="step-n">3</span><p class="step-copy">branch save — now a name<span><code>git switch -c save</code> writes <code>refs/heads/save</code>. <code>origin/main</code> is a remote-tracking name.</span></p><span class="step-meta">label</span></div>
+        </div>
+        <p class="caption">Deleting a branch deletes the name, not the objects — GC later if nothing else points at them. Fetch updates <code>origin/*</code>; checkout does not.</p>
+        <div class="deck">
+          <div class="deck-row"><span class="deck-k">What</span><p>Names are cheap, movable labels on the object DAG. HEAD is which name (or hash) you are on.</p></div>
+          <div class="deck-row"><span class="deck-k">Why</span><p>“Where did my commit go?” — detached. Why deleting a branch does not delete objects immediately.</p></div>
+          <div class="deck-row deck-row--trap"><span class="deck-k">Trap</span><p>Committing for an hour detached, then <code>checkout main</code>. Thinking <code>origin/main</code> updates without <code>fetch</code>.</p></div>
+        </div>
+      </div>
+    </section>
+    <footer class="foot"><p class="one-liner"></p><p class="plate-id">Plate 367 / 375</p></footer>
+  </article>
+</body>
+</html>

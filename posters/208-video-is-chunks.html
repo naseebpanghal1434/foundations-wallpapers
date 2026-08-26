@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PLATE 208 — Video is chunks, not a file.</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@800;900&family=Fraunces:ital,opsz,wght@1,9..144,400;1,9..144,500&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/poster.css">
+</head>
+<body>
+  <article class="poster" data-track="system">
+    <span class="mark mark--tl"></span><span class="mark mark--tr"></span><span class="mark mark--bl"></span><span class="mark mark--br"></span>
+    <p class="spine">Foundations series — software engineering mental models</p>
+    <div class="rule"></div><div class="ghost">208</div><div class="vignette"></div>
+    <svg class="grain" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="4" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(#n)"></rect></svg>
+    <header class="mast">
+      <p class="kicker"><span>System</span><span class="dot"></span><span class="whisper">Encode · HLS · CDN</span></p>
+      <h1 class="title">Video is chunks, <span class="title-accent">not a file.</span></h1>
+      <p class="lede">A 4K title is not <code>GET /movie.mp4</code> from origin. Upload to blob (plate 207), transcode 360p–1080p, pack 2–6 s HLS/DASH segments (<code>.ts</code> + <code>.m3u8</code>). The player picks a bitrate; the CDN holds hot segments. Origin is the miss.</p>
+    </header>
+    <section class="stage">
+      <div class="stage-inner">
+        <div class="steps">
+          <div class="step"><span class="step-n">1</span><p class="step-copy">Upload the mezzanine<span>Signed PUT (plate 207). The master is not what the player fetches. Transcode is a job (plate 221), not the upload request.</span></p><span class="step-meta">blob</span></div>
+          <div class="step"><span class="step-n">2</span><p class="step-copy">Encode a ladder<span>Workers: 360 / 720 / 1080 + AAC. A 2 s 360p segment is ~64–200 KiB. No 360p → mobile dies on cellular.</span></p><span class="step-meta">renditions</span></div>
+          <div class="step step--hit"><span class="step-n">3</span><p class="step-copy">Package HLS / DASH<span><code>.m3u8</code> playlist + <code>.ts</code> / fMP4. Seek = start at segment N. DRM and captions are extra tracks; thumbs are a sprite sheet.</span></p><span class="step-meta">2–6 s</span></div>
+          <div class="step"><span class="step-n">4</span><p class="step-copy">CDN holds hot segments<span>Player ABR picks the ladder. Pre-warm titles. Premiere on origin with no CDN is a stampede (plate 94).</span></p><span class="step-meta">edge</span></div>
+        </div>
+        <div class="deck">
+          <div class="deck-row"><span class="deck-k">What</span><p>Adaptive bitrate + 2–6 s segments + CDN. Metadata (duration, titles) in the DB. The player is the bitrate load balancer; origin is the miss.</p></div>
+          <div class="deck-row"><span class="deck-k">Why</span><p>YouTube / Netflix design. They want: transcode async, segments, CDN — not a single MP4 progressive download.</p></div>
+          <div class="deck-row deck-row--trap"><span class="deck-k">Trap</span><p>One giant file. Transcoding on the upload request. No 360p ladder. Origin without a CDN on the first frame of a premiere.</p></div>
+        </div>
+      </div>
+    </section>
+    <footer class="foot"><p class="one-liner"></p><p class="plate-id">Plate 208 / 375</p></footer>
+  </article>
+</body>
+</html>

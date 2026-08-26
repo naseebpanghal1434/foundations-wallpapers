@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PLATE 265 — Prompt cache is prefix reuse.</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@800;900&family=Fraunces:ital,opsz,wght@1,9..144,400;1,9..144,500&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/poster.css">
+</head>
+<body>
+  <article class="poster" data-track="genai">
+    <span class="mark mark--tl"></span><span class="mark mark--tr"></span><span class="mark mark--bl"></span><span class="mark mark--br"></span>
+    <p class="spine">Foundations series — software engineering mental models</p>
+    <div class="rule"></div><div class="ghost">265</div><div class="vignette"></div>
+    <svg class="grain" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="4" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(#n)"></rect></svg>
+    <header class="mast">
+      <p class="kicker"><span>GenAI</span><span class="dot"></span><span class="whisper">Stable prefix · KV</span></p>
+      <h1 class="title">Prompt cache is <span class="title-accent">prefix reuse.</span></h1>
+      <p class="lede">If the first N tokens match across requests, a provider can reuse the KV (plate 254) — cheaper, faster. The prefix must be byte-stable; put the volatile user question last.</p>
+    </header>
+    <section class="stage">
+      <div class="stage-inner">
+        <div class="compare">
+          <div class="compare-pane">
+            <p class="pane-label">Clock in the system prompt</p>
+            <h2 class="pane-title">Never hits</h2>
+            <div class="codeblock">system: 2026-08-26T…
+tools shuffled
+req_id=…
+
+one token at pos 0
+→ full miss</div>
+            <p class="caption">A one-token change at position 0 invalidates the whole prefix.</p>
+          </div>
+          <div class="compare-vs">vs</div>
+          <div class="compare-pane compare-pane--hit">
+            <p class="pane-label">Static head · user last</p>
+            <h2 class="pane-title">Byte-stable</h2>
+            <div class="codeblock">[tools + policy]
+[docs / RAG header]
+[user question]
+
+same bytes, same KV</div>
+            <p class="caption">Some APIs need a minimum prefix length. This is not a RAG embedding cache.</p>
+          </div>
+        </div>
+        <div class="deck">
+          <div class="deck-row"><span class="deck-k">What</span><p>Cache the stable head. Dynamic content goes last. Same reason CDNs like immutable URLs.</p></div>
+          <div class="deck-row"><span class="deck-k">Why</span><p>Cost and TTFT on a busy copilot. Identical system + tools + schema is the hit; the question is the miss by design.</p></div>
+          <div class="deck-row deck-row--trap"><span class="deck-k">Trap</span><p>ISO timestamps and request ids in the system message. Reordering tools every call. Caching a prefix that includes the user’s PII.</p></div>
+        </div>
+      </div>
+    </section>
+    <footer class="foot"><p class="one-liner"></p><p class="plate-id">Plate 265 / 286</p></footer>
+  </article>
+</body>
+</html>

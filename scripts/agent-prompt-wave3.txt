@@ -1,0 +1,3 @@
+SHARED RULES — read scripts/wave3-author.txt and the assigned spec JSON.
+Write posters/{id}.html only. Footer Plate N / 286. Title matches spec.title via lead/accent.
+Short content so Trap is visible on 1964px.

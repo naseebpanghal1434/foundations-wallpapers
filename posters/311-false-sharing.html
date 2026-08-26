@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PLATE 311 — False sharing is two cores, one line.</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@800;900&family=Fraunces:ital,opsz,wght@1,9..144,400;1,9..144,500&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/poster.css">
+</head>
+<body>
+  <article class="poster" data-track="arch">
+    <span class="mark mark--tl"></span><span class="mark mark--tr"></span><span class="mark mark--bl"></span><span class="mark mark--br"></span>
+    <p class="spine">Foundations series — software engineering mental models</p>
+    <div class="rule"></div><div class="ghost">311</div><div class="vignette"></div>
+    <svg class="grain" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="4" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(#n)"></rect></svg>
+    <header class="mast">
+      <p class="kicker"><span>Arch</span><span class="dot"></span><span class="whisper">MESI · ping-pong</span></p>
+      <h1 class="title">False sharing is two cores, <span class="title-accent">one line.</span></h1>
+      <p class="lede">Two cores write adjacent fields that sit in the same 64 B line. The line bounces Exclusive↔Modified (MESI) even though the programmers never shared a variable. Symptom: linear slowdown with cores, high cache-coherence traffic, low actual work.</p>
+    </header>
+    <section class="stage">
+      <div class="stage-inner">
+        <div class="compare">
+          <div class="compare-pane">
+            <p class="pane-label">Eight counters, one line</p>
+            <h2 class="pane-title">Ping-pong</h2>
+            <div class="codeblock">struct { atomic n[8]; }
+8 × 4 B = 32 B &lt; 64 B
+
+8 cores write “their” n[i]
+line Exclusive ↔ Modified</div>
+            <p class="caption">No software sharing. Still hardware sharing. <code>perf c2c</code> / mem events.</p>
+          </div>
+          <div class="compare-vs">vs</div>
+          <div class="compare-pane compare-pane--hit">
+            <p class="pane-label">Pad to the line</p>
+            <h2 class="pane-title">alignas(64)</h2>
+            <div class="codeblock">alignas(64) atomic n;
+one counter per 64 B
+
+Go padded structs
+Java @Contended</div>
+            <p class="caption">Coherence is per 64 B line (plate 309). False = you did not share a variable.</p>
+          </div>
+        </div>
+        <div class="deck">
+          <div class="deck-row"><span class="deck-k">What</span><p>Coherence is per line. False sharing: no software sharing, still hardware sharing.</p></div>
+          <div class="deck-row"><span class="deck-k">Why</span><p>A per-core counter array without padding is slower than a mutex at N=8.</p></div>
+          <div class="deck-row deck-row--trap"><span class="deck-k">Trap</span><p>Array of 4-byte atomics. “But they are different variables.” They are not different lines.</p></div>
+        </div>
+      </div>
+    </section>
+    <footer class="foot"><p class="one-liner"></p><p class="plate-id">Plate 311 / 375</p></footer>
+  </article>
+</body>
+</html>

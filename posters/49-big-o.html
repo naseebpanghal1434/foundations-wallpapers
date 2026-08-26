@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PLATE 49 — Big O is the growth, not the stopwatch.</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@800;900&family=Fraunces:ital,opsz,wght@1,9..144,400;1,9..144,500&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/poster.css">
+</head>
+<body>
+  <article class="poster" data-track="dsa">
+    <span class="mark mark--tl"></span><span class="mark mark--tr"></span><span class="mark mark--bl"></span><span class="mark mark--br"></span>
+    <p class="spine">Foundations series — software engineering mental models</p>
+    <div class="rule"></div><div class="ghost">49</div><div class="vignette"></div>
+    <svg class="grain" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="4" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(#n)"></rect></svg>
+    <header class="mast">
+      <p class="kicker"><span>DSA</span><span class="dot"></span><span class="whisper">O(1) · log n · n · n²</span></p>
+      <h1 class="title">Big O is the growth, <span class="title-accent">not the stopwatch.</span></h1>
+      <p class="lede">Big O says how cost grows as n grows — not how many milliseconds this laptop took. Drop constants and slower terms. Interviews want the class, and which loop made it that way.</p>
+    </header>
+    <section class="stage stage--wide">
+      <div class="stage-inner">
+        <div class="grid4">
+          <div class="box box--pool">
+            <p class="col-label">Constant</p>
+            <h2 class="box-title">O(1)</h2>
+            <p class="caption">Array index. Hash get. Same work at n=10 and n=10⁷. (Average — plate 51.)</p>
+          </div>
+          <div class="box">
+            <p class="col-label">Halve each step</p>
+            <h2 class="box-title">O(log n)</h2>
+            <p class="caption">Binary search. Balanced tree. 2³⁰ ≈ 1e9; thirty steps, not a billion.</p>
+          </div>
+          <div class="box">
+            <p class="col-label">Touch each once</p>
+            <h2 class="box-title">O(n)</h2>
+            <p class="caption">Scan, two pointers, sliding window. Linear in the input. The honest default.</p>
+          </div>
+          <div class="box">
+            <p class="col-label">Every pair</p>
+            <h2 class="box-title">O(n²)</h2>
+            <p class="caption">Nested loops over n. 10⁴ × 10⁴ = 10⁸ ops — the usual timeout in a screen.</p>
+          </div>
+        </div>
+        <div class="deck">
+          <div class="deck-row"><span class="deck-k">What</span><p>An upper bound on growth. “Does not grow faster than f.” Θ is tight; interviews accept O. Space uses the same classes. O(n log n) is sort / divide-and-conquer, not two <code>for</code>s.</p></div>
+          <div class="deck-row"><span class="deck-k">Why</span><p>n = 10⁶: O(n) is fine, O(n²) is dead. n = 10⁹: even O(n) may be tight. Pick the structure before you type. A stopwatch on n=10 tells you nothing about n=10⁷.</p></div>
+          <div class="deck-row deck-row--trap"><span class="deck-k">Trap</span><p>Nested <code>for i / for j</code> claimed as n log n because “log feels nested.” That is n². Calling an O(n) helper inside a loop and reporting O(n). “Hashmap is O(1)” as a law (plate 51).</p></div>
+        </div>
+      </div>
+    </section>
+    <footer class="foot"><p class="one-liner"></p><p class="plate-id">Plate 49 / 100</p></footer>
+  </article>
+</body>
+</html>

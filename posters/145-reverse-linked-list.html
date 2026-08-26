@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PLATE 145 — Three pointers reverse a list.</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@800;900&family=Fraunces:ital,opsz,wght@1,9..144,400;1,9..144,500&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/poster.css">
+</head>
+<body>
+  <article class="poster" data-track="dsa">
+    <span class="mark mark--tl"></span><span class="mark mark--tr"></span><span class="mark mark--bl"></span><span class="mark mark--br"></span>
+    <p class="spine">Foundations series — software engineering mental models</p>
+    <div class="rule"></div><div class="ghost">145</div><div class="vignette"></div>
+    <svg class="grain" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="4" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(#n)"></rect></svg>
+    <header class="mast">
+      <p class="kicker"><span>DSA</span><span class="dot"></span><span class="whisper">prev · cur · nxt</span></p>
+      <h1 class="title">Three pointers <span class="title-accent">reverse a list.</span></h1>
+      <p class="lede">Reverse a singly linked list in O(n)/O(1): <code>prev=null</code>, <code>cur=head</code>. Save <code>nxt=cur.next</code> first; then <code>cur.next=prev</code>; <code>prev=cur</code>; <code>cur=nxt</code>. Return <code>prev</code>. Recursion (reverse the tail, then <code>head.next.next=head</code>) is O(n) stack — fine for small n, not for 10⁵.</p>
+    </header>
+    <section class="stage">
+      <div class="stage-inner">
+        <div class="compare">
+          <div class="compare-pane compare-pane--hit">
+            <p class="pane-label">Save nxt, then flip</p>
+            <h2 class="pane-title">Whole list</h2>
+            <div class="codeblock ok">prev, cur = null, head
+while cur:
+  nxt = cur.next      # first
+  cur.next = prev
+  prev = cur
+  cur = nxt
+return prev
+
+1→2→3→null
+null←1  2→3
+null←1←2  3
+null←1←2←3</div>
+            <p class="caption">Return <code>prev</code>, not the old head (now the tail). O(n) time, O(1) extra.</p>
+          </div>
+          <div class="compare-vs">also</div>
+          <div class="compare-pane">
+            <p class="pane-label">Range [l, r] · 1-indexed</p>
+            <h2 class="pane-title">Sublist</h2>
+            <div class="codeblock">dummy.next = head
+walk to node l-1
+flip r-l+1 links
+reconnect both ends
+
+k-group (LC 25):
+this in chunks of k
+leftover tail stays</div>
+            <p class="caption">Dummy so the predecessor of <code>l</code> always exists. Doubly-linked reverse is swap <code>prev</code>/<code>next</code> everywhere.</p>
+          </div>
+        </div>
+        <div class="deck">
+          <div class="deck-row"><span class="deck-k">What</span><p>Iterative three pointers. Dummy for a sublist reverse so the predecessor is easy. Palindrome list: reverse the second half (plate 149). Always draw one node flipping.</p></div>
+          <div class="deck-row"><span class="deck-k">Why</span><p>LeetCode 206 / 92 / 25. The first linked-list screen. If you can reverse, you can splice, k-group, and palindrome. Recursion is the same flip after the tail returns — name the stack cost.</p></div>
+          <div class="deck-row deck-row--trap"><span class="deck-k">Trap</span><p>Losing <code>nxt</code> — <code>cur = cur.next</code> after you already set <code>cur.next = prev</code>. Returning <code>head</code> (now the tail). Recursing n=10⁵. Off-by-one when reversing a 1-indexed range <code>[l,r]</code>.</p></div>
+        </div>
+      </div>
+    </section>
+    <footer class="foot"><p class="one-liner"></p><p class="plate-id">Plate 145 / 200</p></footer>
+  </article>
+</body>
+</html>

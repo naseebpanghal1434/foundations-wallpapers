@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PLATE 106 — The last in is the first out.</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@800;900&family=Fraunces:ital,opsz,wght@1,9..144,400;1,9..144,500&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/poster.css">
+</head>
+<body>
+  <article class="poster" data-track="dsa">
+    <span class="mark mark--tl"></span><span class="mark mark--tr"></span><span class="mark mark--bl"></span><span class="mark mark--br"></span>
+    <p class="spine">Foundations series — software engineering mental models</p>
+    <div class="rule"></div><div class="ghost">106</div><div class="vignette"></div>
+    <svg class="grain" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="4" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(#n)"></rect></svg>
+    <header class="mast">
+      <p class="kicker"><span>DSA</span><span class="dot"></span><span class="whisper">Parentheses · undo</span></p>
+      <h1 class="title">The last in is <span class="title-accent">the first out.</span></h1>
+      <p class="lede">A stack is LIFO: push and pop the same end. Recursion is a stack the CPU already has (plate 56). Interviews: match brackets, decode a string, monotonic next-greater (plate 153). Draw the growing column. The top is the only live choice.</p>
+    </header>
+    <section class="stage">
+      <div class="stage-inner">
+        <div class="compare">
+          <div class="compare-pane compare-pane--hit">
+            <p class="pane-label">s = '([])' · only push opens</p>
+            <h2 class="pane-title">Valid</h2>
+            <div class="codeblock ok">need = { ')':'(', ']':'[', '}':'{' }
+[]
+push (     [ ( ]
+push [     [ ( [ ]
+pop  ]  matches [
+pop  )  matches (
+[]  empty at end = valid</div>
+            <p class="caption">Map closers to partners. Leftover opens at the end is also invalid.</p>
+          </div>
+          <div class="compare-vs">trap</div>
+          <div class="compare-pane">
+            <p class="pane-label">Wrong closer · or leftover</p>
+            <h2 class="pane-title">Mismatch</h2>
+            <div class="codeblock">'(]'
+push (     [ ( ]
+pop  ]  expects )
+            got ]
+→ invalid
+
+'(()'
+[ ( ( ]  leftover opens
+→ invalid</div>
+            <p class="caption">Popping empty is a miss, not a crash you ignore. Types must match, not just “some opener.”</p>
+          </div>
+        </div>
+        <div class="deck">
+          <div class="deck-row"><span class="deck-k">What</span><p>Array-backed stack: push/pop O(1) amortized. Linked stack: O(1) true. Peek is top without pop. Empty is the base case. Nested structure → stack.</p></div>
+          <div class="deck-row"><span class="deck-k">Why</span><p>DFS, undo, parse, “next greater” (monotonic). SDE-1 greatest hit: Valid Parentheses. Min Stack is plate 151.</p></div>
+          <div class="deck-row deck-row--trap"><span class="deck-k">Trap</span><p>Popping empty. Comparing types wrong: <code>'('</code> vs <code>')'</code>. Using a queue. Sorting the string — order of nesting is the whole point. Recursing n=10⁵ instead of an explicit stack.</p></div>
+        </div>
+      </div>
+    </section>
+    <footer class="foot"><p class="one-liner"></p><p class="plate-id">Plate 106 / 200</p></footer>
+  </article>
+</body>
+</html>

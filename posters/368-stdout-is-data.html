@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PLATE 368 — stdout is data. stderr is diagnostics.</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@800;900&family=Fraunces:ital,opsz,wght@1,9..144,400;1,9..144,500&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/poster.css">
+</head>
+<body>
+  <article class="poster" data-track="tools">
+    <span class="mark mark--tl"></span><span class="mark mark--tr"></span><span class="mark mark--bl"></span><span class="mark mark--br"></span>
+    <p class="spine">Foundations series — software engineering mental models</p>
+    <div class="rule"></div><div class="ghost">368</div><div class="vignette"></div>
+    <svg class="grain" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="4" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(#n)"></rect></svg>
+    <header class="mast">
+      <p class="kicker"><span>Tools</span><span class="dot"></span><span class="whisper">fd 1 · fd 2 · pipes</span></p>
+      <h1 class="title">stdout is data. <span class="title-accent">stderr is diagnostics.</span></h1>
+      <p class="lede">fd 1 stdout is the payload another program should consume. fd 2 stderr is logs, progress, errors — it should survive a pipe. <code>cmd | jq</code> sends only stdout; <code>2&gt;/dev/null</code> hides errors, not data; the exit code (plate 369) is the third channel.</p>
+    </header>
+    <section class="stage">
+      <div class="stage-inner">
+        <div class="compare">
+          <div class="compare-pane compare-pane--hit">
+            <p class="pane-label">Keep them split</p>
+            <h2 class="pane-title">Two fds</h2>
+            <div class="codeblock">printf("row\n");        /* fd 1 */
+fprintf(stderr, "n=12\n"); /* fd 2 */
+
+cmd | jq
+  jq sees only stdout
+  log still on the tty</div>
+            <p class="caption">Progress bars belong on stderr so <code>| gzip</code> stays valid bytes.</p>
+          </div>
+          <div class="compare-vs">vs</div>
+          <div class="compare-pane">
+            <p class="pane-label">Merge into the pipe</p>
+            <h2 class="pane-title">2&gt;&amp;1</h2>
+            <div class="codeblock">cmd 2&gt;&amp;1 | tee run.log
+  fd 2 copied onto fd 1
+  mix of data + logs
+
+&gt;/dev/null
+  silences 1, not 2</div>
+            <p class="caption">Both are ordinary fds (plate 294). The split is convention, not kernel law.</p>
+          </div>
+        </div>
+        <div class="deck">
+          <div class="deck-row"><span class="deck-k">What</span><p>Two streams by convention. stdout is the pipeline payload; stderr is diagnostics that should outlive a redirect of fd 1.</p></div>
+          <div class="deck-row"><span class="deck-k">Why</span><p>Pipelines, CI logs. “Broken pipe” is SIGPIPE on stdout when the reader closed (exit 141).</p></div>
+          <div class="deck-row deck-row--trap"><span class="deck-k">Trap</span><p>JSON on stderr and errors on stdout, then parsing the mix. <code>&gt;/dev/null</code> and wondering where the error went — it is still on 2.</p></div>
+        </div>
+      </div>
+    </section>
+    <footer class="foot"><p class="one-liner"></p><p class="plate-id">Plate 368 / 375</p></footer>
+  </article>
+</body>
+</html>

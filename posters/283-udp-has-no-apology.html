@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PLATE 283 — UDP has no apology.</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@800;900&family=Fraunces:ital,opsz,wght@1,9..144,400;1,9..144,500&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/poster.css">
+</head>
+<body>
+  <article class="poster" data-track="network">
+    <span class="mark mark--tl"></span><span class="mark mark--tr"></span><span class="mark mark--bl"></span><span class="mark mark--br"></span>
+    <p class="spine">Foundations series — software engineering mental models</p>
+    <div class="rule"></div><div class="ghost">283</div><div class="vignette"></div>
+    <svg class="grain" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="4" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(#n)"></rect></svg>
+    <header class="mast">
+      <p class="kicker"><span>Network</span><span class="dot"></span><span class="whisper">Datagram · loss</span></p>
+      <h1 class="title">UDP has <span class="title-accent">no apology.</span></h1>
+      <p class="lede">TCP is a stream with retries, order, and congestion control. UDP is a datagram: send, maybe arrive, maybe twice, maybe never, maybe out of order.</p>
+    </header>
+    <section class="stage">
+      <div class="stage-inner">
+        <div class="compare">
+          <div class="compare-pane">
+            <p class="pane-label">Loss waits</p>
+            <h2 class="pane-title">TCP</h2>
+            <div class="codeblock">seq 1 2 3 4
+4 lost
+hold 5, 6, 7
+retransmit 4
+then the rest
+
+HOL (plate 285)</div>
+            <p class="caption">Ordered, reliable, congestion-controlled. A late packet still blocks the line.</p>
+          </div>
+          <div class="compare-vs">vs</div>
+          <div class="compare-pane compare-pane--hit">
+            <p class="pane-label">Packet 4 drops</p>
+            <h2 class="pane-title">UDP</h2>
+            <div class="codeblock">pkt 1 2 3 4 5
+4 gone
+5 still plays
+maybe 3 after 5
+maybe 2 twice
+
+no retry built in</div>
+            <p class="caption">ICMP unreachables and PMTU still exist. “UDP is faster” is “UDP does less.”</p>
+          </div>
+        </div>
+        <div class="deck">
+          <div class="deck-row"><span class="deck-k">What</span><p>No connection, no built-in retry. You own duplication and ordering. Firewalls treat it worse (plate 275).</p></div>
+          <div class="deck-row"><span class="deck-k">Why</span><p>Use UDP when a late packet is worthless. That is why games and HTTP/3 use it — and why you do not put a bank transfer on raw UDP.</p></div>
+          <div class="deck-row deck-row--trap"><span class="deck-k">Trap</span><p>Reimplementing TCP badly on UDP. Assuming order. Sending 64KB datagrams (fragmentation).</p></div>
+        </div>
+      </div>
+    </section>
+    <footer class="foot"><p class="one-liner"></p><p class="plate-id">Plate 283 / 286</p></footer>
+  </article>
+</body>
+</html>

@@ -1,0 +1,19 @@
+Foundations wave 4 — CS basics plates 287–375
+
+Write posters/{id}.html only. Do not edit catalog, css, index, other plates, or scripts.
+
+Chrome: copy posters/49-big-o.html structure.
+- data-track = spec.track (os | arch | lang | database | backend | tools)
+- kicker left word = spec.kicker (OS | Arch | Lang | Database | Backend | Tools)
+- Footer: Plate N / 375
+- Ghost: unpadded N
+- Title = spec.title exactly via lead + title-accent
+- FACTUAL. Limited analogy. Prefer numbers, units, syscalls, struct fields, byte sizes.
+- Allowed new class: facts, facts-3, facts-5, fact, fact--hit, fact-k, fact-n, fact-c (in poster.css). Also compare, trio, steps, grid4, codeblock, deck.
+- Use a facts strip when the topic is quantitative (latency, sizes, flags).
+- Lede 2–3 sentences of definition + numbers. What/Why/Trap 1–2 sentences each. 1964px tall — do not clip Trap.
+- stage--wide for trio, grid4, facts-5.
+- Escape &lt; &gt; &amp;. Cross-ref as "plate 79".
+- Do not retitle plates 69, 75, 79, 80, 95, 96.
+
+When done, list files and confirm titles match spec.

@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PLATE 304 — Capabilities split root into bits.</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@800;900&family=Fraunces:ital,opsz,wght@1,9..144,400;1,9..144,500&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/poster.css">
+</head>
+<body>
+  <article class="poster" data-track="os">
+    <span class="mark mark--tl"></span><span class="mark mark--tr"></span><span class="mark mark--bl"></span><span class="mark mark--br"></span>
+    <p class="spine">Foundations series — software engineering mental models</p>
+    <div class="rule"></div><div class="ghost">304</div><div class="vignette"></div>
+    <svg class="grain" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="4" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(#n)"></rect></svg>
+    <header class="mast">
+      <p class="kicker"><span>OS</span><span class="dot"></span><span class="whisper">CAP_NET_BIND_SERVICE · 80</span></p>
+      <h1 class="title">Capabilities split root <span class="title-accent">into bits.</span></h1>
+      <p class="lede">euid 0 used to mean every privilege. Linux capabilities split that: CAP_NET_BIND_SERVICE (bind &lt;1024), CAP_SYS_PTRACE, CAP_NET_ADMIN, … — file caps (setcap) and ambient caps in containers. Drop what you do not need; root in a user namespace is not host root.</p>
+    </header>
+    <section class="stage">
+      <div class="stage-inner">
+        <div class="compare">
+          <div class="compare-pane">
+            <p class="pane-label">All bits · the old door</p>
+            <h2 class="pane-title">setuid 0</h2>
+            <div class="codeblock">euid 0
+every cap
+ping used to be
+this
+blast radius = root</div>
+          </div>
+          <div class="compare-vs">vs</div>
+          <div class="compare-pane compare-pane--hit">
+            <p class="pane-label">One bit · euid is you</p>
+            <h2 class="pane-title">setcap</h2>
+            <div class="codeblock">cap_net_bind_service+ep
+bind :80 / :443
+euid = your user
+ping: cap_net_raw</div>
+          </div>
+        </div>
+        <p class="caption">getpcaps, capsh. Ambient + bounding set at exec. ping used to be setuid; now cap_net_raw.</p>
+        <div class="facts facts-3">
+          <div class="fact fact--hit"><p class="fact-k">Caps</p><p class="fact-n">~40</p><p class="fact-c">Bitmask. Least privilege as flags.</p></div>
+          <div class="fact"><p class="fact-k">bind &lt;1024</p><p class="fact-n">NET_BIND</p><p class="fact-c">CAP_NET_BIND_SERVICE. Not full root.</p></div>
+          <div class="fact"><p class="fact-k">Almost root</p><p class="fact-n">SYS_ADMIN</p><p class="fact-c">Drop it. SYS_PTRACE too, in prod.</p></div>
+        </div>
+        <div class="deck">
+          <div class="deck-row"><span class="deck-k">What</span><p>Least privilege as a bitmask. Ambient + bounding set in exec. seccomp is the syscall filter on top.</p></div>
+          <div class="deck-row"><span class="deck-k">Why</span><p>Containers, hardened services, “why can’t I bind 443.” root in a user namespace is not host root.</p></div>
+          <div class="deck-row deck-row--trap"><span class="deck-k">Trap</span><p>CAP_SYS_ADMIN is almost root. Keeping SYS_PTRACE in prod. Assuming non-root cannot be dangerous (user namespaces + confused mounts).</p></div>
+        </div>
+      </div>
+    </section>
+    <footer class="foot"><p class="one-liner"></p><p class="plate-id">Plate 304 / 375</p></footer>
+  </article>
+</body>
+</html>

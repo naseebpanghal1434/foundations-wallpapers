@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PLATE 15 — CORS is the browser saying no.</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@800;900&family=Fraunces:ital,opsz,wght@1,9..144,400;1,9..144,500&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/poster.css">
+</head>
+<body>
+  <article class="poster" data-track="network">
+    <span class="mark mark--tl"></span><span class="mark mark--tr"></span><span class="mark mark--bl"></span><span class="mark mark--br"></span>
+    <p class="spine">Foundations series — software engineering mental models</p>
+    <div class="rule"></div><div class="ghost">15</div><div class="vignette"></div>
+    <svg class="grain" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="4" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(#n)"></rect></svg>
+    <header class="mast">
+      <p class="kicker"><span>Network</span><span class="dot"></span><span class="whisper">Origin · ACAO · OPTIONS</span></p>
+      <h1 class="title">CORS is the browser <span class="title-accent">saying no.</span></h1>
+      <p class="lede">Same-origin = scheme + host + port. A page at <code>https://app.shop.io</code> cannot read <code>https://api.shop.io</code> unless the API sends <code>Access-Control-Allow-Origin</code> matching <code>Origin</code>. <code>curl</code>, servers, and mobile apps skip CORS. Preflight: <code>OPTIONS</code> + <code>Access-Control-Request-Method</code> for non-simple requests.</p>
+    </header>
+    <section class="stage">
+      <div class="stage-inner">
+        <div class="compare">
+          <div class="compare-pane">
+            <p class="pane-label">fetch from app.shop.io</p>
+            <h2 class="pane-title">Blocked</h2>
+            <div class="codeblock bad">GET /me
+Origin: https://app.shop.io
+→ 200  {"id":42}     server ran
+no Access-Control-Allow-Origin
+→ JS TypeError
+   network tab still 200</div>
+            <p class="caption">The browser hides the body from JS. Cookies still require SameSite + CORS credentials mode.</p>
+          </div>
+          <div class="compare-vs">vs</div>
+          <div class="compare-pane compare-pane--hit">
+            <p class="pane-label">API opts in · curl does not care</p>
+            <h2 class="pane-title">ACAO</h2>
+            <div class="codeblock ok">Access-Control-Allow-Origin:
+  https://app.shop.io
+Access-Control-Allow-Credentials:
+  true
+Vary: Origin
+
+curl https://api.shop.io/me
+200  — CORS never consulted</div>
+            <p class="caption">Authorization / <code>Content-Type: application/json</code> → OPTIONS first. 204 on the preflight.</p>
+          </div>
+        </div>
+        <div class="deck">
+          <div class="deck-row"><span class="deck-k">What</span><p>CORS is a browser read permission, not auth and not a firewall. The handler already ran. Preflight is the browser asking before a “non-simple” request.</p></div>
+          <div class="deck-row"><span class="deck-k">Why</span><p>Without it, evil.com could <code>fetch</code> your API with cookies (if SameSite allows) and read JSON. Interviews: Origin is not a security boundary for curl.</p></div>
+          <div class="deck-row deck-row--trap"><span class="deck-k">Trap</span><p><code>ACAO: *</code> plus credentials (browser rejects). “Turn CORS off” in prod. Missing <code>Vary: Origin</code> so a CDN caches the wrong ACAO. Treating CORS as authz (plate 14).</p></div>
+        </div>
+      </div>
+    </section>
+    <footer class="foot"><p class="one-liner"></p><p class="plate-id">Plate 15 / 375</p></footer>
+  </article>
+</body>
+</html>

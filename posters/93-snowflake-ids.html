@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PLATE 93 — Time, worker, sequence.</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@800;900&family=Fraunces:ital,opsz,wght@1,9..144,400;1,9..144,500&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/poster.css">
+</head>
+<body>
+  <article class="poster" data-track="system">
+    <span class="mark mark--tl"></span><span class="mark mark--tr"></span><span class="mark mark--bl"></span><span class="mark mark--br"></span>
+    <p class="spine">Foundations series — software engineering mental models</p>
+    <div class="rule"></div><div class="ghost">93</div><div class="vignette"></div>
+    <svg class="grain" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="4" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(#n)"></rect></svg>
+    <header class="mast">
+      <p class="kicker"><span>System</span><span class="dot"></span><span class="whisper">Distributed ids</span></p>
+      <h1 class="title">Time, worker, <span class="title-accent">sequence.</span></h1>
+      <p class="lede">You need unique ids without asking a single database sequence on every insert. A Snowflake is a 64-bit int: timestamp + worker id + per-millisecond counter. Roughly time-ordered, fits in a <code>bigint</code>, minted on the app box. UUID and DB sequences are the other two answers — know when each one hurts.</p>
+    </header>
+    <section class="stage stage--wide">
+      <div class="stage-inner">
+        <div class="trio">
+          <div class="box">
+            <p class="col-label">Random 128-bit</p>
+            <h2 class="box-title">UUID</h2>
+            <div class="codeblock">v4  random
+v7  time-ordered</div>
+            <p class="caption">No coordinator. v4 scatters B-tree inserts and is wide. v7 is the modern default if you want a UUID.</p>
+          </div>
+          <div class="box">
+            <p class="col-label">One counter</p>
+            <h2 class="box-title">DB seq</h2>
+            <div class="codeblock">SERIAL / IDENTITY
+nextval('…')</div>
+            <p class="caption">Simple, monotonic, unique. A round-trip (or a hotspot). Sequential ids leak volume and are guessable (plate 100).</p>
+          </div>
+          <div class="box box--pool">
+            <p class="col-label">64-bit, local</p>
+            <h2 class="box-title">Snowflake</h2>
+            <div class="codeblock">41b time
+10b worker
+12b seq / ms</div>
+            <p class="caption">Twitter’s layout (5+5 datacenter/worker is the same 10). k-sortable. One machine, no DB hit.</p>
+          </div>
+        </div>
+        <div class="deck">
+          <div class="deck-row"><span class="deck-k">What</span><p>Mint ids where the write happens. Time makes them roughly ordered (better indexes than v4). Worker uniqueness is a config problem: each box needs a distinct id. Sequence covers bursts in the same millisecond (4096/ms/worker).</p></div>
+          <div class="deck-row"><span class="deck-k">Why</span><p>Sharded writes (plate 37) cannot share one <code>SERIAL</code>. Interviews: three options, one cost each. “Just UUID” is acceptable if you say v7 and the width.</p></div>
+          <div class="deck-row deck-row--trap"><span class="deck-k">Trap</span><p>Clock skew: NTP steps backward, you emit an id you already emitted — generators must wait or refuse. Two pods with <code>WORKER_ID=1</code> collide. Assuming ids are a total order across datacenters. Using Snowflake as a security token (still guessable-ish if worker+time leak).</p></div>
+        </div>
+      </div>
+    </section>
+    <footer class="foot"><p class="one-liner"></p><p class="plate-id">Plate 93 / 100</p></footer>
+  </article>
+</body>
+</html>

@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PLATE 256 — Words, or meaning. Then both.</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@800;900&family=Fraunces:ital,opsz,wght@1,9..144,400;1,9..144,500&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/poster.css">
+</head>
+<body>
+  <article class="poster" data-track="genai">
+    <span class="mark mark--tl"></span><span class="mark mark--tr"></span><span class="mark mark--bl"></span><span class="mark mark--br"></span>
+    <p class="spine">Foundations series — software engineering mental models</p>
+    <div class="rule"></div><div class="ghost">256</div><div class="vignette"></div>
+    <svg class="grain" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="4" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(#n)"></rect></svg>
+    <header class="mast">
+      <p class="kicker"><span>GenAI</span><span class="dot"></span><span class="whisper">BM25 · embedding</span></p>
+      <h1 class="title">Words, or meaning. <span class="title-accent">Then both.</span></h1>
+      <p class="lede">BM25 matches terms — SKUs, error codes, names (plate 217). Embeddings match meaning (plate 22); hybrid is the default: lexical plus vector, then fuse.</p>
+    </header>
+    <section class="stage">
+      <div class="stage-inner">
+        <div class="compare">
+          <div class="compare-pane">
+            <p class="pane-label">query ORD-1840</p>
+            <h2 class="pane-title">BM25</h2>
+            <div class="codeblock">exact SKU: hit
+embedding: may miss</div>
+            <p class="caption">Sparse / inverted index. IDs and error strings want this.</p>
+          </div>
+          <div class="compare-vs">or</div>
+          <div class="compare-pane">
+            <p class="pane-label">make it stop charging twice</p>
+            <h2 class="pane-title">Embed</h2>
+            <div class="codeblock">≈ duplicate payment
+BM25: may miss</div>
+            <p class="caption">Dense / meaning. Query language must match the embedder.</p>
+          </div>
+        </div>
+        <div class="deck">
+          <div class="deck-row"><span class="deck-k">What</span><p>Sparse vs dense. Use both when the corpus has IDs and prose. Keyword filter then vector, or RRF of two lists (plate 257).</p></div>
+          <div class="deck-row"><span class="deck-k">Why</span><p>Search + RAG. Interviews love “why not only vectors.”</p></div>
+          <div class="deck-row deck-row--trap"><span class="deck-k">Trap</span><p>Embeddings-only on a parts catalog. BM25-only on paraphrased tickets. Embedding with model A, querying with model B.</p></div>
+        </div>
+      </div>
+    </section>
+    <footer class="foot"><p class="one-liner"></p><p class="plate-id">Plate 256 / 286</p></footer>
+  </article>
+</body>
+</html>

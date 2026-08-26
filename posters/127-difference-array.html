@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PLATE 127 — A range add is two point writes.</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@800;900&family=Fraunces:ital,opsz,wght@1,9..144,400;1,9..144,500&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/poster.css">
+</head>
+<body>
+  <article class="poster" data-track="dsa">
+    <span class="mark mark--tl"></span><span class="mark mark--tr"></span><span class="mark mark--bl"></span><span class="mark mark--br"></span>
+    <p class="spine">Foundations series — software engineering mental models</p>
+    <div class="rule"></div><div class="ghost">127</div><div class="vignette"></div>
+    <svg class="grain" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="4" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(#n)"></rect></svg>
+    <header class="mast">
+      <p class="kicker"><span>DSA</span><span class="dot"></span><span class="whisper">diff[l]+=x · diff[r+1]−=x</span></p>
+      <h1 class="title">A range add is <span class="title-accent">two point writes.</span></h1>
+      <p class="lede">To add x on <code>[l,r]</code> many times, do not loop the range. Write <code>diff[l]+=x</code> and <code>diff[r+1]−=x</code>. After all updates, <code>a[i] = a[i-1] + diff[i]</code> reconstructs the array in one pass. Each update O(1), build O(n).</p>
+    </header>
+    <section class="stage">
+      <div class="stage-inner">
+        <div class="steps">
+          <div class="step"><span class="step-n">1</span><p class="step-copy">Mark the edges<span>n=5 zeros, allocate n+1. Add +2 on <code>[1,3]</code>: <code>diff[1]+=2</code>, <code>diff[4]−=2</code> → <code>[0,2,0,0,-2,0]</code>.</span></p><span class="step-meta">diff[l]+=x</span></div>
+          <div class="step"><span class="step-n">2</span><p class="step-copy">Stack more updates<span>Add +1 on <code>[0,4]</code>: <code>diff[0]+=1</code>, <code>diff[5]−=1</code> → <code>[1,2,0,0,-2,-1]</code>. Slot 5 never becomes an <code>a[i]</code>.</span></p><span class="step-meta">diff[r+1]−=x</span></div>
+          <div class="step step--hit"><span class="step-n">3</span><p class="step-copy">Prefix once<span><code>a[i] = a[i-1] + diff[i]</code> → <code>1,3,3,3,1</code>. Corporate flight bookings, range addition, car pooling (capacity as a diff on trips).</span></p><span class="step-meta">integrate</span></div>
+        </div>
+        <div class="deck">
+          <div class="deck-row"><span class="deck-k">What</span><p>Difference is the inverse of prefix (plate 126). Point writes on the derivative, then integrate. 2D: four corners of a rectangle (<code>+x</code> at top-left, <code>−x</code> just past right and just past bottom, <code>+x</code> at the far corner).</p></div>
+          <div class="deck-row"><span class="deck-k">Why</span><p>Many range updates, one final array. Car pooling: <code>+passengers</code> at start, <code>−</code> at end, scan the prefix to see if cap holds. Calendar busy times. Do not walk <code>i=l..r</code> per update.</p></div>
+          <div class="deck-row deck-row--trap"><span class="deck-k">Trap</span><p>Looping the range anyway. <code>r+1</code> off the array — allocate n+1. Mixing 0-based events with 1-based bookings. Using this when you also need random range queries in between — then Fenwick (plate 121).</p></div>
+        </div>
+      </div>
+    </section>
+    <footer class="foot"><p class="one-liner"></p><p class="plate-id">Plate 127 / 200</p></footer>
+  </article>
+</body>
+</html>

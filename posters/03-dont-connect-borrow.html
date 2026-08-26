@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PLATE 03 — Don't connect. Borrow.</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@800;900&family=Fraunces:ital,opsz,wght@1,9..144,400;1,9..144,500&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/poster.css">
+</head>
+<body>
+  <article class="poster" data-track="backend">
+    <span class="mark mark--tl"></span><span class="mark mark--tr"></span><span class="mark mark--bl"></span><span class="mark mark--br"></span>
+    <p class="spine">Foundations series — software engineering mental models</p>
+    <div class="rule"></div><div class="ghost">03</div><div class="vignette"></div>
+    <svg class="grain" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="4" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(#n)"></rect></svg>
+    <header class="mast">
+      <p class="kicker"><span>Backend</span><span class="dot"></span><span class="whisper">max_connections · pool</span></p>
+      <h1 class="title">Don't connect. <span class="title-accent">Borrow.</span></h1>
+      <p class="lede">A Postgres session is TCP + TLS + <code>StartupMessage</code> + a backend process (~5–10 MiB RSS). That is 2–3 RTTs (~1–10 ms LAN, 50–200 ms WAN) plus fork. A pool (PgBouncer, node-pg, HikariCP) keeps N sockets open; checkout is a mutex, not <code>connect()</code>.</p>
+    </header>
+    <section class="stage">
+      <div class="stage-inner">
+        <div class="compare">
+          <div class="compare-pane">
+            <p class="pane-label">PQconnectdb per request</p>
+            <h2 class="pane-title">connect()</h2>
+            <div class="codeblock bad">SYN + TLS 1.3
+StartupMessage + auth
+backend fork  ~5–10 MiB
+SELECT … 0.4 ms
+PQfinish → tear down
+
+2–3 RTT before SQL
+FATAL 53300 if over max</div>
+            <p class="caption"><code>max_connections</code> default 100. Each idle backend still costs RAM and a slot.</p>
+          </div>
+          <div class="compare-vs">vs</div>
+          <div class="compare-pane compare-pane--hit">
+            <p class="pane-label">Pool max 20 · PgBouncer</p>
+            <h2 class="pane-title">checkout</h2>
+            <div class="codeblock ok">pool.acquire()
+PQexec SELECT …
+pool.release()
+
+session already live
+SQL is most of the time
+
+3 apps × max 50 = 150
+  &gt; 100 → 53300</div>
+            <p class="caption">Transaction pooling: many clients, few backends. Release on the error path too.</p>
+          </div>
+        </div>
+        <div class="deck">
+          <div class="deck-row"><span class="deck-k">What</span><p>Checkout a live connection, run SQL, release. Postgres: one backend per live session. PgBouncer multiplexes clients onto fewer backends.</p></div>
+          <div class="deck-row"><span class="deck-k">Why</span><p>Tail latency is often <code>connect()</code>, not the SELECT. The database’s connection cap is a hard error, not a slowdown.</p></div>
+          <div class="deck-row deck-row--trap"><span class="deck-k">Trap</span><p>Pool max × app replicas &gt; <code>max_connections</code> → SQLSTATE 53300. Holding a checkout across an outbound HTTP call. Leaking <code>SET</code> / temp tables onto the next client if you skip <code>release</code>.</p></div>
+        </div>
+      </div>
+    </section>
+    <footer class="foot"><p class="one-liner"></p><p class="plate-id">Plate 03 / 375</p></footer>
+  </article>
+</body>
+</html>

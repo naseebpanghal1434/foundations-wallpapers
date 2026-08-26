@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PLATE 354 — bcrypt cost 12 is 2^12 iterations.</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@800;900&family=Fraunces:ital,opsz,wght@1,9..144,400;1,9..144,500&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/poster.css">
+</head>
+<body>
+  <article class="poster" data-track="backend">
+    <span class="mark mark--tl"></span><span class="mark mark--tr"></span><span class="mark mark--bl"></span><span class="mark mark--br"></span>
+    <p class="spine">Foundations series — software engineering mental models</p>
+    <div class="rule"></div><div class="ghost">354</div><div class="vignette"></div>
+    <svg class="grain" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="4" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(#n)"></rect></svg>
+    <header class="mast">
+      <p class="kicker"><span>Backend</span><span class="dot"></span><span class="whisper">password_hash · argon2id</span></p>
+      <h1 class="title">bcrypt cost 12 is <span class="title-accent">2^12 iterations.</span></h1>
+      <p class="lede">Password hashes must be slow (plate 31): bcrypt cost N ≈ 2^N Blowfish setups. Cost 12 is ~200–400 ms on a 2020s CPU; 13 is ~2×; argon2id is the current memory-hard winner. Store algorithm+cost+salt+hash in one string (<code>$2b$12$…</code>); verify compares the digest, not <code>==</code> on the password.</p>
+    </header>
+    <section class="stage stage--wide">
+      <div class="stage-inner">
+        <div class="facts facts-5">
+          <div class="fact">
+            <p class="fact-k">cost 10</p>
+            <p class="fact-n">~50 ms</p>
+            <p class="fact-c">2^10 setups. Too cheap now.</p>
+          </div>
+          <div class="fact fact--hit">
+            <p class="fact-k">cost 12</p>
+            <p class="fact-n">~300 ms</p>
+            <p class="fact-c">2^12 = 4096. A 2020s default.</p>
+          </div>
+          <div class="fact">
+            <p class="fact-k">cost 14</p>
+            <p class="fact-n">~1 s</p>
+            <p class="fact-c">2^14. Login tax vs dump tax.</p>
+          </div>
+          <div class="fact">
+            <p class="fact-k">salt</p>
+            <p class="fact-n">≥16 B</p>
+            <p class="fact-c">Unique per hash. Inside the string.</p>
+          </div>
+          <div class="fact">
+            <p class="fact-k">never</p>
+            <p class="fact-n">MD5</p>
+            <p class="fact-c">SHA-1 too. ~1e9 MD5/s on a GPU.</p>
+          </div>
+        </div>
+        <p class="caption">Work factor should grow with hardware. Timing-safe compare (plate 359). ~3 bcrypt/s/core at cost 12 vs 1e9 MD5/s.</p>
+        <div class="deck">
+          <div class="deck-row"><span class="deck-k">What</span><p>Adaptive KDF. Cost is a parameter you store and can raise on next login. argon2id if you can choose today.</p></div>
+          <div class="deck-row"><span class="deck-k">Why</span><p>Offline dump resistance. 1e9 MD5/s vs ~3 bcrypt/s/core. Stolen rows should not be passwords.</p></div>
+          <div class="deck-row deck-row--trap"><span class="deck-k">Trap</span><p>Cost 4 in prod. Truncating bcrypt at 72 bytes silently. HMAC-SHA256 as a password hash without a KDF.</p></div>
+        </div>
+      </div>
+    </section>
+    <footer class="foot"><p class="one-liner"></p><p class="plate-id">Plate 354 / 375</p></footer>
+  </article>
+</body>
+</html>

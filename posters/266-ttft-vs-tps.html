@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PLATE 266 — TTFT is wait. TPS is the stream.</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@800;900&family=Fraunces:ital,opsz,wght@1,9..144,400;1,9..144,500&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/poster.css">
+</head>
+<body>
+  <article class="poster" data-track="genai">
+    <span class="mark mark--tl"></span><span class="mark mark--tr"></span><span class="mark mark--bl"></span><span class="mark mark--br"></span>
+    <p class="spine">Foundations series — software engineering mental models</p>
+    <div class="rule"></div><div class="ghost">266</div><div class="vignette"></div>
+    <svg class="grain" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="4" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(#n)"></rect></svg>
+    <header class="mast">
+      <p class="kicker"><span>GenAI</span><span class="dot"></span><span class="whisper">Prefill · decode</span></p>
+      <h1 class="title">TTFT is wait. <span class="title-accent">TPS is the stream.</span></h1>
+      <p class="lede">TTFT is prefill: eat the prompt, build KV (plate 254). TPS is decode — one token at a time — so a huge prompt wrecks first-token wait even if the stream looks fast.</p>
+    </header>
+    <section class="stage">
+      <div class="stage-inner">
+        <div class="compare">
+          <div class="compare-pane">
+            <p class="pane-label">Buffer the essay</p>
+            <h2 class="pane-title">8s silence</h2>
+            <div class="codeblock">prefill  ……
+(spinner)
+
+then dump 400
+tokens at once</div>
+            <p class="caption">Users feel TTFT as “is it broken?” A 100k prefix can cost 12s before token 1.</p>
+          </div>
+          <div class="compare-vs">vs</div>
+          <div class="compare-pane compare-pane--hit">
+            <p class="pane-label">HTTP chunked / SSE</p>
+            <h2 class="pane-title">Then type</h2>
+            <div class="codeblock">TTFT  0.4s
+then  40 tok/s
+
+stream tokens
+not a spinner</div>
+            <p class="caption">Batching helps TPS, can hurt TTFT. Shrink the prompt for wait; smaller models for rate.</p>
+          </div>
+        </div>
+        <div class="deck">
+          <div class="deck-row"><span class="deck-k">What</span><p>Two metrics, two stages. Optimize prompt size for TTFT; batching and smaller models for TPS. Stream; don’t buffer the essay.</p></div>
+          <div class="deck-row"><span class="deck-k">Why</span><p>UX and capacity. “The model is slow” is which one — first token, or tokens per second?</p></div>
+          <div class="deck-row deck-row--trap"><span class="deck-k">Trap</span><p>Reporting only average latency of the full answer. A 100k prefix and wondering why token 1 took 12s. Buffering until JSON is complete when the user wanted tokens.</p></div>
+        </div>
+      </div>
+    </section>
+    <footer class="foot"><p class="one-liner"></p><p class="plate-id">Plate 266 / 286</p></footer>
+  </article>
+</body>
+</html>

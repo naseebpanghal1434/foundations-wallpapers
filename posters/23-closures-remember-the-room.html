@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PLATE 23 — A closure remembers the room.</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@800;900&family=Fraunces:ital,opsz,wght@1,9..144,400;1,9..144,500&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/poster.css">
+</head>
+<body>
+  <article class="poster" data-track="frontend">
+    <span class="mark mark--tl"></span><span class="mark mark--tr"></span><span class="mark mark--bl"></span><span class="mark mark--br"></span>
+    <p class="spine">Foundations series — software engineering mental models</p>
+    <div class="rule"></div><div class="ghost">23</div><div class="vignette"></div>
+    <svg class="grain" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="4" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(#n)"></rect></svg>
+    <header class="mast">
+      <p class="kicker"><span>Frontend</span><span class="dot"></span><span class="whisper">Most asked JS</span></p>
+      <h1 class="title">A closure remembers <span class="title-accent">the room.</span></h1>
+      <p class="lede">A closure is a function plus the variables it could see when it was created. The outer function can return; those variables still live as long as the inner function does.</p>
+    </header>
+    <section class="stage">
+      <div class="stage-inner">
+        <div class="compare">
+          <div class="compare-pane compare-pane--hit">
+            <p class="pane-label">makeCounter() returns inner</p>
+            <h2 class="pane-title">Still sees count</h2>
+            <div class="codeblock ok">function makeCounter() {
+  let count = 0
+  return () => ++count
+}
+const a = makeCounter()
+a() // 1
+a() // 2   count is private to a</div>
+            <p class="caption">Each call to makeCounter gets its own count. a and b do not share.</p>
+          </div>
+          <div class="compare-vs">trap</div>
+          <div class="compare-pane">
+            <p class="pane-label">var in a for-loop of handlers</p>
+            <h2 class="pane-title">One i, late</h2>
+            <div class="codeblock bad">for (var i = 0; i &lt; 3; i++) {
+  btns[i].onclick = () => alert(i)
+}
+// every button alerts 3</div>
+            <p class="caption">They closed over the same <code>i</code>, read later. <code>let</code> in the loop gives each iteration its own <code>i</code>.</p>
+          </div>
+        </div>
+        <div class="deck">
+          <div class="deck-row"><span class="deck-k">What</span><p>Inner function can use outer locals after the outer call has finished. That’s a closure. It’s how modules, React hooks, and private state work in JS.</p></div>
+          <div class="deck-row"><span class="deck-k">Why</span><p>Interviewers use it to see if you know <em>when</em> the variable is read (later) vs copied (never, unless you bind a snapshot). Hooks: each render’s functions close over that render’s props/state.</p></div>
+          <div class="deck-row deck-row--trap"><span class="deck-k">Trap</span><p>Thinking the value is copied at creation. It isn’t — it’s a live binding. Also: stale closures in <code>setInterval</code> / <code>useEffect</code> that captured an old <code>count</code>.</p></div>
+        </div>
+      </div>
+    </section>
+    <footer class="foot"><p class="one-liner"></p><p class="plate-id">Plate 23 / 100</p></footer>
+  </article>
+</body>
+</html>

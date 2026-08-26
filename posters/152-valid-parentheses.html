@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PLATE 152 — Push opens. Pop must match.</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@800;900&family=Fraunces:ital,opsz,wght@1,9..144,400;1,9..144,500&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/poster.css">
+</head>
+<body>
+  <article class="poster" data-track="dsa">
+    <span class="mark mark--tl"></span><span class="mark mark--tr"></span><span class="mark mark--bl"></span><span class="mark mark--br"></span>
+    <p class="spine">Foundations series — software engineering mental models</p>
+    <div class="rule"></div><div class="ghost">152</div><div class="vignette"></div>
+    <svg class="grain" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="4" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(#n)"></rect></svg>
+    <header class="mast">
+      <p class="kicker"><span>DSA</span><span class="dot"></span><span class="whisper">Stack · nested</span></p>
+      <h1 class="title">Push opens. <span class="title-accent">Pop must match.</span></h1>
+      <p class="lede">Valid parentheses: every closer matches the nearest unmatched opener, and the stack is empty at the end. Push <code>(</code> <code>[</code> <code>{</code>. On a closer, the stack top must be its partner. Extra closer → empty pop, invalid. Extra opener → leftover stack, invalid.</p>
+    </header>
+    <section class="stage">
+      <div class="stage-inner">
+        <div class="steps">
+          <div class="step"><span class="step-n">1</span><p class="step-copy">Only push opens<span>Map <code>)</code>→<code>(</code> <code>]</code>→<code>[</code> <code>}</code>→<code>{</code>. A closer never goes on the stack. One stack — not three counters.</span></p><span class="step-meta">map</span></div>
+          <div class="step step--hit"><span class="step-n">2</span><p class="step-copy">Walk <code>([{}])</code><span>push <code>(</code>, push <code>[</code>, push <code>{</code>, pop <code>}</code> matches <code>{</code>, pop <code>]</code> matches <code>[</code>, pop <code>)</code> matches <code>(</code>. Empty at end = valid.</span></p><span class="step-meta">valid</span></div>
+          <div class="step"><span class="step-n">3</span><p class="step-copy">Three ways to fail<span><code>(]</code> type mismatch. <code>)(</code> closer first — pop on empty. <code>(((</code> leftover opens. Any one is invalid.</span></p><span class="step-meta">miss</span></div>
+          <div class="step"><span class="step-n">4</span><p class="step-copy">Counters lie on <code>([)]</code><span>Count of <code>()</code> and <code>[]</code> both net to zero — still interleaved wrong. A stack sees <code>)</code> against <code>[</code> and dies. One type only: a running count is enough (never negative, end 0).</span></p><span class="step-meta">order</span></div>
+        </div>
+        <p class="caption">Score of parentheses, longest valid, remove invalid (LC 1249) are this stack with extra bookkeeping.</p>
+        <div class="deck">
+          <div class="deck-row"><span class="deck-k">What</span><p>LIFO matches nesting (plate 106). The top is the only live opener. Empty at the end is part of the spec, not a flourish.</p></div>
+          <div class="deck-row"><span class="deck-k">Why</span><p>LeetCode 20. The stack poster child. If the string only has <code>(</code>, a running count is enough. Mixed types force a stack because order of nesting is the whole point.</p></div>
+          <div class="deck-row deck-row--trap"><span class="deck-k">Trap</span><p>Counters per type that ignore order — <code>([)]</code> fools three counters. Popping empty. Comparing the closer to the opener with the wrong map. Sorting the string — nesting is not a bag of characters.</p></div>
+        </div>
+      </div>
+    </section>
+    <footer class="foot"><p class="one-liner"></p><p class="plate-id">Plate 152 / 200</p></footer>
+  </article>
+</body>
+</html>

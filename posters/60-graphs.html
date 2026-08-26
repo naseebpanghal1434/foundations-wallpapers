@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PLATE 60 — List the neighbors, or a matrix.</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@800;900&family=Fraunces:ital,opsz,wght@1,9..144,400;1,9..144,500&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/poster.css">
+</head>
+<body>
+  <article class="poster" data-track="dsa">
+    <span class="mark mark--tl"></span><span class="mark mark--tr"></span><span class="mark mark--bl"></span><span class="mark mark--br"></span>
+    <p class="spine">Foundations series — software engineering mental models</p>
+    <div class="rule"></div><div class="ghost">60</div><div class="vignette"></div>
+    <svg class="grain" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="4" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(#n)"></rect></svg>
+    <header class="mast">
+      <p class="kicker"><span>DSA</span><span class="dot"></span><span class="whisper">Sparse vs dense</span></p>
+      <h1 class="title">List the neighbors, <span class="title-accent">or a matrix.</span></h1>
+      <p class="lede">A graph is nodes plus edges. Two ways to store them. Adjacency list: each node holds the nodes it can reach. Adjacency matrix: a V×V grid, 1 if an edge exists. Directed: A→B is not B→A. Undirected: store both. Interview default is a list. A matrix on a sparse graph is how you OOM.</p>
+    </header>
+    <section class="stage">
+      <div class="stage-inner">
+        <div class="compare">
+          <div class="compare-pane compare-pane--hit">
+            <p class="pane-label">Each node → its edges</p>
+            <h2 class="pane-title">Adj list</h2>
+            <div class="codeblock ok">A: B, C
+B: A, D
+C: A
+D: B
+
+space O(V + E)
+neighbors of A: walk 2</div>
+            <div class="bullets">
+              <div>Sparse: social graph, maps, LeetCode n ≤ 10⁵.</div>
+              <div>Directed: put B only on A. Undirected: both.</div>
+            </div>
+          </div>
+          <div class="compare-vs">vs</div>
+          <div class="compare-pane">
+            <p class="pane-label">V × V grid</p>
+            <h2 class="pane-title">Adj matrix</h2>
+            <div class="codeblock">    A B C D
+A   0 1 1 0
+B   1 0 0 1
+C   1 0 0 0
+D   0 1 0 0
+
+space O(V²)
+A—B?  m[A][B]  O(1)</div>
+            <div class="bullets">
+              <div>Dense graphs. Floyd–Warshall. Tiny V.</div>
+              <div>V = 10⁵ → 10¹⁰ cells. Dead.</div>
+            </div>
+          </div>
+        </div>
+        <div class="deck">
+          <div class="deck-row"><span class="deck-k">What</span><p>List: iterate neighbors in O(degree), edge-check O(degree). Matrix: edge-check O(1), iterate neighbors O(V). Weighted: store <code>(to, w)</code> on the list, or a number in the cell. Build from edge list in one pass.</p></div>
+          <div class="deck-row"><span class="deck-k">Why</span><p>BFS/DFS (plate 59) walk neighbors — so the list is the API. Interviews: “how do you represent it?” then space. If they say undirected, you add both directions or you never come back.</p></div>
+          <div class="deck-row deck-row--trap"><span class="deck-k">Trap</span><p>A matrix on a sparse graph (the usual one). Forgetting the reverse edge on undirected. Using lists of lists with 1-based ids and a hole at 0. Storing an undirected edge twice in the <em>input</em> and twice again when you add both ways.</p></div>
+        </div>
+      </div>
+    </section>
+    <footer class="foot"><p class="one-liner"></p><p class="plate-id">Plate 60 / 100</p></footer>
+  </article>
+</body>
+</html>

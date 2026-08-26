@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PLATE 52 — Stack is LIFO. Queue is FIFO.</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@800;900&family=Fraunces:ital,opsz,wght@1,9..144,400;1,9..144,500&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/poster.css">
+</head>
+<body>
+  <article class="poster" data-track="dsa">
+    <span class="mark mark--tl"></span><span class="mark mark--tr"></span><span class="mark mark--bl"></span><span class="mark mark--br"></span>
+    <p class="spine">Foundations series — software engineering mental models</p>
+    <div class="rule"></div><div class="ghost">52</div><div class="vignette"></div>
+    <svg class="grain" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="4" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(#n)"></rect></svg>
+    <header class="mast">
+      <p class="kicker"><span>DSA</span><span class="dot"></span><span class="whisper">Same end vs two ends</span></p>
+      <h1 class="title">Stack is LIFO. <span class="title-accent">Queue is FIFO.</span></h1>
+      <p class="lede">Stack: last in, first out — push and pop the same end. Queue: first in, first out — enter the back, leave the front. Same linear structure. Opposite exit. Recursion is a stack (plate 56). BFS is a queue.</p>
+    </header>
+    <section class="stage">
+      <div class="stage-inner">
+        <div class="compare">
+          <div class="compare-pane compare-pane--hit">
+            <p class="pane-label">Last in, first out</p>
+            <h2 class="pane-title">Stack</h2>
+            <div class="codeblock ok">push 1 2 3
+pop  → 3 2 1
+
+s.push(x)   O(1)
+s.pop()     O(1)  top</div>
+            <div class="bullets">
+              <div>Undo. Matching <code>()</code>. DFS.</div>
+              <div>Call stack. Next-greater-element.</div>
+              <div>Array <code>push</code>/<code>pop</code> is a real stack.</div>
+            </div>
+          </div>
+          <div class="compare-vs">vs</div>
+          <div class="compare-pane">
+            <p class="pane-label">First in, first out</p>
+            <h2 class="pane-title">Queue</h2>
+            <div class="codeblock">enqueue 1 2 3
+dequeue → 1 2 3
+
+q.push(x)     O(1) back
+head++        O(1) front
+q.shift()     O(n)  trap</div>
+            <div class="bullets">
+              <div>BFS. Level-order tree. Workers.</div>
+              <div>Need O(1) at <em>both</em> ends.</div>
+              <div>Deque, linked nodes, or a head index.</div>
+            </div>
+          </div>
+        </div>
+        <div class="deck">
+          <div class="deck-row"><span class="deck-k">What</span><p>LIFO vs FIFO. Name the end you write and the end you read. A deque does both. Don’t implement BFS with a stack or DFS with a queue unless you mean it.</p></div>
+          <div class="deck-row"><span class="deck-k">Why</span><p>Screens: valid parentheses, min-stack, binary-tree level order, “implement a queue with two stacks.” Say the word (LIFO/FIFO), then the ops, then O(1).</p></div>
+          <div class="deck-row deck-row--trap"><span class="deck-k">Trap</span><p><code>Array.shift()</code> as a queue in JS. <code>shift</code> reindexes every remaining element — O(n) per dequeue — so “BFS” goes quadratic. Use a head pointer, a deque, or a linked list. <code>push</code>+<code>pop</code> is a stack, not a queue.</p></div>
+        </div>
+      </div>
+    </section>
+    <footer class="foot"><p class="one-liner"></p><p class="plate-id">Plate 52 / 100</p></footer>
+  </article>
+</body>
+</html>

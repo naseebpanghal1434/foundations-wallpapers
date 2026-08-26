@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PLATE 47 — Tools are functions the model calls.</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@800;900&family=Fraunces:ital,opsz,wght@1,9..144,400;1,9..144,500&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/poster.css">
+</head>
+<body>
+  <article class="poster" data-track="genai">
+    <span class="mark mark--tl"></span><span class="mark mark--tr"></span><span class="mark mark--bl"></span><span class="mark mark--br"></span>
+    <p class="spine">Foundations series — software engineering mental models</p>
+    <div class="rule"></div><div class="ghost">47</div><div class="vignette"></div>
+    <svg class="grain" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="4" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(#n)"></rect></svg>
+    <header class="mast">
+      <p class="kicker"><span>Gen AI</span><span class="dot"></span><span class="whisper">JSON schema · think→call→observe</span></p>
+      <h1 class="title">Tools are functions <span class="title-accent">the model calls.</span></h1>
+      <p class="lede">The model cannot query your DB. It can emit a tool call that matches a JSON schema you sent: <code>get_order({ "id": 88 })</code>. Your process runs it (with authz), returns JSON, the model writes prose. The model proposes; you execute. Sample the call at T=0 (plate 44).</p>
+    </header>
+    <section class="stage">
+      <div class="stage-inner">
+        <div class="steps">
+          <div class="step"><span class="step-n">1</span><p class="step-copy">You send tools + question<span>JSON Schema: name, parameters, types. “What’s the status of 88?” Parallel calls possible.</span></p><span class="step-meta">schema</span></div>
+          <div class="step step--hit"><span class="step-n">2</span><p class="step-copy">Model returns a call, not prose<span><code>get_order({id: 88})</code> — you parse, you authorize (plate 14), you run. Cap steps (e.g. 8).</span></p><span class="step-meta">call</span></div>
+          <div class="step"><span class="step-n">3</span><p class="step-copy">Feed the result back<span>role=tool <code>{status:"shipped"}</code> → “Order 88 shipped.” Repeat if more tools. Timeouts, 429, idempotency still yours.</span></p><span class="step-meta">observe</span></div>
+        </div>
+        <div class="deck">
+          <div class="deck-row"><span class="deck-k">What</span><p>Function calling / tools / agents: think → call → observe. You own side effects, timeouts (plate 19), idempotency (plate 29), injection (plate 46). Keep the allowlist tiny. The model never holds the DB credential.</p></div>
+          <div class="deck-row"><span class="deck-k">Why</span><p>How “chat with your data” is supposed to work — not by stuffing the table into the prompt. Interviews: draw the loop, say who executes.</p></div>
+          <div class="deck-row deck-row--trap"><span class="deck-k">Trap</span><p>Letting the model pick arbitrary SQL. Trusting args without authz (IDOR on <code>id: 88</code>). No max steps (infinite loop). Showing raw tool errors. Secrets in tool descriptions.</p></div>
+        </div>
+      </div>
+    </section>
+    <footer class="foot"><p class="one-liner"></p><p class="plate-id">Plate 47 / 375</p></footer>
+  </article>
+</body>
+</html>

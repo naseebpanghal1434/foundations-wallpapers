@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PLATE 282 — gRPC is protobuf on HTTP/2.</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@800;900&family=Fraunces:ital,opsz,wght@1,9..144,400;1,9..144,500&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/poster.css">
+</head>
+<body>
+  <article class="poster" data-track="network">
+    <span class="mark mark--tl"></span><span class="mark mark--tr"></span><span class="mark mark--bl"></span><span class="mark mark--br"></span>
+    <p class="spine">Foundations series — software engineering mental models</p>
+    <div class="rule"></div><div class="ghost">282</div><div class="vignette"></div>
+    <svg class="grain" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="4" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(#n)"></rect></svg>
+    <header class="mast">
+      <p class="kicker"><span>Network</span><span class="dot"></span><span class="whisper">Streams · status codes</span></p>
+      <h1 class="title">gRPC is protobuf <span class="title-accent">on HTTP/2.</span></h1>
+      <p class="lede">gRPC is HTTP/2 streams, protobuf payloads, and a method path. Status lives in trailers (<code>grpc-status</code>), not only HTTP 200 — HTTP can be 200 with an application error.</p>
+    </header>
+    <section class="stage">
+      <div class="stage-inner">
+        <div class="compare">
+          <div class="compare-pane">
+            <p class="pane-label">JSON REST</p>
+            <h2 class="pane-title">HTTP code</h2>
+            <div class="codeblock">GET /orders
+200  { … }
+
+404 / 500
+HTTP status
+is the app error</div>
+            <p class="caption">One request, one response, one code. Browsers speak this natively.</p>
+          </div>
+          <div class="compare-vs">vs</div>
+          <div class="compare-pane compare-pane--hit">
+            <p class="pane-label">POST /pkg.Svc/Method</p>
+            <h2 class="pane-title">Trailers</h2>
+            <div class="codeblock">POST  proto bytes
+HTTP 200
+trailers:
+  grpc-status: 0   OK
+            or 14  UNAVAILABLE
+
+unary · stream · bidi</div>
+            <p class="caption">Deadlines are first-class. Load balancers must be h2-aware (plate 35). Field numbers are the contract (plate 83).</p>
+          </div>
+        </div>
+        <div class="deck">
+          <div class="deck-row"><span class="deck-k">What</span><p>RPC on H2 with typed messages. Four modes: unary, server stream, client stream, bidi. Interceptors are middleware (plate 81).</p></div>
+          <div class="deck-row"><span class="deck-k">Why</span><p>Service meshes, mobile-to-backend, internal APIs. Interviews: how it maps to HTTP. Browsers need gRPC-Web or a proxy.</p></div>
+          <div class="deck-row deck-row--trap"><span class="deck-k">Trap</span><p>Treating HTTP 200 as success. Browser talking native gRPC without a gateway. Changing proto field numbers. JSON-over-gRPC cargo cult.</p></div>
+        </div>
+      </div>
+    </section>
+    <footer class="foot"><p class="one-liner"></p><p class="plate-id">Plate 282 / 286</p></footer>
+  </article>
+</body>
+</html>

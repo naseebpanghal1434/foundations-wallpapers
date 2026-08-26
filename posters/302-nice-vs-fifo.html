@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PLATE 302 — nice is a hint. SCHED_FIFO is a promise.</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@800;900&family=Fraunces:ital,opsz,wght@1,9..144,400;1,9..144,500&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/poster.css">
+</head>
+<body>
+  <article class="poster" data-track="os">
+    <span class="mark mark--tl"></span><span class="mark mark--tr"></span><span class="mark mark--bl"></span><span class="mark mark--br"></span>
+    <p class="spine">Foundations series — software engineering mental models</p>
+    <div class="rule"></div><div class="ghost">302</div><div class="vignette"></div>
+    <svg class="grain" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="4" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(#n)"></rect></svg>
+    <header class="mast">
+      <p class="kicker"><span>OS</span><span class="dot"></span><span class="whisper">nice -20..19 · RT 1–99</span></p>
+      <h1 class="title">nice is a hint. <span class="title-accent">SCHED_FIFO is a promise.</span></h1>
+      <p class="lede">nice 0 is default; +19 is lowest CFS weight; −20 needs CAP_SYS_NICE. It still shares the CPU. SCHED_FIFO/RR at rtprio 1–99 run until they block or a higher RT appears — they can starve CFS, IRQs’ soft side, and ssh. chrt and ionice exist too.</p>
+    </header>
+    <section class="stage">
+      <div class="stage-inner">
+        <div class="compare">
+          <div class="compare-pane compare-pane--hit">
+            <p class="pane-label">Still CFS · still shares</p>
+            <h2 class="pane-title">nice +10</h2>
+            <div class="codeblock">weight 110 vs 1024
+batch job
+still scheduled
++19 = lowest
+−20 needs CAP_SYS_NICE</div>
+          </div>
+          <div class="compare-vs">vs</div>
+          <div class="compare-pane">
+            <p class="pane-label">Runs until block or higher RT</p>
+            <h2 class="pane-title">FIFO 50</h2>
+            <div class="codeblock">audio 0.5 ms: OK if it blocks
+disaster if it spins
+chrt -f 50</div>
+          </div>
+        </div>
+        <p class="caption">A hint, not a cap. ionice is I/O priority. cgroups cpu.max is the container version (plate 306).</p>
+        <div class="facts facts-3">
+          <div class="fact"><p class="fact-k">nice range</p><p class="fact-n">−20..19</p><p class="fact-c">0 default. Weight table in CFS (plate 305).</p></div>
+          <div class="fact fact--hit"><p class="fact-k">RT cap</p><p class="fact-n">95%</p><p class="fact-c">sched_rt_runtime_us 950000 per second.</p></div>
+          <div class="fact"><p class="fact-k">rtprio</p><p class="fact-n">1–99</p><p class="fact-c">FIFO/RR. Higher number wins.</p></div>
+        </div>
+        <div class="deck">
+          <div class="deck-row"><span class="deck-k">What</span><p>CFS = weighted fair. RT = priority. Batch = idle. Pick the class, not a magic number.</p></div>
+          <div class="deck-row"><span class="deck-k">Why</span><p>Latency-sensitive vs bulk. Kubernetes cpu shares vs requests. The 95% runtime cap exists so RT cannot eat 100%.</p></div>
+          <div class="deck-row deck-row--trap"><span class="deck-k">Trap</span><p>renice −20 on a production JVM because “it’s important.” RT without the 95% runtime cap. Confusing nice with I/O priority.</p></div>
+        </div>
+      </div>
+    </section>
+    <footer class="foot"><p class="one-liner"></p><p class="plate-id">Plate 302 / 375</p></footer>
+  </article>
+</body>
+</html>

@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PLATE 287 — A syscall is a trap into the kernel.</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@800;900&family=Fraunces:ital,opsz,wght@1,9..144,400;1,9..144,500&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/poster.css">
+</head>
+<body>
+  <article class="poster" data-track="os">
+    <span class="mark mark--tl"></span><span class="mark mark--tr"></span><span class="mark mark--bl"></span><span class="mark mark--br"></span>
+    <p class="spine">Foundations series — software engineering mental models</p>
+    <div class="rule"></div><div class="ghost">287</div><div class="vignette"></div>
+    <svg class="grain" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="4" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(#n)"></rect></svg>
+    <header class="mast">
+      <p class="kicker"><span>OS</span><span class="dot"></span><span class="whisper">user · kernel · SYSCALL</span></p>
+      <h1 class="title">A syscall is a trap <span class="title-accent">into the kernel.</span></h1>
+      <p class="lede">User code cannot touch devices or another process’s memory. <code>write</code>, <code>mmap</code>, <code>clone</code>, <code>ioctl</code> enter via SYSCALL/SVC: privilege on, kernel stack, table lookup by number. Linux x86-64: <code>rax</code> = number, <code>rdi rsi rdx r10 r8 r9</code> = args; return in <code>rax</code>, negative is <code>-errno</code>.</p>
+    </header>
+    <section class="stage">
+      <div class="stage-inner">
+        <div class="compare">
+          <div class="compare-pane">
+            <p class="pane-label">Ring 3 · libc wrapper</p>
+            <h2 class="pane-title">User</h2>
+            <div class="codeblock">write(fd, buf, n)
+rax = 1     SYS_write
+rdi = fd
+rsi = buf
+rdx = n
+SYSCALL</div>
+          </div>
+          <div class="compare-vs">vs</div>
+          <div class="compare-pane compare-pane--hit">
+            <p class="pane-label">Ring 0 · sys_call_table</p>
+            <h2 class="pane-title">Kernel</h2>
+            <div class="codeblock">copy_from_user
+file_ops.write
+rax = n  or  -errno
+SYSRET</div>
+          </div>
+        </div>
+        <p class="caption">glibc wrappers. strace is the trace (plate 373). seccomp filters the table.</p>
+        <div class="facts facts-3">
+          <div class="fact fact--hit"><p class="fact-k">Local syscall</p><p class="fact-n">50–200 ns</p><p class="fact-c">KPTI/mitigations sit in this band.</p></div>
+          <div class="fact"><p class="fact-k">getpid vDSO</p><p class="fact-n">~20 ns</p><p class="fact-c">No trap. Same story as gettimeofday.</p></div>
+          <div class="fact"><p class="fact-k">x86-64 args</p><p class="fact-n">6 regs</p><p class="fact-c">r10 not rcx — SYSCALL clobbers rcx.</p></div>
+        </div>
+        <div class="deck">
+          <div class="deck-row"><span class="deck-k">What</span><p>The only legal door user→kernel. Everything else is a library on top.</p></div>
+          <div class="deck-row"><span class="deck-k">Why</span><p>Why user space cannot <code>bind</code> :80 without <code>CAP_NET_BIND_SERVICE</code>. Why a bad pointer is EFAULT, not a panic.</p></div>
+          <div class="deck-row deck-row--trap"><span class="deck-k">Trap</span><p>Busy-looping instead of a blocking syscall. Assuming <code>gettimeofday</code> always traps (vDSO). Treating <code>errno</code> as process-global — it is per-thread.</p></div>
+        </div>
+      </div>
+    </section>
+    <footer class="foot"><p class="one-liner"></p><p class="plate-id">Plate 287 / 375</p></footer>
+  </article>
+</body>
+</html>

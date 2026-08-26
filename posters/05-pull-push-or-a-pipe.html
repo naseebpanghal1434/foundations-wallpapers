@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PLATE 05 — Pull, push, or a pipe.</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@800;900&family=Fraunces:ital,opsz,wght@1,9..144,400;1,9..144,500&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/poster.css">
+</head>
+<body>
+  <article class="poster" data-track="network">
+    <span class="mark mark--tl"></span><span class="mark mark--tr"></span><span class="mark mark--bl"></span><span class="mark mark--br"></span>
+    <p class="spine">Foundations series — software engineering mental models</p>
+    <div class="rule"></div><div class="ghost">05</div><div class="vignette"></div>
+    <svg class="grain" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="4" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(#n)"></rect></svg>
+    <header class="mast">
+      <p class="kicker"><span>Network</span><span class="dot"></span><span class="whisper">HTTP · SSE · WebSocket</span></p>
+      <h1 class="title">Pull, push, or <span class="title-accent">a pipe.</span></h1>
+      <p class="lede">Three transports, same origin. HTTP: one request, one status, done (keepalive may reuse the socket, plate 277). SSE: <code>GET</code> with <code>Content-Type: text/event-stream</code>, server writes <code>data:</code> lines. WebSocket: <code>Upgrade: websocket</code> → <code>101</code>, then RFC 6455 frames both ways.</p>
+    </header>
+    <section class="stage stage--wide">
+      <div class="stage-inner">
+        <div class="trio">
+          <div class="box">
+            <p class="col-label">Request / response</p>
+            <h2 class="box-title">HTTP</h2>
+            <div class="codeblock">GET /orders/12
+200  {"total":80}
+
+Cache-Control, ETag
+one body, then end</div>
+            <div class="bullets">
+              <div>Status codes. Cacheable GETs.</div>
+              <div>H1: one at a time per fd. H2: streams.</div>
+            </div>
+            <p class="caption box-foot">REST, fetch, forms.</p>
+          </div>
+          <div class="box box--pool">
+            <p class="col-label">Server → client stream</p>
+            <h2 class="box-title">SSE</h2>
+            <div class="codeblock">GET /stream
+200 text/event-stream
+data: token
+id: 42
+: comment / keepalive</div>
+            <div class="bullets">
+              <div>Unidirectional. EventSource retries + Last-Event-ID.</div>
+              <div>GET only. Disable proxy buffer (X-Accel-Buffering: no).</div>
+            </div>
+            <p class="caption box-foot">LLM tokens, ticks, feeds.</p>
+          </div>
+          <div class="box">
+            <p class="col-label">Bidirectional frames</p>
+            <h2 class="box-title">WebSocket</h2>
+            <div class="codeblock">GET /chat
+Upgrade: websocket
+101 Switching Protocols
+opcode 1 text / 2 binary
+9 ping · 10 pong · 8 close</div>
+            <div class="bullets">
+              <div>You own heartbeats, reconnect, backpressure.</div>
+              <div>H2: CONNECT + :protocol, not a 101.</div>
+            </div>
+            <p class="caption box-foot">Chat, collab, games.</p>
+          </div>
+        </div>
+        <div class="deck">
+          <div class="deck-row"><span class="deck-k">What</span><p>HTTP = request/response. SSE = still HTTP, one direction. WebSocket = 101 then a framed socket. gRPC streaming is HTTP/2 (plate 282).</p></div>
+          <div class="deck-row"><span class="deck-k">Why</span><p>Fetch a resource with HTTP. Stream tokens with SSE. Chat when both sides send anytime.</p></div>
+          <div class="deck-row deck-row--trap"><span class="deck-k">Trap</span><p>Opening a WebSocket to do one GET — you then own ping/pong and reconnect. SSE cannot POST a body. Proxies buffering SSE into one dump at close.</p></div>
+        </div>
+      </div>
+    </section>
+    <footer class="foot"><p class="one-liner"></p><p class="plate-id">Plate 05 / 375</p></footer>
+  </article>
+</body>
+</html>

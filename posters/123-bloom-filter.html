@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PLATE 123 — Maybe. Never a false no.</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@800;900&family=Fraunces:ital,opsz,wght@1,9..144,400;1,9..144,500&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/poster.css">
+</head>
+<body>
+  <article class="poster" data-track="dsa">
+    <span class="mark mark--tl"></span><span class="mark mark--tr"></span><span class="mark mark--bl"></span><span class="mark mark--br"></span>
+    <p class="spine">Foundations series — software engineering mental models</p>
+    <div class="rule"></div><div class="ghost">123</div><div class="vignette"></div>
+    <svg class="grain" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="4" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(#n)"></rect></svg>
+    <header class="mast">
+      <p class="kicker"><span>DSA</span><span class="dot"></span><span class="whisper">k hashes · bit array</span></p>
+      <h1 class="title">Maybe. <span class="title-accent">Never a false no.</span></h1>
+      <p class="lede">A Bloom filter is a bit array plus k hash functions. Insert: set those k bits. Query: if any bit is 0, the item is definitely absent. If all are 1, it might be present — or those bits were set by others. False positives. No false negatives. You cannot delete (without counting).</p>
+    </header>
+    <section class="stage">
+      <div class="stage-inner">
+        <div class="compare">
+          <div class="compare-pane compare-pane--hit">
+            <p class="pane-label">16 bits · k = 3</p>
+            <h2 class="pane-title">Insert ada</h2>
+            <div class="codeblock ok">bits  0 … 15
+set   2, 7, 11
+
+query ada
+  2,7,11 all 1 → maybe
+query kai
+  bit 4 is 0    → no</div>
+            <p class="caption">A 0 is a hard no. All 1s is a maybe. No original keys are stored.</p>
+          </div>
+          <div class="compare-vs">vs</div>
+          <div class="compare-pane">
+            <p class="pane-label">Fill the array</p>
+            <h2 class="pane-title">Density</h2>
+            <div class="codeblock">many inserts later
+most bits are 1
+everything looks
+like a maybe
+
+k ≈ (m/n) ln 2
+target false-positive
+rate picks m and k</div>
+            <p class="caption">Clearing a bit to “delete” wipes other keys that shared it. Counting Bloom / Cuckoo if you must delete.</p>
+          </div>
+        </div>
+        <div class="deck">
+          <div class="deck-row"><span class="deck-k">What</span><p>Probabilistic set membership. O(k) time, tiny memory. No original keys stored. Cannot list items. False positives yes; false negatives no. Contrast a hash set: exact, stores keys.</p></div>
+          <div class="deck-row"><span class="deck-k">Why</span><p>Caches (“is this URL even in the SSD set?”), DB to skip disk, spell-check, network. System + DSA crossover. A cheap no is worth a maybe that you then check for real.</p></div>
+          <div class="deck-row deck-row--trap"><span class="deck-k">Trap</span><p>Treating maybe as yes. Deleting by clearing bits — you wipe other keys. Hashing poorly (k bits from one hash split badly). Using Bloom where a miss must be exact (auth, money).</p></div>
+        </div>
+      </div>
+    </section>
+    <footer class="foot"><p class="one-liner"></p><p class="plate-id">Plate 123 / 200</p></footer>
+  </article>
+</body>
+</html>

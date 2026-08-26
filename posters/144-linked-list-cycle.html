@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PLATE 144 — If they meet, there is a cycle.</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@800;900&family=Fraunces:ital,opsz,wght@1,9..144,400;1,9..144,500&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/poster.css">
+</head>
+<body>
+  <article class="poster" data-track="dsa">
+    <span class="mark mark--tl"></span><span class="mark mark--tr"></span><span class="mark mark--bl"></span><span class="mark mark--br"></span>
+    <p class="spine">Foundations series — software engineering mental models</p>
+    <div class="rule"></div><div class="ghost">144</div><div class="vignette"></div>
+    <svg class="grain" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="4" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(#n)"></rect></svg>
+    <header class="mast">
+      <p class="kicker"><span>DSA</span><span class="dot"></span><span class="whisper">Floyd · tortoise hare</span></p>
+      <h1 class="title">If they meet, <span class="title-accent">there is a cycle.</span></h1>
+      <p class="lede">Cycle detection without extra memory: slow walks one, fast walks two. If there is a cycle, fast laps slow and they meet. If fast hits null, no cycle. Meeting does not give the start — that’s plate 147. A set of seen nodes is O(n) space and also correct; they often want O(1) space.</p>
+    </header>
+    <section class="stage">
+      <div class="stage-inner">
+        <div class="steps">
+          <div class="step"><span class="step-n">1</span><p class="step-copy">1→2→3→4→5→3. Both at head<span><code>slow = fast = head</code>. Guard <code>fast and fast.next</code> before <code>fast.next.next</code>. No guard → crash on the tail.</span></p><span class="step-meta">setup</span></div>
+          <div class="step step--hit"><span class="step-n">2</span><p class="step-copy">They meet inside the loop<span>slow+1, fast+2: (2,3), (3,5), (4,4). Meet at 4. Meeting ≠ entrance (entrance is 3). Relative speed 1 closes a cycle of length c.</span></p><span class="step-meta">meet</span></div>
+          <div class="step"><span class="step-n">3</span><p class="step-copy">Fast hits null → acyclic<span>Same chase finds the midpoint: fast hits the end, slow is mid. Happy number / find duplicate (LC 287) is this on a function, not a list.</span></p><span class="step-meta">null</span></div>
+        </div>
+        <div class="deck">
+          <div class="deck-row"><span class="deck-k">What</span><p>Floyd. Time O(n), space O(1). Proof sketch: once both are in the cycle, relative speed 1 means they close the cycle length. A hashmap of nodes is the O(n)-space backup — say it, then write the two pointers.</p></div>
+          <div class="deck-row"><span class="deck-k">Why</span><p>LeetCode 141. Also: cycle in a functional graph (happy number, duplicate in 1..n). Interviews want O(1) space. Draw the loop and two dots before the while.</p></div>
+          <div class="deck-row deck-row--trap"><span class="deck-k">Trap</span><p><code>fast = fast.next.next</code> without a null guard. Treating the meeting node as the cycle start (plate 147). Starting slow at head and fast at <code>head.next</code> without matching the loop test — both placements work if the condition matches. Using a set after they asked O(1) space.</p></div>
+        </div>
+      </div>
+    </section>
+    <footer class="foot"><p class="one-liner"></p><p class="plate-id">Plate 144 / 200</p></footer>
+  </article>
+</body>
+</html>

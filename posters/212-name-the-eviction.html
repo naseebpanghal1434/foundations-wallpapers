@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PLATE 212 — Name the eviction before the cache.</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@800;900&family=Fraunces:ital,opsz,wght@1,9..144,400;1,9..144,500&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/poster.css">
+</head>
+<body>
+  <article class="poster" data-track="backend">
+    <span class="mark mark--tl"></span><span class="mark mark--tr"></span><span class="mark mark--bl"></span><span class="mark mark--br"></span>
+    <p class="spine">Foundations series — software engineering mental models</p>
+    <div class="rule"></div><div class="ghost">212</div><div class="vignette"></div>
+    <svg class="grain" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="4" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(#n)"></rect></svg>
+    <header class="mast">
+      <p class="kicker"><span>Backend</span><span class="dot"></span><span class="whisper">TTL · LRU · stampede</span></p>
+      <h1 class="title">Name the eviction <span class="title-accent">before the cache.</span></h1>
+      <p class="lede">Name eviction before <code>SET</code>. TTL (<code>EX 60</code>) for news and sessions; LRU (plate 150) for bounded RAM; miss fill under a lock (<code>SET NX EX 10</code> / singleflight) or a stampede melts the DB (plate 94). Cache-aside: miss → DB → SET. Write-behind can lose writes.</p>
+    </header>
+    <section class="stage stage--wide">
+      <div class="stage-inner">
+        <div class="trio">
+          <div class="box">
+            <p class="col-label">Time</p>
+            <h2 class="box-title">TTL</h2>
+            <div class="codeblock">SET k v EX 60
+news, sessions
+jitter the 60s
+  or they die together</div>
+            <p class="caption">Safety net. Not a strategy by itself (plate 8). Aligned TTLs are a stampede.</p>
+          </div>
+          <div class="box">
+            <p class="col-label">RAM</p>
+            <h2 class="box-title">LRU</h2>
+            <div class="codeblock">hot keys stay
+cold keys leave
+maxmemory-policy
+  allkeys-lru</div>
+            <p class="caption">Name the victim. Hash + list (plate 150). Include id in the key.</p>
+          </div>
+          <div class="box box--pool">
+            <p class="col-label">Miss</p>
+            <h2 class="box-title">One fill</h2>
+            <div class="codeblock ok">SET lock:k NX EX 10
+winner → one SELECT
+waiters share
+or serve stale</div>
+            <p class="caption">No lock on miss = stampede (plate 94). Null-cache 404s.</p>
+          </div>
+        </div>
+        <p class="caption">Cache-aside: miss → DB → SET. Write-through: DB and cache together. Write-behind: cache then async DB — faster, not durable. Version the key on deploy.</p>
+        <div class="deck">
+          <div class="deck-row"><span class="deck-k">What</span><p>Policy first: what is stale, what is evicted, who fills. Key includes the resource id and a schema version. Lock or singleflight on miss.</p></div>
+          <div class="deck-row"><span class="deck-k">Why</span><p>“Design a cache” or any read-heavy system. Interviewers want stampede + eviction, not “we’ll add Redis.”</p></div>
+          <div class="deck-row deck-row--trap"><span class="deck-k">Trap</span><p>Infinite TTL. Caching a user object without the id in the key (cross-user leak). No lock on miss. Write-behind as if it were WAL.</p></div>
+        </div>
+      </div>
+    </section>
+    <footer class="foot"><p class="one-liner"></p><p class="plate-id">Plate 212 / 375</p></footer>
+  </article>
+</body>
+</html>

@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PLATE 351 — A tuple is (xmin, xmax). Readers see a snapshot.</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@800;900&family=Fraunces:ital,opsz,wght@1,9..144,400;1,9..144,500&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/poster.css">
+</head>
+<body>
+  <article class="poster" data-track="database">
+    <span class="mark mark--tl"></span><span class="mark mark--tr"></span><span class="mark mark--bl"></span><span class="mark mark--br"></span>
+    <p class="spine">Foundations series — software engineering mental models</p>
+    <div class="rule"></div><div class="ghost">351</div><div class="vignette"></div>
+    <svg class="grain" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="4" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(#n)"></rect></svg>
+    <header class="mast">
+      <p class="kicker"><span>Database</span><span class="dot"></span><span class="whisper">MVCC · xmin xmax</span></p>
+      <h1 class="title">A tuple is (xmin, xmax). <span class="title-accent">Readers see a snapshot.</span></h1>
+      <p class="lede">Heap tuple header: <code>xmin</code> = creating xid, <code>xmax</code> = deleting/updating xid (0 if live). A snapshot is the set of in-progress xids + xmax. The reader sees the version where xmin committed before the snapshot and xmax did not. No row lock for readers (plate 96).</p>
+    </header>
+    <section class="stage">
+      <div class="stage-inner">
+        <div class="compare">
+          <div class="compare-pane">
+            <p class="pane-label">T1 UPDATE, T2 SELECT</p>
+            <h2 class="pane-title">Old xmin</h2>
+            <div class="codeblock">Ada v1  xmin=10  xmax=40
+Ada v2  xmin=40  xmax=0
+
+T2 snapshot 10..39
+  HeapTupleSatisfiesMVCC
+  still sees v1
+
+T1 not committed
+T2 does not wait</div>
+            <p class="caption">Writers still set xmax. Writers still block writers on the same row. MVCC is not “no locks.”</p>
+          </div>
+          <div class="compare-vs">vs</div>
+          <div class="compare-pane compare-pane--hit">
+            <p class="pane-label">T1 COMMIT, next snapshot</p>
+            <h2 class="pane-title">New xmin</h2>
+            <div class="codeblock ok">T1 commit
+next snapshot sees v2
+
+READ COMMITTED
+  new snapshot per stmt
+REPEATABLE READ
+  one snapshot (plate 40)
+
+long T2 keeps v1
+until T2 ends
+  → bloat (plate 341)</div>
+            <p class="caption">32-bit xid on the tuple is why freeze exists (plate 342). A 4-hour report is a vacuum problem.</p>
+          </div>
+        </div>
+        <div class="deck">
+          <div class="deck-row"><span class="deck-k">What</span><p>Visibility is per-tuple metadata, not a lock. Writers set xmax. <code>HeapTupleSatisfiesMVCC</code> is the predicate.</p></div>
+          <div class="deck-row"><span class="deck-k">Why</span><p>READ COMMITTED vs REPEATABLE READ is which snapshot you hold (plate 40). That is the isolation letter, not a different storage format.</p></div>
+          <div class="deck-row deck-row--trap"><span class="deck-k">Trap</span><p>A 4-hour report transaction pinning xmin. <code>SELECT FOR UPDATE</code> when you only needed a snapshot. Lost updates still happen without a lock or version column.</p></div>
+        </div>
+      </div>
+    </section>
+    <footer class="foot"><p class="one-liner"></p><p class="plate-id">Plate 351 / 375</p></footer>
+  </article>
+</body>
+</html>

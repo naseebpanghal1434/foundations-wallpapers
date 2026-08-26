@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PLATE 107 — The first in is the first out.</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@800;900&family=Fraunces:ital,opsz,wght@1,9..144,400;1,9..144,500&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/poster.css">
+</head>
+<body>
+  <article class="poster" data-track="dsa">
+    <span class="mark mark--tl"></span><span class="mark mark--tr"></span><span class="mark mark--bl"></span><span class="mark mark--br"></span>
+    <p class="spine">Foundations series — software engineering mental models</p>
+    <div class="rule"></div><div class="ghost">107</div><div class="vignette"></div>
+    <svg class="grain" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="4" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(#n)"></rect></svg>
+    <header class="mast">
+      <p class="kicker"><span>DSA</span><span class="dot"></span><span class="whisper">BFS · level order</span></p>
+      <h1 class="title">The first in is <span class="title-accent">the first out.</span></h1>
+      <p class="lede">A queue is FIFO: enqueue at the back, dequeue at the front. BFS is “the people who arrived first get processed first” — that is why a queue gives unweighted shortest path and tree level order. A list <code>pop(0)</code> is O(n); use a deque.</p>
+    </header>
+    <section class="stage">
+      <div class="stage-inner">
+        <div class="steps">
+          <div class="step"><span class="step-n">1</span><p class="step-copy">Seed the queue<span>Tree <code>1 / \ 2 3</code>, 2 has child 4. Queue <code>[1]</code>. Enqueue back, dequeue front. First in is the root.</span></p><span class="step-meta">start</span></div>
+          <div class="step step--hit"><span class="step-n">2</span><p class="step-copy">Pop, push kids<span><code>[1]</code> → pop 1, push 2,3 → <code>[2,3]</code> → pop 2, push 4 → <code>[3,4]</code> → pop 3 → <code>[4]</code> → pop 4. Closer nodes leave first.</span></p><span class="step-meta">BFS</span></div>
+          <div class="step"><span class="step-n">3</span><p class="step-copy">Record level size<span>At the start of a level, <code>len(q)</code> is how many to pop before the next level. Levels: <code>[1] | [2,3] | [4]</code>. Need zigzag? You needed this number.</span></p><span class="step-meta">levels</span></div>
+        </div>
+        <div class="deck">
+          <div class="deck-row"><span class="deck-k">What</span><p>Enqueue O(1), dequeue O(1) with a ring or deque. Peek front. BFS visits closer nodes first. Tree level order is BFS on a tree. Python: <code>collections.deque</code> and <code>popleft</code>.</p></div>
+          <div class="deck-row"><span class="deck-k">Why</span><p>Islands, word ladder, course-schedule Kahn, binary-tree level order. If the interviewer says “shortest in an unweighted graph,” you said queue before you said code.</p></div>
+          <div class="deck-row deck-row--trap"><span class="deck-k">Trap</span><p>Using a Python list with <code>pop(0)</code> — O(n) per pop, O(n²) BFS. Recursing “BFS” — that’s DFS. Not capturing level size so a zigzag/level problem becomes a flat visit.</p></div>
+        </div>
+      </div>
+    </section>
+    <footer class="foot"><p class="one-liner"></p><p class="plate-id">Plate 107 / 200</p></footer>
+  </article>
+</body>
+</html>

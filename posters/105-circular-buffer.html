@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PLATE 105 — Head and tail walk a circle.</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@800;900&family=Fraunces:ital,opsz,wght@1,9..144,400;1,9..144,500&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/poster.css">
+</head>
+<body>
+  <article class="poster" data-track="dsa">
+    <span class="mark mark--tl"></span><span class="mark mark--tr"></span><span class="mark mark--bl"></span><span class="mark mark--br"></span>
+    <p class="spine">Foundations series — software engineering mental models</p>
+    <div class="rule"></div><div class="ghost">105</div><div class="vignette"></div>
+    <svg class="grain" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="4" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(#n)"></rect></svg>
+    <header class="mast">
+      <p class="kicker"><span>DSA</span><span class="dot"></span><span class="whisper">Ring · bounded queue</span></p>
+      <h1 class="title">Head and tail <span class="title-accent">walk a circle.</span></h1>
+      <p class="lede">A ring is a fixed array plus two indices. Push writes at tail, then <code>tail = (tail+1) % cap</code>. Pop reads at head, then <code>head = (head+1) % cap</code>. Full and empty must be distinguishable — store a count, or keep one slot empty.</p>
+    </header>
+    <section class="stage">
+      <div class="stage-inner">
+        <div class="compare">
+          <div class="compare-pane compare-pane--hit">
+            <p class="pane-label">cap=4 · count tells full</p>
+            <h2 class="pane-title">Ring</h2>
+            <div class="codeblock ok">[ 7 | 2 | _ | _ ]
+  h         t
+count=2
+push 9 → tail=3
+[ 7 | 2 | 9 | _ ]
+pop    → 7, head=1</div>
+            <p class="caption">No alloc on push. Overflow is a policy: reject, or overwrite the oldest.</p>
+          </div>
+          <div class="compare-vs">wrap</div>
+          <div class="compare-pane">
+            <p class="pane-label">Indices modulo cap</p>
+            <h2 class="pane-title">Wrap</h2>
+            <div class="codeblock">[ 9 | 4 | _ | 8 ]
+  0   1   2   3
+head=3  tail=1
+logical order:
+8, 9, 4</div>
+            <p class="caption">From head: <code>a[3], a[0], a[1]</code> → 8, 9, 4. The array order is not the queue order.</p>
+          </div>
+        </div>
+        <div class="deck">
+          <div class="deck-row"><span class="deck-k">What</span><p>Bounded queue in O(1) time and O(1) extra memory after the array exists. Producer/consumer, sliding window of last k, audio buffers. Modulo wraps the indices.</p></div>
+          <div class="deck-row"><span class="deck-k">Why</span><p>Interviews: implement a circular queue (LeetCode 622). Name head, tail, count (or the empty-slot rule). Bounded work queues in services are this.</p></div>
+          <div class="deck-row deck-row--trap"><span class="deck-k">Trap</span><p><code>head==tail</code> meaning both empty and full — you cannot tell. Keep count, or a boolean, or waste one slot (full when <code>(tail+1)%cap==head</code>). Also: <code>%</code> on negative indices in some languages.</p></div>
+        </div>
+      </div>
+    </section>
+    <footer class="foot"><p class="one-liner"></p><p class="plate-id">Plate 105 / 200</p></footer>
+  </article>
+</body>
+</html>

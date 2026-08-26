@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PLATE 361 — The confused deputy has your power, their intent.</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@800;900&family=Fraunces:ital,opsz,wght@1,9..144,400;1,9..144,500&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/poster.css">
+</head>
+<body>
+  <article class="poster" data-track="backend">
+    <span class="mark mark--tl"></span><span class="mark mark--tr"></span><span class="mark mark--bl"></span><span class="mark mark--br"></span>
+    <p class="spine">Foundations series — software engineering mental models</p>
+    <div class="rule"></div><div class="ghost">361</div><div class="vignette"></div>
+    <svg class="grain" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="4" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(#n)"></rect></svg>
+    <header class="mast">
+      <p class="kicker"><span>Backend</span><span class="dot"></span><span class="whisper">CSRF · SSRF · copilot</span></p>
+      <h1 class="title">The confused deputy has your power, <span class="title-accent">their intent.</span></h1>
+      <p class="lede">A deputy (your browser, your server, your LLM) is allowed to do X; an attacker aims it at Y. CSRF (plate 30), SSRF (plate 358), and prompt injection (plate 46) are the same pattern: ambient authority plus untrusted input.</p>
+    </header>
+    <section class="stage stage--wide">
+      <div class="stage-inner">
+        <div class="trio">
+          <div class="box">
+            <p class="col-label">Browser · cookies</p>
+            <h2 class="box-title">CSRF</h2>
+            <div class="codeblock">cookie is ambient
+evil POST /transfer
+server thinks it's you</div>
+            <p class="caption">SameSite + CSRF token. Authority was the cookie, not the intent.</p>
+          </div>
+          <div class="box box--pool">
+            <p class="col-label">Server · URL</p>
+            <h2 class="box-title">SSRF</h2>
+            <div class="codeblock">GET(userUrl)
+169.254.169.254
+VPC trust is ambient</div>
+            <p class="caption">Allowlist hosts. The server’s net is the power; the URL is their intent.</p>
+          </div>
+          <div class="box">
+            <p class="col-label">LLM · tools</p>
+            <h2 class="box-title">Prompt</h2>
+            <div class="codeblock">mail in context
+model calls DELETE
+tool auth is ambient</div>
+            <p class="caption">Allowlists, human confirm. Don’t give the model a loaded gun.</p>
+          </div>
+        </div>
+        <div class="deck">
+          <div class="deck-row"><span class="deck-k">What</span><p>Confused deputy problem (Norm Hardy). Fix authority — capability tokens, CSRF tokens, allowlists, human confirm — don’t just filter strings.</p></div>
+          <div class="deck-row"><span class="deck-k">Why</span><p>Unifies a lot of “security bugs” in one sentence: ambient authority plus untrusted input.</p></div>
+          <div class="deck-row deck-row--trap"><span class="deck-k">Trap</span><p>Adding a WAF regex and calling it done. An LLM with a DELETE tool and untrusted mail in context.</p></div>
+        </div>
+      </div>
+    </section>
+    <footer class="foot"><p class="one-liner"></p><p class="plate-id">Plate 361 / 375</p></footer>
+  </article>
+</body>
+</html>

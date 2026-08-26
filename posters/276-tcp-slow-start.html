@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PLATE 276 — Slow start is TCP feeling the pipe.</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@800;900&family=Fraunces:ital,opsz,wght@1,9..144,400;1,9..144,500&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/poster.css">
+</head>
+<body>
+  <article class="poster" data-track="network">
+    <span class="mark mark--tl"></span><span class="mark mark--tr"></span><span class="mark mark--bl"></span><span class="mark mark--br"></span>
+    <p class="spine">Foundations series — software engineering mental models</p>
+    <div class="rule"></div><div class="ghost">276</div><div class="vignette"></div>
+    <svg class="grain" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="4" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(#n)"></rect></svg>
+    <header class="mast">
+      <p class="kicker"><span>Network</span><span class="dot"></span><span class="whisper">cwnd · congestion</span></p>
+      <h1 class="title">Slow start is TCP <span class="title-accent">feeling the pipe.</span></h1>
+      <p class="lede">A new TCP connection does not dump your 2MB JS at line rate. Congestion window (cwnd) starts small and doubles each RTT until loss or a threshold — short flows live in slow start, so reuse matters (plate 277).</p>
+    </header>
+    <section class="stage">
+      <div class="stage-inner">
+        <div class="compare">
+          <div class="compare-pane">
+            <p class="pane-label">New TLS + TCP</p>
+            <h2 class="pane-title">Tiny cwnd</h2>
+            <div class="codeblock">handshake, then
+cwnd ≈ 10 MSS
+RTT 1   10
+RTT 2   20
+RTT 3   40  still filling
+2MB JS waits on RTTs</div>
+            <p class="caption">Many round trips to fill the path. Loss shrinks the window and you probe again.</p>
+          </div>
+          <div class="compare-vs">vs</div>
+          <div class="compare-pane compare-pane--hit">
+            <p class="pane-label">Warm connection</p>
+            <h2 class="pane-title">cwnd open</h2>
+            <div class="codeblock">same fd, already open
+cwnd already grown
+bytes flow
+
+no extra handshake
+no extra slow start</div>
+            <p class="caption">BBR vs cubic are the controllers. You do not set cwnd in app code — you avoid extra handshakes.</p>
+          </div>
+        </div>
+        <div class="deck">
+          <div class="deck-row"><span class="deck-k">What</span><p>TCP probes the path. Loss shrinks the window. RTT is in the inner loop.</p></div>
+          <div class="deck-row"><span class="deck-k">Why</span><p>Latency budgets, CDNs near the user (plate 36), connection reuse, HTTP/2 (plate 274).</p></div>
+          <div class="deck-row deck-row--trap"><span class="deck-k">Trap</span><p>Opening a connection per image. Measuring bandwidth with a 20KB payload still in slow start. Saying “TCP is slow” when you meant the handshake.</p></div>
+        </div>
+      </div>
+    </section>
+    <footer class="foot"><p class="one-liner"></p><p class="plate-id">Plate 276 / 286</p></footer>
+  </article>
+</body>
+</html>

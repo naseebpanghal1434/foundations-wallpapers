@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PLATE 238 — Context is a broadcast, not a store.</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@800;900&family=Fraunces:ital,opsz,wght@1,9..144,400;1,9..144,500&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/poster.css">
+</head>
+<body>
+  <article class="poster" data-track="frontend">
+    <span class="mark mark--tl"></span><span class="mark mark--tr"></span><span class="mark mark--bl"></span><span class="mark mark--br"></span>
+    <p class="spine">Foundations series — software engineering mental models</p>
+    <div class="rule"></div><div class="ghost">238</div><div class="vignette"></div>
+    <svg class="grain" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="4" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(#n)"></rect></svg>
+    <header class="mast">
+      <p class="kicker"><span>Frontend</span><span class="dot"></span><span class="whisper">Provider · all consumers</span></p>
+      <h1 class="title">Context is a broadcast, <span class="title-accent">not a store.</span></h1>
+      <p class="lede">A context Provider re-renders every consumer when its value ref changes. It avoids prop drilling; it is not a store — split contexts, or subscribe narrowly when many fields churn.</p>
+    </header>
+    <section class="stage">
+      <div class="stage-inner">
+        <div class="compare">
+          <div class="compare-pane">
+            <p class="pane-label">one bag, every tick</p>
+            <h2 class="pane-title">Giant context</h2>
+            <div class="codeblock bad">value={{ user, theme,
+          cart, dispatch }}
+
+cart += 1
+→ header theme reader
+   rerenders too</div>
+            <p class="caption"><code>value={{user}}</code> without useMemo is a new object every parent render (plate 237).</p>
+          </div>
+          <div class="compare-vs">vs</div>
+          <div class="compare-pane compare-pane--hit">
+            <p class="pane-label">split · or a selector</p>
+            <h2 class="pane-title">Narrow</h2>
+            <div class="codeblock ok">ThemeContext  stable
+CartContext   separate
+or a store + selector
+
+default value = no Provider</div>
+            <p class="caption">Put the changing value in a store and subscribe narrowly if many fields churn. Not a Redux replacement.</p>
+          </div>
+        </div>
+        <div class="deck">
+          <div class="deck-row"><span class="deck-k">What</span><p>Broadcast + ref equality. Default context is the value when no Provider exists.</p></div>
+          <div class="deck-row"><span class="deck-k">Why</span><p>Why “I put it in context” still janks. Interviews: when context vs props vs a store.</p></div>
+          <div class="deck-row deck-row--trap"><span class="deck-k">Trap</span><p>One giant context. Provider inside a component that renders often. Consumers that only need dispatch but still rerender because dispatch was inlined.</p></div>
+        </div>
+      </div>
+    </section>
+    <footer class="foot"><p class="one-liner"></p><p class="plate-id">Plate 238 / 286</p></footer>
+  </article>
+</body>
+</html>

@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PLATE 172 — Preorder names the root. Inorder splits.</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@800;900&family=Fraunces:ital,opsz,wght@1,9..144,400;1,9..144,500&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/poster.css">
+</head>
+<body>
+  <article class="poster" data-track="dsa">
+    <span class="mark mark--tl"></span><span class="mark mark--tr"></span><span class="mark mark--bl"></span><span class="mark mark--br"></span>
+    <p class="spine">Foundations series — software engineering mental models</p>
+    <div class="rule"></div><div class="ghost">172</div><div class="vignette"></div>
+    <svg class="grain" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="4" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(#n)"></rect></svg>
+    <header class="mast">
+      <p class="kicker"><span>DSA</span><span class="dot"></span><span class="whisper">Index map · recurse</span></p>
+      <h1 class="title">Preorder names the root. <span class="title-accent">Inorder splits.</span></h1>
+      <p class="lede">Construct a tree from preorder and inorder. Preorder[0] is the root. Find it in inorder: left of it is the left subtree, right is the right. Recurse with matching slices of preorder. A hashmap value→inorder index makes the find O(1). O(n). Postorder+inorder: the root is last in postorder.</p>
+    </header>
+    <section class="stage">
+      <div class="stage-inner">
+        <div class="steps">
+          <div class="step step--hit"><span class="step-n">1</span><p class="step-copy">Root, then split<span>pre=<code>[3,9,20,15,7]</code> in=<code>[9,3,15,20,7]</code>. Root 3. Inorder split <code>|9| 3 |15,20,7|</code>. Left size = rootIndex − inLo = 1.</span></p><span class="step-meta">pre[0]</span></div>
+          <div class="step"><span class="step-n">2</span><p class="step-copy">Matching pre slices<span>Left pre takes 1 value <code>[9]</code>. Right pre <code>[20,15,7]</code>. Recurse. Don’t guess the cut from preorder alone — inorder is the split.</span></p><span class="step-meta">left size</span></div>
+          <div class="step"><span class="step-n">3</span><p class="step-copy">Map, don’t scan<span>value → inorder index, built once. Scanning inorder each call is O(n²). Follow-up: a running preorder index instead of slicing arrays. Duplicates break the map — problems promise unique values.</span></p><span class="step-meta">O(n)</span></div>
+        </div>
+        <p class="caption">Need both sequences (or one + the BST property). Postorder+inorder (LC 106): root is last, then the same split. Preorder+nulls is serialize (plate 170), not this.</p>
+        <div class="deck">
+          <div class="deck-row"><span class="deck-k">What</span><p>Preorder gives roots in time. Inorder gives the split. Left size = how many preorder cells after the root belong to the left child. Recurse both sides with those ranges.</p></div>
+          <div class="deck-row"><span class="deck-k">Why</span><p>LeetCode 105 / 106. Tests recursion indices harder than invert-tree. Interviews want the map and the left-size arithmetic, not n slices that copy arrays.</p></div>
+          <div class="deck-row deck-row--trap"><span class="deck-k">Trap</span><p>Slicing preorder the wrong length (left size = rootIndex − inLo, not “half”). Scanning inorder every call → O(n²). Using postorder as if it were preorder. Building from inorder alone.</p></div>
+        </div>
+      </div>
+    </section>
+    <footer class="foot"><p class="one-liner"></p><p class="plate-id">Plate 172 / 200</p></footer>
+  </article>
+</body>
+</html>

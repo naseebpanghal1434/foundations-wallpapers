@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PLATE 364 — Git stores blobs, trees, commits. Not diffs.</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@800;900&family=Fraunces:ital,opsz,wght@1,9..144,400;1,9..144,500&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/poster.css">
+</head>
+<body>
+  <article class="poster" data-track="tools">
+    <span class="mark mark--tl"></span><span class="mark mark--tr"></span><span class="mark mark--bl"></span><span class="mark mark--br"></span>
+    <p class="spine">Foundations series — software engineering mental models</p>
+    <div class="rule"></div><div class="ghost">364</div><div class="vignette"></div>
+    <svg class="grain" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="4" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(#n)"></rect></svg>
+    <header class="mast">
+      <p class="kicker"><span>Tools</span><span class="dot"></span><span class="whisper">sha1 · objects</span></p>
+      <h1 class="title">Git stores blobs, trees, commits. <span class="title-accent">Not diffs.</span></h1>
+      <p class="lede">A blob is file bytes, a tree is a directory of name→hash, a commit is parent + tree + author + message — the object id is SHA-1 of that payload (SHA-256 repos exist). A “diff” is computed at show time from two trees; packfiles only delta-compress later for disk.</p>
+    </header>
+    <section class="stage">
+      <div class="stage-inner">
+        <div class="steps">
+          <div class="step"><span class="step-n">1</span><p class="step-copy">blob 8f14e4… README<span>File bytes. Id = hash(<code>blob &lt;size&gt;\0</code> + content). Same bytes, same hash.</span></p><span class="step-meta">file</span></div>
+          <div class="step"><span class="step-n">2</span><p class="step-copy">tree 3a52c1… listing<span><code>100644 README → 8f14e4…</code> — mode, name, object id. A directory snapshot, not a patch.</span></p><span class="step-meta">dir</span></div>
+          <div class="step step--hit"><span class="step-n">3</span><p class="step-copy">commit 9c3e0… node<span>parent 1b4a… + tree 3a52c1… + author + message. <code>git cat-file -p</code> prints it.</span></p><span class="step-meta">dag</span></div>
+        </div>
+        <p class="caption">Content-addressed DAG. Change one byte → new blob, new tree, new commit hash. Branches are names for commits (plate 367).</p>
+        <div class="deck">
+          <div class="deck-row"><span class="deck-k">What</span><p>Immutable objects addressed by hash. History is a DAG of commits, each pointing at a full tree — not a stack of patch files.</p></div>
+          <div class="deck-row"><span class="deck-k">Why</span><p>Rewriting history changes hashes (plate 366). An empty commit still has an id: the message and parent are content.</p></div>
+          <div class="deck-row deck-row--trap"><span class="deck-k">Trap</span><p>Thinking git stores diffs as the source of truth. Mutating a commit object and expecting the hash to stay.</p></div>
+        </div>
+      </div>
+    </section>
+    <footer class="foot"><p class="one-liner"></p><p class="plate-id">Plate 364 / 375</p></footer>
+  </article>
+</body>
+</html>

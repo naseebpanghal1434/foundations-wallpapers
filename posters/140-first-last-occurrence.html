@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PLATE 140 — The first true. The last true.</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@800;900&family=Fraunces:ital,opsz,wght@1,9..144,400;1,9..144,500&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/poster.css">
+</head>
+<body>
+  <article class="poster" data-track="dsa">
+    <span class="mark mark--tl"></span><span class="mark mark--tr"></span><span class="mark mark--bl"></span><span class="mark mark--br"></span>
+    <p class="spine">Foundations series — software engineering mental models</p>
+    <div class="rule"></div><div class="ghost">140</div><div class="vignette"></div>
+    <svg class="grain" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="4" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(#n)"></rect></svg>
+    <header class="mast">
+      <p class="kicker"><span>DSA</span><span class="dot"></span><span class="whisper">Lower bound · upper bound</span></p>
+      <h1 class="title">The first true. <span class="title-accent">The last true.</span></h1>
+      <p class="lede">Binary search on a sorted array with duplicates: lower bound = first index where <code>a[i] ≥ x</code> (first true). Upper bound = first index where <code>a[i] &gt; x</code>. Last occurrence is upper−1 if that slot equals <code>x</code>. The predicate must be monotonic: false, false, …, true, true.</p>
+    </header>
+    <section class="stage">
+      <div class="stage-inner">
+        <div class="compare">
+          <div class="compare-pane compare-pane--hit">
+            <p class="pane-label">a=[1,2,2,2,4] · x=2</p>
+            <h2 class="pane-title">Two bounds</h2>
+            <div class="codeblock ok">while lo &lt; hi:     # hi exclusive
+  mid = (lo+hi)//2
+
+# first ≥ x (lower) → 1
+if a[mid] &gt;= x: hi=mid
+else:           lo=mid+1
+
+# first &gt; x (upper)
+if a[mid] &lt;= x: lo=mid+1
+else:           hi=mid
+last = lo-1                 → 3</div>
+            <p class="caption">Count of <code>x</code> is last−first+1, or 0 if missing. Pick a template and an invariant (plate 53).</p>
+          </div>
+          <div class="compare-vs">trap</div>
+          <div class="compare-pane">
+            <p class="pane-label">Any match, then walk</p>
+            <h2 class="pane-title">Scan out</h2>
+            <div class="codeblock bad">if a[mid] == x:
+  while i-1 &gt;= 0 and a[i-1]==x:
+    i -= 1   # first
+  while j+1 &lt; n and a[j+1]==x:
+    j += 1   # last
+
+# all equal → O(n)
+# they asked O(log n)</div>
+            <p class="caption">Classic bisect returns any hit. First/last are two searches, both log n. <code>lo = mid</code> on a 2-range must still make progress.</p>
+          </div>
+        </div>
+        <div class="deck">
+          <div class="deck-row"><span class="deck-k">What</span><p>Two binary searches, O(log n). Unsorted: cannot. Same first-true template as first bad version and as “minimum capacity that works” (plate 142). Insertion position is lower bound of <code>x</code>.</p></div>
+          <div class="deck-row"><span class="deck-k">Why</span><p>LeetCode 34. The screen after “can you binary search”: they want the left edge and the right edge, not a lucky mid. Say the predicate out loud: <code>≥ x</code>, then <code>&gt; x</code>.</p></div>
+          <div class="deck-row deck-row--trap"><span class="deck-k">Trap</span><p>Returning any match. Infinite loop: <code>lo = mid</code> on a two-length range. Checking <code>a[mid]==x</code> and scanning outward — O(n) on an all-equal array. Mixing <code>hi = mid</code> with <code>hi = mid-1</code> across the two searches.</p></div>
+        </div>
+      </div>
+    </section>
+    <footer class="foot"><p class="one-liner"></p><p class="plate-id">Plate 140 / 200</p></footer>
+  </article>
+</body>
+</html>

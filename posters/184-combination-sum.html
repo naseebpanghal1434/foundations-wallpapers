@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PLATE 184 — Pick a coin. Stay, or move on.</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@800;900&family=Fraunces:ital,opsz,wght@1,9..144,400;1,9..144,500&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/poster.css">
+</head>
+<body>
+  <article class="poster" data-track="dsa">
+    <span class="mark mark--tl"></span><span class="mark mark--tr"></span><span class="mark mark--bl"></span><span class="mark mark--br"></span>
+    <p class="spine">Foundations series — software engineering mental models</p>
+    <div class="rule"></div><div class="ghost">184</div><div class="vignette"></div>
+    <svg class="grain" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="4" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(#n)"></rect></svg>
+    <header class="mast">
+      <p class="kicker"><span>DSA</span><span class="dot"></span><span class="whisper">Reuse · start index</span></p>
+      <h1 class="title">Pick a coin. <span class="title-accent">Stay, or move on.</span></h1>
+      <p class="lede">Combination sum: numbers may be reused (unbounded). Backtrack: from start, take <code>candidates[j]</code>, recurse with remain−candidates[j] and the same <code>j</code> (reuse), then pop; or skip to <code>j+1</code>. Prune remain&lt;0. If each number may be used once (combination sum II), recurse <code>j+1</code> and skip dups. Target 0 records a copy.</p>
+    </header>
+    <section class="stage">
+      <div class="stage-inner">
+        <div class="steps">
+          <div class="step"><span class="step-n">1</span><p class="step-copy">[2,3,6,7] target 7<span>Stay on 2: 2,2,2 then 3 → <code>[2,2,3]</code>. Skip to 7 → <code>[7]</code>. Order in a combo doesn’t matter.</span></p><span class="step-meta">unbounded</span></div>
+          <div class="step step--hit"><span class="step-n">2</span><p class="step-copy">Reuse = recurse the same index<span><code>bt(j, remain - a[j])</code> then pop. 0/1 (use once) = recurse <code>j+1</code>. Start index is what blocks perms of the same combo.</span></p><span class="step-meta">same j vs j+1</span></div>
+          <div class="step"><span class="step-n">3</span><p class="step-copy">Combination sum II: sort, once, skip<span><code>[10,1,2,7,6,1,5]</code> t=8. Sort. Skip <code>a[j]==a[j-1]</code> at a depth. Remain 0 → copy path. Counts of ways are DP (plate 188).</span></p><span class="step-meta">LC 40 / 216</span></div>
+        </div>
+        <p class="caption">Looping from 0 every time lists <code>[2,3]</code> and <code>[3,2]</code> as two answers. The start index is the combination, not the permutation.</p>
+        <div class="deck">
+          <div class="deck-row"><span class="deck-k">What</span><p>Unbounded: recurse same index. 0/1: next index. Start index enforces nondecreasing picks so a combo is written once. Prune <code>remain&lt;0</code>; record at <code>remain==0</code>.</p></div>
+          <div class="deck-row"><span class="deck-k">Why</span><p>LeetCode 39/40/216. The reuse-vs-once fork. Interview: they change that one constraint and watch whether you still loop from 0. Coin change that lists combinations, not counts.</p></div>
+          <div class="deck-row deck-row--trap"><span class="deck-k">Trap</span><p>Looping from 0 every time (permutations of the same combo). Using DP to list (memory-heavy). Not sorting for skip-dups. Forgetting to record when remain hits 0.</p></div>
+        </div>
+      </div>
+    </section>
+    <footer class="foot"><p class="one-liner"></p><p class="plate-id">Plate 184 / 200</p></footer>
+  </article>
+</body>
+</html>

@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PLATE 301 — Each thread has a user stack and a kernel stack.</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@800;900&family=Fraunces:ital,opsz,wght@1,9..144,400;1,9..144,500&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/poster.css">
+</head>
+<body>
+  <article class="poster" data-track="os">
+    <span class="mark mark--tl"></span><span class="mark mark--tr"></span><span class="mark mark--bl"></span><span class="mark mark--br"></span>
+    <p class="spine">Foundations series — software engineering mental models</p>
+    <div class="rule"></div><div class="ghost">301</div><div class="vignette"></div>
+    <svg class="grain" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="4" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(#n)"></rect></svg>
+    <header class="mast">
+      <p class="kicker"><span>OS</span><span class="dot"></span><span class="whisper">8 MiB · 16 KiB</span></p>
+      <h1 class="title">Each thread has a user stack <span class="title-accent">and a kernel stack.</span></h1>
+      <p class="lede">User stack: argv, frames, C alloca, default 8 MiB virtual (<code>ulimit -s</code>). Kernel stack: per-thread, 8–16 KiB on Linux, used during syscalls/IRQs — no deep recursion, no large local arrays in kernel. Overflow of user stack → SIGSEGV (guard page).</p>
+    </header>
+    <section class="stage">
+      <div class="stage-inner">
+        <div class="compare">
+          <div class="compare-pane compare-pane--hit">
+            <p class="pane-label">Frames · alloca · argv</p>
+            <h2 class="pane-title">User 8 MiB</h2>
+            <div class="codeblock">grows down
+guard page 4 KiB
+ulimit -s
+pthread_attr_setstacksize
+overflow → SIGSEGV</div>
+          </div>
+          <div class="compare-vs">vs</div>
+          <div class="compare-pane">
+            <p class="pane-label">Syscalls · IRQs only</p>
+            <h2 class="pane-title">Kernel 16 KiB</h2>
+            <div class="codeblock">THREAD_SIZE
+16 KiB x86-64
+no VLAs / deep recursion
+overflow → panic</div>
+          </div>
+        </div>
+        <p class="caption">100k × 8 MiB = 800 GiB VA. Go/Rust async move frames to the heap. Kernel overflow is a panic.</p>
+        <div class="facts facts-3">
+          <div class="fact fact--hit"><p class="fact-k">User stack</p><p class="fact-n">8 MiB</p><p class="fact-c">Virtual. Pages fault in on use.</p></div>
+          <div class="fact"><p class="fact-k">Kernel stack</p><p class="fact-n">16 KiB</p><p class="fact-c">THREAD_SIZE on x86-64. Sometimes 8 KiB.</p></div>
+          <div class="fact"><p class="fact-k">Guard</p><p class="fact-n">4 KiB</p><p class="fact-c">User overflow → SIGSEGV, not silent smash.</p></div>
+        </div>
+        <div class="deck">
+          <div class="deck-row"><span class="deck-k">What</span><p>Two stacks, two overflow stories. Kernel stack exhaustion is a panic, not a catchable error.</p></div>
+          <div class="deck-row"><span class="deck-k">Why</span><p>Why 100k threads is a virtual-memory problem even if rss is small. Why kernel coding forbids VLAs.</p></div>
+          <div class="deck-row deck-row--trap"><span class="deck-k">Trap</span><p>Recursion of depth 1e6 in user code. Creating 1e5 pthreads at 8 MiB each = 800 GiB VA. Putting a 64 KiB buffer on the kernel stack in a module.</p></div>
+        </div>
+      </div>
+    </section>
+    <footer class="foot"><p class="one-liner"></p><p class="plate-id">Plate 301 / 375</p></footer>
+  </article>
+</body>
+</html>

@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PLATE 328 — A static type is checked before run.</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@800;900&family=Fraunces:ital,opsz,wght@1,9..144,400;1,9..144,500&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/poster.css">
+</head>
+<body>
+  <article class="poster" data-track="lang">
+    <span class="mark mark--tl"></span><span class="mark mark--tr"></span><span class="mark mark--bl"></span><span class="mark mark--br"></span>
+    <p class="spine">Foundations series — software engineering mental models</p>
+    <div class="rule"></div><div class="ghost">328</div><div class="vignette"></div>
+    <svg class="grain" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="4" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(#n)"></rect></svg>
+    <header class="mast">
+      <p class="kicker"><span>Lang</span><span class="dot"></span><span class="whisper">Haskell · Rust · Java · Go</span></p>
+      <h1 class="title">A static type is checked <span class="title-accent">before run.</span></h1>
+      <p class="lede">Static: the compiler (or typechecker) proves well-typedness using annotations or inference. Illegal programs do not build. Dynamic (Python, JS, Ruby): tags exist at run; errors are exceptions (plate 329). Gradual (TypeScript): erase to JS — the runtime does not enforce TS types.</p>
+    </header>
+    <section class="stage">
+      <div class="stage-inner">
+        <div class="compare">
+          <div class="compare-pane compare-pane--hit">
+            <p class="pane-label">javac · rustc · go · ghc</p>
+            <h2 class="pane-title">Before run</h2>
+            <div class="codeblock">String s = 3;
+        // error at javac
+
+fn f(x: i32)
+Go: s := 3  // int, not string
+
+does not emit
+the bad program</div>
+            <p class="caption">Java generics are mostly erased: the VM may not know <code>T</code> at run. The check still happened at <code>javac</code>.</p>
+          </div>
+          <div class="compare-vs">vs</div>
+          <div class="compare-pane">
+            <p class="pane-label">Python · JS · TS erase</p>
+            <h2 class="pane-title">At run</h2>
+            <div class="codeblock">s = 3
+s.upper()  # AttributeError
+
+TS: let s: string = 3
+    // tsc may fail
+    // emit still JS
+runtime still 3</div>
+            <p class="caption">TS green, runtime still a number. <code>any</code> everywhere is no check at either time.</p>
+          </div>
+        </div>
+        <div class="deck">
+          <div class="deck-row"><span class="deck-k">What</span><p>When the check happens. Erasure (Java generics, TS) means the VM may not reify <code>T</code>. A tag at run is a different plate (329).</p></div>
+          <div class="deck-row"><span class="deck-k">Why</span><p>API contracts, refactoring, a class of bugs that never starts. Cost: expressiveness and compile time.</p></div>
+          <div class="deck-row deck-row--trap"><span class="deck-k">Trap</span><p>Trusting TypeScript as a runtime check. <code>any</code> everywhere. Thinking Java generics reify <code>T</code> (they don’t, mostly — <code>new T()</code> is illegal).</p></div>
+        </div>
+      </div>
+    </section>
+    <footer class="foot"><p class="one-liner"></p><p class="plate-id">Plate 328 / 375</p></footer>
+  </article>
+</body>
+</html>

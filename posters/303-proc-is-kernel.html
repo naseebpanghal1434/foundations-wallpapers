@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PLATE 303 — /proc is the kernel exported as files.</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@800;900&family=Fraunces:ital,opsz,wght@1,9..144,400;1,9..144,500&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/poster.css">
+</head>
+<body>
+  <article class="poster" data-track="os">
+    <span class="mark mark--tl"></span><span class="mark mark--tr"></span><span class="mark mark--bl"></span><span class="mark mark--br"></span>
+    <p class="spine">Foundations series — software engineering mental models</p>
+    <div class="rule"></div><div class="ghost">303</div><div class="vignette"></div>
+    <svg class="grain" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="4" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(#n)"></rect></svg>
+    <header class="mast">
+      <p class="kicker"><span>OS</span><span class="dot"></span><span class="whisper">procfs · status · net</span></p>
+      <h1 class="title">/proc is the kernel <span class="title-accent">exported as files.</span></h1>
+      <p class="lede">procfs is not disk. <code>cat /proc/meminfo</code> reads kernel structs. <code>/proc/self/status</code>: VmRSS, Threads, NSpid. <code>/proc/net/tcp</code>: sockets. <code>/proc/sys</code>: tunables (many also sysctl). Parsing these is the API for a lot of observability.</p>
+    </header>
+    <section class="stage">
+      <div class="stage-inner">
+        <div class="steps">
+          <div class="step step--hit"><span class="step-n">1</span><p class="step-copy">/proc/PID/cmdline, fd/, maps, smaps<span>Per-task. Namespaces hide others’ pids. /proc/self is you.</span></p><span class="step-meta">pid</span></div>
+          <div class="step"><span class="step-n">2</span><p class="step-copy">/proc/stat — load and cpu ticks<span>USER_HZ is 100. loadavg is runqueue length, not “CPU %.”</span></p><span class="step-meta">stat</span></div>
+          <div class="step"><span class="step-n">3</span><p class="step-copy">/proc/sys/vm/swappiness — tunables<span>Writes are not persistent (sysctl.d). Some files are 0-size and still produce bytes (seq_file).</span></p><span class="step-meta">sys</span></div>
+        </div>
+        <div class="facts facts-3">
+          <div class="fact"><p class="fact-k">USER_HZ</p><p class="fact-n">100</p><p class="fact-c">stat ticks. Not the timer HZ.</p></div>
+          <div class="fact fact--hit"><p class="fact-k">seq_file</p><p class="fact-n">size 0</p><p class="fact-c">open+read each time. Values change.</p></div>
+          <div class="fact"><p class="fact-k">Also</p><p class="fact-n">sysctl</p><p class="fact-c">Same knobs as /proc/sys.</p></div>
+        </div>
+        <div class="deck">
+          <div class="deck-row"><span class="deck-k">What</span><p>A filesystem interface to kernel state. Namespaces hide others’ pids.</p></div>
+          <div class="deck-row"><span class="deck-k">Why</span><p>htop, ps, containers’ metrics. Why grep /proc is a reasonable debugging move.</p></div>
+          <div class="deck-row deck-row--trap"><span class="deck-k">Trap</span><p>Caching /proc/net/tcp for 5 minutes. Parsing loadavg as “CPU %.” Writing to /proc/sys without persistence (sysctl.d).</p></div>
+        </div>
+      </div>
+    </section>
+    <footer class="foot"><p class="one-liner"></p><p class="plate-id">Plate 303 / 375</p></footer>
+  </article>
+</body>
+</html>

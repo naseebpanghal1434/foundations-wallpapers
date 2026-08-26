@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PLATE 322 — UTF-8 is 1–4 bytes. ASCII is unchanged.</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@800;900&family=Fraunces:ital,opsz,wght@1,9..144,400;1,9..144,500&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/poster.css">
+</head>
+<body>
+  <article class="poster" data-track="arch">
+    <span class="mark mark--tl"></span><span class="mark mark--tr"></span><span class="mark mark--bl"></span><span class="mark mark--br"></span>
+    <p class="spine">Foundations series — software engineering mental models</p>
+    <div class="rule"></div><div class="ghost">322</div><div class="vignette"></div>
+    <svg class="grain" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="4" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(#n)"></rect></svg>
+    <header class="mast">
+      <p class="kicker"><span>Arch</span><span class="dot"></span><span class="whisper">code point · U+</span></p>
+      <h1 class="title">UTF-8 is 1–4 bytes. <span class="title-accent">ASCII is unchanged.</span></h1>
+      <p class="lede">A Unicode code point is U+0000..U+10FFFF. UTF-8: 0xxxxxxx for ASCII (1 byte), then 2–4 byte sequences with 10xxxxxx tails. “é” is 2 bytes, “€” 3, many emoji 4. You cannot index the nth character in O(1) without scanning or a side table. C <code>strlen</code> is bytes, not characters.</p>
+    </header>
+    <section class="stage">
+      <div class="stage-inner">
+        <div class="compare">
+          <div class="compare-pane compare-pane--hit">
+            <p class="pane-label">Bytes on the wire</p>
+            <h2 class="pane-title">café = 5 B</h2>
+            <div class="codeblock">63 61 66 c3 a9
+c  a  f  é
+5 bytes, 4 letters
+
+ASCII 0xxxxxxx
+tails 10xxxxxx</div>
+            <p class="caption">Validate UTF-8. Overlong encodings are a security bug.</p>
+          </div>
+          <div class="compare-vs">vs</div>
+          <div class="compare-pane">
+            <p class="pane-label">UTF-16 JS / Java</p>
+            <h2 class="pane-title">.length lies</h2>
+            <div class="codeblock">'é'.length        1
+emoji + VS      often 2
+grapheme cluster ≠ code unit
+
+s[i] is not the ith letter</div>
+            <p class="caption">Random access is by byte, not by grapheme. CHAR(n) in SQL is a mess.</p>
+          </div>
+        </div>
+        <div class="deck">
+          <div class="deck-row"><span class="deck-k">What</span><p>Variable-length encoding compatible with ASCII. Random access is by byte, not by grapheme.</p></div>
+          <div class="deck-row"><span class="deck-k">Why</span><p>Every string in a network protocol. Why CHAR(n) in SQL is a mess.</p></div>
+          <div class="deck-row deck-row--trap"><span class="deck-k">Trap</span><p><code>s[i]</code> as the ith letter. Truncating a buffer at max bytes mid-sequence. Treating UTF-8 as Latin-1.</p></div>
+        </div>
+      </div>
+    </section>
+    <footer class="foot"><p class="one-liner"></p><p class="plate-id">Plate 322 / 375</p></footer>
+  </article>
+</body>
+</html>

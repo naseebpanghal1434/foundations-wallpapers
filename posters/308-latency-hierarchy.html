@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PLATE 308 — L1 is ~1 ns. Disk is ~10 ms.</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@800;900&family=Fraunces:ital,opsz,wght@1,9..144,400;1,9..144,500&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/poster.css">
+</head>
+<body>
+  <article class="poster" data-track="arch">
+    <span class="mark mark--tl"></span><span class="mark mark--tr"></span><span class="mark mark--bl"></span><span class="mark mark--br"></span>
+    <p class="spine">Foundations series — software engineering mental models</p>
+    <div class="rule"></div><div class="ghost">308</div><div class="vignette"></div>
+    <svg class="grain" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="4" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(#n)"></rect></svg>
+    <header class="mast">
+      <p class="kicker"><span>Arch</span><span class="dot"></span><span class="whisper">ns · µs · ms</span></p>
+      <h1 class="title">L1 is ~1 ns. <span class="title-accent">Disk is ~10 ms.</span></h1>
+      <p class="lede">Same-core 2020s x86, grown-up numbers: L1 ~1 ns (~4 cycles), L2 ~4 ns, L3 ~20 ns, RAM ~100 ns, NVMe ~100 µs, HDD seek ~10 ms, US/EU RTT 80–150 ms. 1 ms = 1e6 ns ≈ 3e6 cycles at 3 GHz. A disk seek is millions of instructions.</p>
+    </header>
+    <section class="stage stage--wide">
+      <div class="stage-inner">
+        <div class="facts facts-5">
+          <div class="fact fact--hit">
+            <p class="fact-k">L1</p>
+            <p class="fact-n">~1 ns</p>
+            <p class="fact-c">32–64 KiB/core. ~4 cycles.</p>
+          </div>
+          <div class="fact">
+            <p class="fact-k">L2</p>
+            <p class="fact-n">~4 ns</p>
+            <p class="fact-c">256 KiB–1 MiB private.</p>
+          </div>
+          <div class="fact">
+            <p class="fact-k">L3</p>
+            <p class="fact-n">~20 ns</p>
+            <p class="fact-c">16–64 MiB shared.</p>
+          </div>
+          <div class="fact">
+            <p class="fact-k">DRAM</p>
+            <p class="fact-n">~100 ns</p>
+            <p class="fact-c">80–120 ns. Prefetch likes seq.</p>
+          </div>
+          <div class="fact">
+            <p class="fact-k">NVMe / HDD</p>
+            <p class="fact-n">~100 µs</p>
+            <p class="fact-c">NVMe 50–150 µs. HDD seek ~10 ms.</p>
+          </div>
+        </div>
+        <p class="caption">Page is 4 KiB (plate 290); cache line is 64 B (plate 309). Your chips will differ; the decades between levels will not.</p>
+        <div class="deck">
+          <div class="deck-row"><span class="deck-k">What</span><p>A hierarchy of capacity vs latency. Miss a level, pay the next. Sequential RAM is faster than random (prefetch).</p></div>
+          <div class="deck-row"><span class="deck-k">Why</span><p>Every performance discussion. Big O ignores the 100× between L1 (~1 ns) and RAM (~100 ns).</p></div>
+          <div class="deck-row deck-row--trap"><span class="deck-k">Trap</span><p>Optimizing code before measuring cache misses. Treating SSD like RAM. Putting network RTT in the same sentence as L1 without a 1e8 gap.</p></div>
+        </div>
+      </div>
+    </section>
+    <footer class="foot"><p class="one-liner"></p><p class="plate-id">Plate 308 / 375</p></footer>
+  </article>
+</body>
+</html>

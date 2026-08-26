@@ -1,0 +1,7 @@
+node_modules/
+output/
+.DS_Store
+.current-plate
+.tray-state.json
+app/GeneratedRoot.swift
+app/Foundations.app/

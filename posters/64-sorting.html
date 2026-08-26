@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PLATE 64 — n log n, or n squared.</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@800;900&family=Fraunces:ital,opsz,wght@1,9..144,400;1,9..144,500&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/poster.css">
+</head>
+<body>
+  <article class="poster" data-track="dsa">
+    <span class="mark mark--tl"></span><span class="mark mark--tr"></span><span class="mark mark--bl"></span><span class="mark mark--br"></span>
+    <p class="spine">Foundations series — software engineering mental models</p>
+    <div class="rule"></div><div class="ghost">64</div><div class="vignette"></div>
+    <svg class="grain" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="4" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(#n)"></rect></svg>
+    <header class="mast">
+      <p class="kicker"><span>DSA</span><span class="dot"></span><span class="whisper">Worst case matters</span></p>
+      <h1 class="title">n log n, or <span class="title-accent">n squared.</span></h1>
+      <p class="lede">Comparison sorts cannot beat n log n in the worst case: you need that many yes/no questions. Insertion, selection, bubble are O(n²). Merge, heap, and average quicksort are n log n. Radix and counting skip comparisons and can be linear in n. Quicksort’s worst case is still n² — it is not “always fast.”</p>
+    </header>
+    <section class="stage stage--wide">
+      <div class="stage-inner">
+        <div class="trio">
+          <div class="box">
+            <p class="col-label">Nested loops</p>
+            <h2 class="box-title">n²</h2>
+            <div class="bullets">
+              <div>Insertion, selection, bubble.</div>
+              <div>Insertion: fast on tiny / nearly sorted.</div>
+              <div>n = 10⁵ → ~10¹⁰ ops. Too slow.</div>
+            </div>
+            <p class="caption box-foot">Fine for n ≤ a few thousand, or as Timsort’s inner pass.</p>
+          </div>
+          <div class="box box--pool">
+            <p class="col-label">The default answer</p>
+            <h2 class="box-title">n log n</h2>
+            <div class="bullets">
+              <div>Merge: always, extra array, stable.</div>
+              <div>Heap: always, in-place, not stable.</div>
+              <div>Quick: avg n log n, in-place, not stable.</div>
+            </div>
+            <p class="caption box-foot">Library sort is this family (often Timsort / introsort).</p>
+          </div>
+          <div class="box">
+            <p class="col-label">Not comparison</p>
+            <h2 class="box-title">O(n)</h2>
+            <div class="bullets">
+              <div>Counting: small integer range.</div>
+              <div>Radix: digits / bytes, O(n · digits).</div>
+              <div>Only when the keys look like integers.</div>
+            </div>
+            <p class="caption box-foot">Beats n log n when the model fits. Not for arbitrary objects.</p>
+          </div>
+        </div>
+        <div class="deck">
+          <div class="deck-row"><span class="deck-k">What</span><p>Know worst / extra space / stable for four names: quick, merge, heap, radix. Quick: pick a pivot, partition, recurse. Sorted input + pivot = first element → n². Fix: random pivot, median-of-three, or introsort (switch to heap). Java ints: dual-pivot quick; objects: Timsort.</p></div>
+          <div class="deck-row"><span class="deck-k">Why</span><p>n = 10⁵ is the usual hidden constraint. n² dies, n log n passes. If they only need k largest, don’t sort n (plate 63). If they only need a boolean “can we sort to target,” maybe you don’t sort at all.</p></div>
+          <div class="deck-row deck-row--trap"><span class="deck-k">Trap</span><p>Calling quicksort always-fast: worst case is n², and adversarial / already-sorted data hits it without randomization. Also: radix on generic <code>Comparable</code>. Also: “merge is n²” (it is not).</p></div>
+        </div>
+      </div>
+    </section>
+    <footer class="foot"><p class="one-liner"></p><p class="plate-id">Plate 64 / 100</p></footer>
+  </article>
+</body>
+</html>

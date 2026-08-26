@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PLATE 94 — A miss is a crowd.</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@800;900&family=Fraunces:ital,opsz,wght@1,9..144,400;1,9..144,500&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/poster.css">
+</head>
+<body>
+  <article class="poster" data-track="system">
+    <span class="mark mark--tl"></span><span class="mark mark--tr"></span><span class="mark mark--bl"></span><span class="mark mark--br"></span>
+    <p class="spine">Foundations series — software engineering mental models</p>
+    <div class="rule"></div><div class="ghost">94</div><div class="vignette"></div>
+    <svg class="grain" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="4" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(#n)"></rect></svg>
+    <header class="mast">
+      <p class="kicker"><span>System</span><span class="dot"></span><span class="whisper">Thundering herd</span></p>
+      <h1 class="title">A miss is <span class="title-accent">a crowd.</span></h1>
+      <p class="lede">A hot key expires. Two thousand concurrent requests miss together and all hit the database for the same row. That is a cache stampede (dogpile, thundering herd). The cache was the rumor (plate 08). The miss is a coordinated attack on the source of truth.</p>
+    </header>
+    <section class="stage">
+      <div class="stage-inner">
+        <div class="compare">
+          <div class="compare-pane">
+            <p class="pane-label">product:1 TTL hits 0</p>
+            <h2 class="pane-title">Herd</h2>
+            <div class="codeblock bad">2000 × GET product:1  MISS
+2000 × SELECT * FROM products
+         WHERE id = 1
+DB CPU 100%
+now the key that was fine
+takes the site down</div>
+            <p class="caption">One popular item. One shared expiry. One process restart. Same shape.</p>
+          </div>
+          <div class="compare-vs">vs</div>
+          <div class="compare-pane compare-pane--hit">
+            <p class="pane-label">One refill</p>
+            <h2 class="pane-title">Lock / SWR</h2>
+            <div class="codeblock ok">SET lock:product:1 NX EX 10
+winner → one SELECT → SET
+losers  → wait, or serve stale
+
+stale-while-revalidate:
+serve expired, refresh in bg
+
+jitter the TTL</div>
+            <p class="caption">Singleflight coalesces one box. A Redis lock coalesces the fleet. SWR keeps the rumor alive on purpose.</p>
+          </div>
+        </div>
+        <div class="deck">
+          <div class="deck-row"><span class="deck-k">What</span><p>Stampede = concurrent miss on one key (or many keys with the same TTL). Fixes: request coalescing, mutex around fill, stale-while-revalidate, probabilistic early refresh, TTL jitter. Hot keys can skip expiry and refresh on a timer.</p></div>
+          <div class="deck-row"><span class="deck-k">Why</span><p>The cache exists to protect the DB. A synchronized miss inverts that. Interviews pair this with plate 08 and with jitter (plate 19): don’t let everyone wake up on the same clock.</p></div>
+          <div class="deck-row deck-row--trap"><span class="deck-k">Trap</span><p>Aligned TTLs — warmup or deploy sets 10k keys to <code>EX 60</code> in the same second; they all die together. In-process singleflight with 20 app boxes (20 DB hits). Lock without a TTL (refresher dies, lock stuck). Flushing Redis “to fix stale.”</p></div>
+        </div>
+      </div>
+    </section>
+    <footer class="foot"><p class="one-liner"></p><p class="plate-id">Plate 94 / 100</p></footer>
+  </article>
+</body>
+</html>

@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PLATE 298 — An interrupt preempts the CPU, not your if.</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@800;900&family=Fraunces:ital,opsz,wght@1,9..144,400;1,9..144,500&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/poster.css">
+</head>
+<body>
+  <article class="poster" data-track="os">
+    <span class="mark mark--tl"></span><span class="mark mark--tr"></span><span class="mark mark--bl"></span><span class="mark mark--br"></span>
+    <p class="spine">Foundations series — software engineering mental models</p>
+    <div class="rule"></div><div class="ghost">298</div><div class="vignette"></div>
+    <svg class="grain" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="4" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(#n)"></rect></svg>
+    <header class="mast">
+      <p class="kicker"><span>OS</span><span class="dot"></span><span class="whisper">IRQ · bottom half</span></p>
+      <h1 class="title">An interrupt preempts the CPU, <span class="title-accent">not your if.</span></h1>
+      <p class="lede">A device raises an IRQ line. The CPU jumps to the vector; the kernel runs the ISR (top half, short), then softirq/tasklet/workqueue (bottom half). Your userspace <code>if()</code> is not atomic against this — only against other threads if you lock. cli/sti is kernel-only.</p>
+    </header>
+    <section class="stage">
+      <div class="stage-inner">
+        <div class="steps">
+          <div class="step step--hit"><span class="step-n">1</span><p class="step-copy">NIC packet → IRQ<span>CPU vectors to the ISR. /proc/interrupts counts. irqbalance spreads them.</span></p><span class="step-meta">IRQ</span></div>
+          <div class="step"><span class="step-n">2</span><p class="step-copy">ISR acks, queues skb — top half stays short<span>Then ksoftirqd / NAPI poll (bottom half). Timer interrupt is how preemption happens (plate 289).</span></p><span class="step-meta">top · bottom</span></div>
+          <div class="step"><span class="step-n">3</span><p class="step-copy">Your recv syscall unblocks<span>Userspace sees a completed syscall, a signal, or a futex wake — not the IRQ.</span></p><span class="step-meta">user</span></div>
+        </div>
+        <div class="facts facts-3">
+          <div class="fact"><p class="fact-k">Top half</p><p class="fact-n">ISR</p><p class="fact-c">Ack the device. Queue work. Return fast.</p></div>
+          <div class="fact fact--hit"><p class="fact-k">Bottom half</p><p class="fact-n">NAPI</p><p class="fact-c">softirq / tasklet / workqueue.</p></div>
+          <div class="fact"><p class="fact-k">cli/sti</p><p class="fact-n">kernel</p><p class="fact-c">Not an app locking strategy.</p></div>
+        </div>
+        <div class="deck">
+          <div class="deck-row"><span class="deck-k">What</span><p>Hardware event → kernel. Userspace sees it as a completed syscall, a signal, or a futex wake.</p></div>
+          <div class="deck-row"><span class="deck-k">Why</span><p>Why kernel networking does not run in your process. Why “disable interrupts” is not an app lock.</p></div>
+          <div class="deck-row deck-row--trap"><span class="deck-k">Trap</span><p>Spinning in userspace “until the device sets a flag” without a syscall. Counting on instruction-level atomicity for I/O registers from user.</p></div>
+        </div>
+      </div>
+    </section>
+    <footer class="foot"><p class="one-liner"></p><p class="plate-id">Plate 298 / 375</p></footer>
+  </article>
+</body>
+</html>

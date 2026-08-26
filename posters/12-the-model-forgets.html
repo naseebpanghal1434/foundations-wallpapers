@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PLATE 12 — The model forgets.</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@800;900&family=Fraunces:ital,opsz,wght@1,9..144,400;1,9..144,500&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/poster.css">
+</head>
+<body>
+  <article class="poster" data-track="genai">
+    <span class="mark mark--tl"></span><span class="mark mark--tr"></span><span class="mark mark--bl"></span><span class="mark mark--br"></span>
+    <p class="spine">Foundations series — software engineering mental models</p>
+    <div class="rule"></div><div class="ghost">12</div><div class="vignette"></div>
+    <svg class="grain" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="4" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(#n)"></rect></svg>
+    <header class="mast">
+      <p class="kicker"><span>Gen AI</span><span class="dot"></span><span class="whisper">n_in + n_out · top-k</span></p>
+      <h1 class="title">The model <span class="title-accent">forgets.</span></h1>
+      <p class="lede">Weights are frozen at inference. The only tokens the model sees are this request: system + history + retrieved chunks + user, with <code>n_in + n_out ≤ window</code> (e.g. 128k, plate 253). RAG is embed → ANN search → paste top-k chunks (k = 4–20) into the prompt. Chat history is more prompt, not storage.</p>
+    </header>
+    <section class="stage">
+      <div class="stage-inner">
+        <div class="steps">
+          <div class="step">
+            <span class="step-n">1</span>
+            <p class="step-copy">Chunk the corpus<span>200–800 tokens, 10–20% overlap. 80-page PDF ≈ 40–80k tokens if stuffed whole (plate 255).</span></p>
+            <span class="step-meta">chunk</span>
+          </div>
+          <div class="step step--hit">
+            <span class="step-n">2</span>
+            <p class="step-copy">Embed + ANN<span>768–3072-d vectors. Query embed → top-k. If the chunk is not in k, it is not in the prompt.</span></p>
+            <span class="step-meta">top-k</span>
+          </div>
+          <div class="step">
+            <span class="step-n">3</span>
+            <p class="step-copy">One completion<span>system + k chunks + question. Overflow truncates; middle tokens weaken. Fine-tune changes weights (plate 48); this does not.</span></p>
+            <span class="step-meta">n_in</span>
+          </div>
+        </div>
+        <div class="deck">
+          <div class="deck-row"><span class="deck-k">What</span><p>RAG = search + paste. The model cannot use a byte that never entered <code>n_in</code>.</p></div>
+          <div class="deck-row"><span class="deck-k">Why</span><p>Company docs, tickets, prices. Retrieval quality beats prompt wording. Interviews: RAG vs fine-tune (plate 48).</p></div>
+          <div class="deck-row deck-row--trap"><span class="deck-k">Trap</span><p>“We uploaded the PDF so it knows.” The file sits in a vector index; each query must retrieve. Window overflow drops the start or the middle. Fine-tuning facts that change daily.</p></div>
+        </div>
+      </div>
+    </section>
+    <footer class="foot"><p class="one-liner"></p><p class="plate-id">Plate 12 / 375</p></footer>
+  </article>
+</body>
+</html>

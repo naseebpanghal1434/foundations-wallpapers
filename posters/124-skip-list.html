@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PLATE 124 — Express lanes over a list.</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@800;900&family=Fraunces:ital,opsz,wght@1,9..144,400;1,9..144,500&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/poster.css">
+</head>
+<body>
+  <article class="poster" data-track="dsa">
+    <span class="mark mark--tl"></span><span class="mark mark--tr"></span><span class="mark mark--bl"></span><span class="mark mark--br"></span>
+    <p class="spine">Foundations series — software engineering mental models</p>
+    <div class="rule"></div><div class="ghost">124</div><div class="vignette"></div>
+    <svg class="grain" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="4" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(#n)"></rect></svg>
+    <header class="mast">
+      <p class="kicker"><span>DSA</span><span class="dot"></span><span class="whisper">Log n with coin flips</span></p>
+      <h1 class="title">Express lanes <span class="title-accent">over a list.</span></h1>
+      <p class="lede">A skip list is a sorted linked list with extra forward pointers at coarser levels. Search starts on the top lane, drops when the next hop would pass the key. Expected height log n if each node joins the next level with p=1/2. Redis zset uses this.</p>
+    </header>
+    <section class="stage">
+      <div class="stage-inner">
+        <div class="steps">
+          <div class="step">
+            <span class="step-n">1</span>
+            <p class="step-copy">Lanes over a sorted list<span>L2: 1 ----------- 9. L1: 1 ---- 5 ---- 9. L0: 1-3-5-7-9. Promote with a coin, p=1/2.</span></p>
+            <span class="step-meta">p = 1/2</span>
+          </div>
+          <div class="step step--hit">
+            <span class="step-n">2</span>
+            <p class="step-copy">Search 7<span>L2: 1→9 too far, drop. L1: 1→5, 5→9 too far, drop. L0: 5→7. Expected O(log n).</span></p>
+            <span class="step-meta">drop, don’t pass</span>
+          </div>
+          <div class="step">
+            <span class="step-n">3</span>
+            <p class="step-copy">Insert splices every lane it joins<span>Find the spot, coin-flip height, relink at each level. Delete is the same walk, then unlink.</span></p>
+            <span class="step-meta">expected log n</span>
+          </div>
+        </div>
+        <p class="caption">Expected O(log n) search / insert / delete. Level 0 is a full sorted scan for ranges.</p>
+        <div class="deck">
+          <div class="deck-row"><span class="deck-k">What</span><p>Probabilistic alternative to a balanced BST (plate 113). Simpler to picture than rotations. Ordered, range scan along level 0. Not a hashmap — no O(1).</p></div>
+          <div class="deck-row"><span class="deck-k">Why</span><p>Interview: “how does Redis sorted set work?” Skip list + hash. Also: why a list can still be log n if you add lanes. Same order ops as a TreeMap (plate 125).</p></div>
+          <div class="deck-row deck-row--trap"><span class="deck-k">Trap</span><p>Deterministic “every 2nd node” rebuild is a different structure (perfect skip) and painful to update. Worst case all height 1 if the coin hates you — expected, not worst-case like AVL. Not a replacement for a hashmap.</p></div>
+        </div>
+      </div>
+    </section>
+    <footer class="foot"><p class="one-liner"></p><p class="plate-id">Plate 124 / 200</p></footer>
+  </article>
+</body>
+</html>

@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PLATE 35 — A load balancer is a door.</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@800;900&family=Fraunces:ital,opsz,wght@1,9..144,400;1,9..144,500&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/poster.css">
+</head>
+<body>
+  <article class="poster" data-track="system">
+    <span class="mark mark--tl"></span><span class="mark mark--tr"></span><span class="mark mark--bl"></span><span class="mark mark--br"></span>
+    <p class="spine">Foundations series — software engineering mental models</p>
+    <div class="rule"></div><div class="ghost">35</div><div class="vignette"></div>
+    <svg class="grain" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="4" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(#n)"></rect></svg>
+    <header class="mast">
+      <p class="kicker"><span>System</span><span class="dot"></span><span class="whisper">L4 TCP · L7 HTTP</span></p>
+      <h1 class="title">A load balancer is <span class="title-accent">a door.</span></h1>
+      <p class="lede">Clients dial one VIP. The load balancer picks a healthy backend. L4 (OSI transport): TCP/UDP 5-tuple, no HTTP. L7 (application): <code>Host</code>, path, header, cookie. Health check: <code>GET /healthz</code> → 200, else remove the node.</p>
+    </header>
+    <section class="stage">
+      <div class="stage-inner">
+        <div class="compare">
+          <div class="compare-pane">
+            <p class="pane-label">Layer 4 · transport</p>
+            <h2 class="pane-title">L4</h2>
+            <div class="codeblock">5-tuple
+src 203.0.113.4:49152
+dst 10.0.0.8:443  TCP
+→ instance B
+NLB, IPVS, HAProxy tcp
+no /api vs /static</div>
+            <p class="caption">Fast, cheap, connection-level. TLS may terminate later. No path routing.</p>
+          </div>
+          <div class="compare-vs">vs</div>
+          <div class="compare-pane compare-pane--hit">
+            <p class="pane-label">Layer 7 · application</p>
+            <h2 class="pane-title">L7</h2>
+            <div class="codeblock">GET /api/me  Host: api.shop.io
+→ app pool
+GET /static/app.js → CDN
+ALB, Envoy, nginx http
+TLS terminate, drain
+idle timeout e.g. 60s</div>
+            <p class="caption">Sees the request. Routes, rewrites, sticky cookie. More CPU per request.</p>
+          </div>
+        </div>
+        <div class="deck">
+          <div class="deck-row"><span class="deck-k">What</span><p>Algorithms: round-robin, least-conn, consistent hash (plate 91). Fail 3 health checks / 5s → out. Drain: no new conns, wait in-flight, then SIGTERM. Idle timeout on the LB must exceed the app’s.</p></div>
+          <div class="deck-row"><span class="deck-k">Why</span><p>Without a VIP, users bookmark one box, and that box is the outage. With one, you add copies and survive a crash — if the app is stateless (session in Redis, not RAM).</p></div>
+          <div class="deck-row deck-row--trap"><span class="deck-k">Trap</span><p>Sticky sessions so you can keep sessions in RAM — the balancer covering an app bug. Health check hits <code>/</code> (slow, login wall, false-healthy). No backend timeout (LB hangs with the app). L4 expected to route by URL.</p></div>
+        </div>
+      </div>
+    </section>
+    <footer class="foot"><p class="one-liner"></p><p class="plate-id">Plate 35 / 375</p></footer>
+  </article>
+</body>
+</html>

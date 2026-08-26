@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PLATE 220 — A flag is a remote if.</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@800;900&family=Fraunces:ital,opsz,wght@1,9..144,400;1,9..144,500&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/poster.css">
+</head>
+<body>
+  <article class="poster" data-track="backend">
+    <span class="mark mark--tl"></span><span class="mark mark--tr"></span><span class="mark mark--bl"></span><span class="mark mark--br"></span>
+    <p class="spine">Foundations series — software engineering mental models</p>
+    <div class="rule"></div><div class="ghost">220</div><div class="vignette"></div>
+    <svg class="grain" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="4" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(#n)"></rect></svg>
+    <header class="mast">
+      <p class="kicker"><span>Backend</span><span class="dot"></span><span class="whisper">Boolean · percent · kill</span></p>
+      <h1 class="title">A flag is <span class="title-accent">a remote if.</span></h1>
+      <p class="lede">A feature flag is a boolean or percent you change without deploying. SDK reads a snapshot every 30 s (or push). Stable rollout: <code>hash(userId+flag) % 100 &lt; 10</code>. Payments kill switch: fail-closed. New color: fail-open. Delete the flag after 100%.</p>
+    </header>
+    <section class="stage">
+      <div class="stage-inner">
+        <div class="steps">
+          <div class="step"><span class="step-n">1</span><p class="step-copy">Read a snapshot, not git<span>SDK poll 30 s, or the service pushes. Cache so a flag-service outage does not take the site. The if is not five copies in five repos.</span></p><span class="step-meta">30 s</span></div>
+          <div class="step step--hit"><span class="step-n">2</span><p class="step-copy">Stable hash, not five mods<span><code>evaluate(flag, user) → hash(user+flag)%100 &lt; 10</code>. Same user, same bucket, every service. <code>user.id % 10</code> in five boxes is not that.</span></p><span class="step-meta">% 100</span></div>
+          <div class="step"><span class="step-n">3</span><p class="step-copy">Name the default on outage<span>Kill switch for payments: fail-closed. Cosmetic: fail-open. Audit who flipped. Remove the flag after full rollout — a year-old flag is an unofficial config DB.</span></p><span class="step-meta">kill</span></div>
+        </div>
+        <div class="deck">
+          <div class="deck-row"><span class="deck-k">What</span><p>Remote boolean / multivariate with a stable hash on <code>user+flag</code>. Cache the snapshot. Audit who flipped. Flags are not authZ (plate 14).</p></div>
+          <div class="deck-row"><span class="deck-k">Why</span><p>Progressive delivery, experiments, incident kill switches. Design: where the if lives, and what happens when the flag service is down.</p></div>
+          <div class="deck-row deck-row--trap"><span class="deck-k">Trap</span><p><code>if (user.id % 10)</code> in five services with five different mods. No default on outage. Flags that never get deleted. Using flags as the only permission system.</p></div>
+        </div>
+      </div>
+    </section>
+    <footer class="foot"><p class="one-liner"></p><p class="plate-id">Plate 220 / 375</p></footer>
+  </article>
+</body>
+</html>

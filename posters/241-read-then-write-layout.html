@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PLATE 241 — Read layout. Then write. Not both.</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@800;900&family=Fraunces:ital,opsz,wght@1,9..144,400;1,9..144,500&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/poster.css">
+</head>
+<body>
+  <article class="poster" data-track="frontend">
+    <span class="mark mark--tl"></span><span class="mark mark--tr"></span><span class="mark mark--bl"></span><span class="mark mark--br"></span>
+    <p class="spine">Foundations series — software engineering mental models</p>
+    <div class="rule"></div><div class="ghost">241</div><div class="vignette"></div>
+    <svg class="grain" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="4" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(#n)"></rect></svg>
+    <header class="mast">
+      <p class="kicker"><span>Frontend</span><span class="dot"></span><span class="whisper">Reflow · thrash</span></p>
+      <h1 class="title">Read layout. Then write. <span class="title-accent">Not both.</span></h1>
+      <p class="lede"><code>offsetWidth</code>, <code>getBoundingClientRect</code>, and <code>scrollTop</code> force layout. Interleaving those reads with style writes is layout thrash — geometry recomputed N times per frame.</p>
+    </header>
+    <section class="stage">
+      <div class="stage-inner">
+        <div class="compare">
+          <div class="compare-pane">
+            <p class="pane-label">Measure, mutate, repeat</p>
+            <h2 class="pane-title">Thrash</h2>
+            <div class="codeblock bad">for (const el of els) {
+  const h = el.offsetHeight
+  el.style.height = h+1+'px'
+}  // N reflows</div>
+            <p class="caption">Each write dirties layout. The next read forces it again.</p>
+          </div>
+          <div class="compare-vs">trap</div>
+          <div class="compare-pane compare-pane--hit">
+            <p class="pane-label">All reads, then writes</p>
+            <h2 class="pane-title">One snapshot</h2>
+            <div class="codeblock ok">const hs = els.map(e => e.offsetHeight)
+els.forEach((el, i) => {
+  el.style.height = hs[i]+1+'px'
+})</div>
+            <p class="caption">Batch. <code>rAF</code> is the frame clock. Plate 25 is the pipeline.</p>
+          </div>
+        </div>
+        <div class="deck">
+          <div class="deck-row"><span class="deck-k">What</span><p>Layout is a snapshot. Writes invalidate it. One snapshot per frame if you can. <code>transform</code>/<code>opacity</code> skip layout (composite only).</p></div>
+          <div class="deck-row"><span class="deck-k">Why</span><p>60fps is 16ms. One forced reflow on a big DOM can eat the frame. Jank interviews start here.</p></div>
+          <div class="deck-row deck-row--trap"><span class="deck-k">Trap</span><p>Reading layout inside a resize observer that then writes, that then reads. Animating <code>top</code>/<code>left</code> instead of <code>transform</code>. <code>console.log(el.offsetHeight)</code> in a hot path.</p></div>
+        </div>
+      </div>
+    </section>
+    <footer class="foot"><p class="one-liner"></p><p class="plate-id">Plate 241 / 286</p></footer>
+  </article>
+</body>
+</html>

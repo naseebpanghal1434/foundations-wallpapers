@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PLATE 70 — Garbage is the unreachable.</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@800;900&family=Fraunces:ital,opsz,wght@1,9..144,400;1,9..144,500&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/poster.css">
+</head>
+<body>
+  <article class="poster" data-track="lang">
+    <span class="mark mark--tl"></span><span class="mark mark--tr"></span><span class="mark mark--bl"></span><span class="mark mark--br"></span>
+    <p class="spine">Foundations series — software engineering mental models</p>
+    <div class="rule"></div><div class="ghost">70</div><div class="vignette"></div>
+    <svg class="grain" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="4" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(#n)"></rect></svg>
+    <header class="mast">
+      <p class="kicker"><span>Language</span><span class="dot"></span><span class="whisper">Mark from roots</span></p>
+      <h1 class="title">Garbage is <span class="title-accent">the unreachable.</span></h1>
+      <p class="lede">Tracing GC reclaims objects with no path from roots: thread stacks, CPU registers, statics, JNI / global handles. Mark the graph, then sweep — age is irrelevant. A one-second object with no pointer is garbage; a ten-year <code>Map</code> entry is live. Mark-sweep (Java, JS) keeps cycles; naive refcount does not collect <code>a.b = a</code>.</p>
+    </header>
+    <section class="stage">
+      <div class="stage-inner">
+        <div class="compare">
+          <div class="compare-pane compare-pane--hit">
+            <p class="pane-label">Reachability</p>
+            <h2 class="pane-title">Live</h2>
+            <div class="codeblock ok">roots: stack / static / handle
+  → user
+    → orders
+cycle user ⇄ profile   still live
+nothing → oldTemp      sweep
+
+Java: Eden → Survivor → Old
+V8: Scavenge nursery first</div>
+            <p class="caption">Generational: most objects die in the nursery. You do not <code>free()</code> in JS.</p>
+          </div>
+          <div class="compare-vs">vs</div>
+          <div class="compare-pane">
+            <p class="pane-label">Still a root</p>
+            <h2 class="pane-title">Leak</h2>
+            <div class="codeblock bad">cache.set(id, payload)  // never delete
+nodes.push(detachedEl)  // JS holds the tree
+setInterval(fn)         // no clearInterval
+inner() closes over req // whole body</div>
+            <p class="caption"><code>WeakMap</code> / <code>WeakRef</code> do not keep the key alive. A forgotten root is a leak.</p>
+          </div>
+        </div>
+        <div class="deck">
+          <div class="deck-row"><span class="deck-k">What</span><p>Unreachable = garbage. Roots = frames (plate 69) + globals + the event loop. Mark-sweep handles cycles; Python adds a cycle detector on top of refcount.</p></div>
+          <div class="deck-row"><span class="deck-k">Why</span><p>Heaps that only grow are a <code>Map</code>, a listener, or a closure — not “GC is broken.” Interviews: define reachability, name a leak, then a heap snapshot.</p></div>
+          <div class="deck-row deck-row--trap"><span class="deck-k">Trap</span><p>“JS has GC so it can’t leak.” Unbounded caches. Detached DOM still referenced from JS. A timer or subscription with no cleanup (plate 27).</p></div>
+        </div>
+      </div>
+    </section>
+    <footer class="foot"><p class="one-liner"></p><p class="plate-id">Plate 70 / 375</p></footer>
+  </article>
+</body>
+</html>

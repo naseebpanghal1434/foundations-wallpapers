@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PLATE 341 — VACUUM marks dead tuples reusable.</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@800;900&family=Fraunces:ital,opsz,wght@1,9..144,400;1,9..144,500&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/poster.css">
+</head>
+<body>
+  <article class="poster" data-track="database">
+    <span class="mark mark--tl"></span><span class="mark mark--tr"></span><span class="mark mark--bl"></span><span class="mark mark--br"></span>
+    <p class="spine">Foundations series — software engineering mental models</p>
+    <div class="rule"></div><div class="ghost">341</div><div class="vignette"></div>
+    <svg class="grain" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="4" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(#n)"></rect></svg>
+    <header class="mast">
+      <p class="kicker"><span>Database</span><span class="dot"></span><span class="whisper">xmin xmax · bloat</span></p>
+      <h1 class="title">VACUUM marks dead tuples <span class="title-accent">reusable.</span></h1>
+      <p class="lede">MVCC (plate 96): UPDATE/DELETE insert a new version; the old stays until no snapshot can see it. VACUUM (and autovacuum) freeze and mark those ItemIds free. It does not shrink the file unless <code>VACUUM FULL</code> (a rewrite). Bloat is dead tuples occupying 8 KiB pages.</p>
+    </header>
+    <section class="stage">
+      <div class="stage-inner">
+        <div class="compare">
+          <div class="compare-pane">
+            <p class="pane-label">Batch UPDATE 1e6 rows</p>
+            <h2 class="pane-title">Bloat</h2>
+            <div class="codeblock bad">heap 2× until vacuum
+dead tuples still occupy
+  8 KiB pages
+
+n_dead_tup in
+  pg_stat_user_tables
+
+file size does not drop</div>
+            <p class="caption">Ordinary VACUUM recycles space inside the file. The OS does not get the bytes back.</p>
+          </div>
+          <div class="compare-vs">vs</div>
+          <div class="compare-pane compare-pane--hit">
+            <p class="pane-label">autovacuum_vacuum_scale_factor</p>
+            <h2 class="pane-title">0.2</h2>
+            <div class="codeblock ok">VACUUM
+  mark ItemIds free
+  freeze old xids
+  set visibility map
+
+VACUUM FULL
+  rewrite + exclusive lock
+
+REINDEX for index bloat</div>
+            <p class="caption">HOT may vacuum a page in place (plate 350). Freeze is wraparound (plate 342), not optional.</p>
+          </div>
+        </div>
+        <div class="deck">
+          <div class="deck-row"><span class="deck-k">What</span><p>Garbage collection for tuples. Dead = xmax committed and no snapshot still needs xmin. Space is reused; the relation size is a high-water mark.</p></div>
+          <div class="deck-row"><span class="deck-k">Why</span><p>Table growth after batch updates. A long <code>idle in transaction</code> pins xmin and blocks vacuum — that is the bloat incident.</p></div>
+          <div class="deck-row deck-row--trap"><span class="deck-k">Trap</span><p>Turning autovacuum off. <code>VACUUM FULL</code> on a hot table (exclusive lock). Expecting VACUUM to always release bytes to the OS.</p></div>
+        </div>
+      </div>
+    </section>
+    <footer class="foot"><p class="one-liner"></p><p class="plate-id">Plate 341 / 375</p></footer>
+  </article>
+</body>
+</html>

@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PLATE 98 — EXPLAIN is a guess. ANALYZE ran it.</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@800;900&family=Fraunces:ital,opsz,wght@1,9..144,400;1,9..144,500&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/poster.css">
+</head>
+<body>
+  <article class="poster" data-track="database">
+    <span class="mark mark--tl"></span><span class="mark mark--tr"></span><span class="mark mark--bl"></span><span class="mark mark--br"></span>
+    <p class="spine">Foundations series — software engineering mental models</p>
+    <div class="rule"></div><div class="ghost">98</div><div class="vignette"></div>
+    <svg class="grain" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="4" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(#n)"></rect></svg>
+    <header class="mast">
+      <p class="kicker"><span>Database</span><span class="dot"></span><span class="whisper">Estimated vs actual</span></p>
+      <h1 class="title">EXPLAIN is a guess. <span class="title-accent">ANALYZE ran it.</span></h1>
+      <p class="lede"><code>EXPLAIN</code> prints the plan the planner likes: Seq Scan vs Index Scan, estimated cost, estimated rows. <code>EXPLAIN ANALYZE</code> executes the query and writes actual time and actual rows next to the guess. The bug is usually “estimated 500,000, actual 12” — stale stats, wrong join order, an index you thought it used.</p>
+    </header>
+    <section class="stage">
+      <div class="stage-inner">
+        <div class="compare">
+          <div class="compare-pane">
+            <p class="pane-label">Planner’s story</p>
+            <h2 class="pane-title">EXPLAIN</h2>
+            <div class="codeblock bad">Seq Scan on orders
+  cost=0.00..18432.00
+  rows=500000
+  Filter: user_id = 7
+
+-- never ran
+-- never timed
+-- never counted</div>
+            <p class="caption">Looks cheap on a small table, looks obligatory on a big one. You have not measured.</p>
+          </div>
+          <div class="compare-vs">vs</div>
+          <div class="compare-pane compare-pane--hit">
+            <p class="pane-label">What the engine did</p>
+            <h2 class="pane-title">ANALYZE</h2>
+            <div class="codeblock ok">Index Scan using orders_user_id
+  actual time=0.04..0.18
+  rows=12 loops=1
+  Buffers: shared hit=4
+
+Seq Scan would have been
+  actual time=812ms
+  rows=12   ← guess was 5e5</div>
+            <p class="caption">Read Seq vs Index, then estimated vs actual rows. Off by 10× → <code>ANALYZE</code> the table, check the index (plate 97).</p>
+          </div>
+        </div>
+        <div class="deck">
+          <div class="deck-row"><span class="deck-k">What</span><p><code>EXPLAIN (ANALYZE, BUFFERS)</code> in Postgres. Seq Scan = walk the heap. Index Scan = seek + heap. Index Only Scan = covering + visibility map. Nested Loop / Hash / Merge are join algorithms. Look at the node whose actual time dominates.</p></div>
+          <div class="deck-row"><span class="deck-k">Why</span><p>You cannot tune what you have not seen. Interviews: paste a plan, point at Seq Scan vs Index, notice row estimates, say “stats or the wrong composite.”</p></div>
+          <div class="deck-row deck-row--trap"><span class="deck-k">Trap</span><p><code>EXPLAIN</code> without <code>ANALYZE</code> — you believed a guess. <code>EXPLAIN ANALYZE</code> on a <code>DELETE</code> in prod (it runs). Seq Scan is not always a bug (tiny table). Ignoring “rows=1 vs actual=1e6” on the inner side of a nested loop.</p></div>
+        </div>
+      </div>
+    </section>
+    <footer class="foot"><p class="one-liner"></p><p class="plate-id">Plate 98 / 100</p></footer>
+  </article>
+</body>
+</html>

@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PLATE 297 — A signal is an async interrupt to a process.</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@800;900&family=Fraunces:ital,opsz,wght@1,9..144,400;1,9..144,500&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/poster.css">
+</head>
+<body>
+  <article class="poster" data-track="os">
+    <span class="mark mark--tl"></span><span class="mark mark--tr"></span><span class="mark mark--bl"></span><span class="mark mark--br"></span>
+    <p class="spine">Foundations series — software engineering mental models</p>
+    <div class="rule"></div><div class="ghost">297</div><div class="vignette"></div>
+    <svg class="grain" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="4" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(#n)"></rect></svg>
+    <header class="mast">
+      <p class="kicker"><span>OS</span><span class="dot"></span><span class="whisper">sigaction · EINTR</span></p>
+      <h1 class="title">A signal is an async interrupt <span class="title-accent">to a process.</span></h1>
+      <p class="lede"><code>kill(pid, SIGTERM)</code> sets a pending bit. At a safe point the kernel jumps to the handler (or default: terminate, core, ignore, stop). Only async-signal-safe functions in a handler (<code>write</code>, <code>_exit</code> — not malloc, printf); syscalls may return EINTR.</p>
+    </header>
+    <section class="stage">
+      <div class="stage-inner">
+        <div class="steps">
+          <div class="step"><span class="step-n">1</span><p class="step-copy">SIGINT default → terminate<span>SIGKILL/SIGSTOP cannot be caught. Default is terminate, core, ignore, or stop.</span></p><span class="step-meta">default</span></div>
+          <div class="step"><span class="step-n">2</span><p class="step-copy">sigaction(SIGINT, handler, SA_RESTART)<span>Not signal(). Handler: write, _exit — never malloc/printf. SA_RESTART retries some syscalls.</span></p><span class="step-meta">handler</span></div>
+          <div class="step step--hit"><span class="step-n">3</span><p class="step-copy">signalfd / epoll — handle in the loop<span>Mask with pselect/ppoll/signalfd so you do not race. Plate 86 is SIGTERM then drain.</span></p><span class="step-meta">event loop</span></div>
+        </div>
+        <div class="facts facts-3">
+          <div class="fact fact--hit"><p class="fact-k">Uncatchable</p><p class="fact-n">KILL/STOP</p><p class="fact-c">No handler, no ignore, no mask.</p></div>
+          <div class="fact"><p class="fact-k">Interrupted I/O</p><p class="fact-n">EINTR</p><p class="fact-c">read() may return it. Check or SA_RESTART.</p></div>
+          <div class="fact"><p class="fact-k">Prefer</p><p class="fact-n">signalfd</p><p class="fact-c">Or timerfd over SIGALRM.</p></div>
+        </div>
+        <div class="deck">
+          <div class="deck-row"><span class="deck-k">What</span><p>Process-directed async events. Mask with pselect/ppoll/signalfd so you do not race.</p></div>
+          <div class="deck-row"><span class="deck-k">Why</span><p>Ctrl-C, timeouts (SIGALRM — prefer timerfd), child death (SIGCHLD). Graceful shutdown is SIGTERM then drain (plate 86).</p></div>
+          <div class="deck-row deck-row--trap"><span class="deck-k">Trap</span><p>malloc in a handler (deadlock). Assuming <code>read()</code> never returns EINTR. Using <code>signal()</code> (unreliable semantics) instead of sigaction.</p></div>
+        </div>
+      </div>
+    </section>
+    <footer class="foot"><p class="one-liner"></p><p class="plate-id">Plate 297 / 375</p></footer>
+  </article>
+</body>
+</html>

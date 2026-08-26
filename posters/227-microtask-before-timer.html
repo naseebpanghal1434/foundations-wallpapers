@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PLATE 227 — Promises drain before timers.</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@800;900&family=Fraunces:ital,opsz,wght@1,9..144,400;1,9..144,500&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/poster.css">
+</head>
+<body>
+  <article class="poster" data-track="frontend">
+    <span class="mark mark--tl"></span><span class="mark mark--tr"></span><span class="mark mark--bl"></span><span class="mark mark--br"></span>
+    <p class="spine">Foundations series — software engineering mental models</p>
+    <div class="rule"></div><div class="ghost">227</div><div class="vignette"></div>
+    <svg class="grain" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="4" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(#n)"></rect></svg>
+    <header class="mast">
+      <p class="kicker"><span>Frontend</span><span class="dot"></span><span class="whisper">Microtask · macrotask</span></p>
+      <h1 class="title">Promises drain <span class="title-accent">before timers.</span></h1>
+      <p class="lede">Promise.then, queueMicrotask, MutationObserver are microtasks; setTimeout, I/O, and events are macrotasks. After every stack the engine drains the whole microtask queue before the next macrotask or paint.</p>
+    </header>
+    <section class="stage">
+      <div class="stage-inner">
+        <div class="compare">
+          <div class="compare-pane compare-pane--hit">
+            <p class="pane-label">then vs timeout 0</p>
+            <h2 class="pane-title">1, then 2, then 3</h2>
+            <div class="codeblock ok">console.log(1)
+Promise.resolve().then(() =&gt; console.log(2))
+setTimeout(() =&gt; console.log(3), 0)
+// prints 1, 2, 3</div>
+            <p class="caption"><code>await</code> after the first line is a microtask. fetch’s callback is a macrotask wrapping a microtask.</p>
+          </div>
+          <div class="compare-vs">drain</div>
+          <div class="compare-pane">
+            <p class="pane-label">then queues another then</p>
+            <h2 class="pane-title">Still before timer</h2>
+            <div class="codeblock">.then(() =&gt; {
+  console.log(2)
+  Promise.resolve().then(() =&gt; console.log(2b))
+})
+setTimeout(() =&gt; console.log(3), 0)
+// 1, 2, 2b, then 3</div>
+            <p class="caption">The drain includes microtasks scheduled during the drain. Then render may happen.</p>
+          </div>
+        </div>
+        <div class="deck">
+          <div class="deck-row"><span class="deck-k">What</span><p>Macrotask: one per turn. Microtasks: all of them, including ones queued during the drain. Then render may happen.</p></div>
+          <div class="deck-row"><span class="deck-k">Why</span><p>The classic interview order question. A tight promise loop can starve paint just like a busy stack (plate 226).</p></div>
+          <div class="deck-row deck-row--trap"><span class="deck-k">Trap</span><p>Assuming <code>setTimeout(0)</code> beats <code>Promise.then</code>. Recursing promises until the tab janks. Mixing Node <code>nextTick</code> (micro) with <code>setImmediate</code> (macro) as if they were the same.</p></div>
+        </div>
+      </div>
+    </section>
+    <footer class="foot"><p class="one-liner"></p><p class="plate-id">Plate 227 / 286</p></footer>
+  </article>
+</body>
+</html>

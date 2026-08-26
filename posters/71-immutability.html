@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PLATE 71 — const is not a freeze.</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@800;900&family=Fraunces:ital,opsz,wght@1,9..144,400;1,9..144,500&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/poster.css">
+</head>
+<body>
+  <article class="poster" data-track="lang">
+    <span class="mark mark--tl"></span><span class="mark mark--tr"></span><span class="mark mark--bl"></span><span class="mark mark--br"></span>
+    <p class="spine">Foundations series — software engineering mental models</p>
+    <div class="rule"></div><div class="ghost">71</div><div class="vignette"></div>
+    <svg class="grain" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="4" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(#n)"></rect></svg>
+    <header class="mast">
+      <p class="kicker"><span>Language</span><span class="dot"></span><span class="whisper">Binding vs bytes · Object.is</span></p>
+      <h1 class="title">const is not <span class="title-accent">a freeze.</span></h1>
+      <p class="lede"><code>const</code> locks the binding: <code>user = {}</code> is a TypeError; <code>user.n = 2</code> is legal. <code>Object.freeze(user)</code> is shallow — nested objects still mutate. React (and <code>memo</code>) compare state with <code>Object.is</code>: same reference, no render. Immutability here means return a new object, not edit the old one.</p>
+    </header>
+    <section class="stage">
+      <div class="stage-inner">
+        <div class="compare">
+          <div class="compare-pane">
+            <p class="pane-label">Same pointer</p>
+            <h2 class="pane-title">In place</h2>
+            <div class="codeblock bad">const user = { n: 1, addr: {} }
+user.n = 2            // allowed
+user = {}             // TypeError
+
+items.push(x)
+setItems(items)       // Object.is → skip
+Object.freeze(user)
+user.addr.city = "Y"  // nested still writes</div>
+            <p class="caption">Freeze did not deep-seal <code>addr</code>. <code>push</code> returns a length, not a new array.</p>
+          </div>
+          <div class="compare-vs">vs</div>
+          <div class="compare-pane compare-pane--hit">
+            <p class="pane-label">New object, new identity</p>
+            <h2 class="pane-title">Replace</h2>
+            <div class="codeblock ok">setItems([...items, x])
+setUser({ ...user, n: 2 })
+
+Object.freeze(
+  structuredClone(user)
+)</div>
+            <p class="caption">Spread is shallow too — copy nested fields you plan to edit. Immer does the same job.</p>
+          </div>
+        </div>
+        <div class="deck">
+          <div class="deck-row"><span class="deck-k">What</span><p><code>const</code>/<code>let</code> are bindings (plate 68). Freeze is one-level. Deep freeze walks. React keys off reference equality (plate 67), not field diffs.</p></div>
+          <div class="deck-row"><span class="deck-k">Why</span><p>A new ref is how the UI notices. A mutated cache entry is visible to every holder. Interviews: <code>const</code> vs freeze vs spread vs why the list didn’t rerender.</p></div>
+          <div class="deck-row deck-row--trap"><span class="deck-k">Trap</span><p><code>state.items.push</code> then <code>setState(state)</code>. <code>setItems(items.push(x))</code> — <code>push</code> returns a number. Spreading once and mutating a nested object you still share.</p></div>
+        </div>
+      </div>
+    </section>
+    <footer class="foot"><p class="one-liner"></p><p class="plate-id">Plate 71 / 375</p></footer>
+  </article>
+</body>
+</html>

@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PLATE 55 — Expand right. Shrink left.</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@800;900&family=Fraunces:ital,opsz,wght@1,9..144,400;1,9..144,500&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/poster.css">
+</head>
+<body>
+  <article class="poster" data-track="dsa">
+    <span class="mark mark--tl"></span><span class="mark mark--tr"></span><span class="mark mark--bl"></span><span class="mark mark--br"></span>
+    <p class="spine">Foundations series — software engineering mental models</p>
+    <div class="rule"></div><div class="ghost">55</div><div class="vignette"></div>
+    <svg class="grain" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="4" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(#n)"></rect></svg>
+    <header class="mast">
+      <p class="kicker"><span>DSA</span><span class="dot"></span><span class="whisper">Subarray, linear time</span></p>
+      <h1 class="title">Expand right. <span class="title-accent">Shrink left.</span></h1>
+      <p class="lede">A window is a contiguous slice [left, right]. Grow right to include the next item. When the constraint breaks, advance left until it holds again. Each index enters and leaves at most once — O(n). Restarting a scan at every i is how you accidentally write O(n²).</p>
+    </header>
+    <section class="stage">
+      <div class="stage-inner">
+        <div class="compare">
+          <div class="compare-pane compare-pane--hit">
+            <p class="pane-label">Left and right only move forward</p>
+            <h2 class="pane-title">One pass</h2>
+            <div class="codeblock ok">l = 0
+for r in 0..n-1:
+  add a[r]
+  while invalid:
+    remove a[l]; l++
+  best = max(best, r-l+1)</div>
+            <p class="caption">Map/count inside the window is the constraint. Longest substring without a repeat is this.</p>
+          </div>
+          <div class="compare-vs">trap</div>
+          <div class="compare-pane">
+            <p class="pane-label">New inner scan from every i</p>
+            <h2 class="pane-title">Restart</h2>
+            <div class="codeblock bad">for i in 0..n-1:
+  seen = {}
+  for j in i..n-1:
+    if a[j] in seen: break
+    seen.add(a[j])
+# every i starts over
+# O(n²)</div>
+            <p class="caption">You threw away the work from i. Slide: drop a[i], keep the rest. Fixed-k window is the same with <code>l = r-k+1</code>.</p>
+          </div>
+        </div>
+        <div class="deck">
+          <div class="deck-row"><span class="deck-k">What</span><p>Variable window (longest / shortest that satisfies …) or fixed (max sum of k). Subarray, not subsequence — items are adjacent. Two pointers that never go backward (plate 54’s cousin).</p></div>
+          <div class="deck-row"><span class="deck-k">Why</span><p>“Longest substring / shortest subarray that …” is this pattern. Interviews want the O(n) argument: left and right each move ≤ n times, so add/remove is ≤ 2n.</p></div>
+          <div class="deck-row deck-row--trap"><span class="deck-k">Trap</span><p>Restarting an inner loop from each i (O(n²)). Shrinking past a still-valid window. Using a window for a non-contiguous subsequence. Forgetting to update the running count when left moves.</p></div>
+        </div>
+      </div>
+    </section>
+    <footer class="foot"><p class="one-liner"></p><p class="plate-id">Plate 55 / 100</p></footer>
+  </article>
+</body>
+</html>

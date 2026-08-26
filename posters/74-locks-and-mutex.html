@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PLATE 74 — A mutex is a bathroom key.</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@800;900&family=Fraunces:ital,opsz,wght@1,9..144,400;1,9..144,500&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/poster.css">
+</head>
+<body>
+  <article class="poster" data-track="backend">
+    <span class="mark mark--tl"></span><span class="mark mark--tr"></span><span class="mark mark--bl"></span><span class="mark mark--br"></span>
+    <p class="spine">Foundations series — software engineering mental models</p>
+    <div class="rule"></div><div class="ghost">74</div><div class="vignette"></div>
+    <svg class="grain" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="4" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(#n)"></rect></svg>
+    <header class="mast">
+      <p class="kicker"><span>Backend</span><span class="dot"></span><span class="whisper">pthread_mutex_t · std::mutex</span></p>
+      <h1 class="title">A mutex is <span class="title-accent">a bathroom key.</span></h1>
+      <p class="lede">A mutex is mutual exclusion around a critical section: at most one thread holds it. POSIX: <code>pthread_mutex_lock</code> / <code>pthread_mutex_unlock</code>. C++: <code>std::mutex</code> + <code>std::lock_guard</code> (RAII unlocks). Java: <code>synchronized</code> / <code>ReentrantLock</code>. Linux waits with <code>futex(2)</code>. Hold it only for the bytes that must not interleave — not across HTTP.</p>
+    </header>
+    <section class="stage stage--wide">
+      <div class="stage-inner">
+        <div class="trio">
+          <div class="box box--pool">
+            <p class="col-label">Acquire / release</p>
+            <h2 class="box-title">Mutex</h2>
+            <div class="codeblock ok">pthread_mutex_lock(&amp;mu);
+qty -= 1;
+pthread_mutex_unlock(&amp;mu);
+
+std::lock_guard&lt;std::mutex&gt; g(mu);
+// dtor unlocks</div>
+            <p class="caption">Always release on every path. RAII / <code>try/finally</code> / <code>defer Unlock</code>.</p>
+          </div>
+          <div class="box">
+            <p class="col-label">Wait-for cycle</p>
+            <h2 class="box-title">Deadlock</h2>
+            <div class="codeblock bad">T1: lock A
+    lock B   waits
+T2: lock B
+    lock A   waits</div>
+            <p class="caption">Same cycle as plate 43. One global lock order. Unlock reverse of lock. Keep the hold short.</p>
+          </div>
+          <div class="box">
+            <p class="col-label">Hold time</p>
+            <h2 class="box-title">Don’t</h2>
+            <div class="codeblock bad">mu.lock()
+if err: return   // never unlock
+
+cache_mu.lock()
+http.Get(...)    // lock × RTT</div>
+            <p class="caption">Forgotten unlock: every waiter blocks forever. One lock around the whole map: correct, and single-threaded.</p>
+          </div>
+        </div>
+        <div class="deck">
+          <div class="deck-row"><span class="deck-k">What</span><p>A mutex serializes plate 73’s window. Not a condition variable (that waits for a predicate). Reentrant locks let the same thread nest; you don’t need one until you do. RW locks allow concurrent readers.</p></div>
+          <div class="deck-row"><span class="deck-k">Why</span><p>Shared mutable state needs a referee. Interviews: smallest section, lock ordering, RAII, deadlock as a wait-for cycle. Fine-grained locks buy throughput and deadlock risk.</p></div>
+          <div class="deck-row deck-row--trap"><span class="deck-k">Trap</span><p>One coarse lock for the entire cache. Unlock skipped on the error path. Locking, then calling Stripe while you still hold it — every other thread waits on the network.</p></div>
+        </div>
+      </div>
+    </section>
+    <footer class="foot"><p class="one-liner"></p><p class="plate-id">Plate 74 / 375</p></footer>
+  </article>
+</body>
+</html>

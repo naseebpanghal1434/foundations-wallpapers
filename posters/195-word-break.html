@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PLATE 195 — A word ends here. Then start again.</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@800;900&family=Fraunces:ital,opsz,wght@1,9..144,400;1,9..144,500&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/poster.css">
+</head>
+<body>
+  <article class="poster" data-track="dsa">
+    <span class="mark mark--tl"></span><span class="mark mark--tr"></span><span class="mark mark--bl"></span><span class="mark mark--br"></span>
+    <p class="spine">Foundations series — software engineering mental models</p>
+    <div class="rule"></div><div class="ghost">195</div><div class="vignette"></div>
+    <svg class="grain" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="4" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(#n)"></rect></svg>
+    <header class="mast">
+      <p class="kicker"><span>DSA</span><span class="dot"></span><span class="whisper">dp[i] prefix breakable</span></p>
+      <h1 class="title">A word ends here. <span class="title-accent">Then start again.</span></h1>
+      <p class="lede">Word break: can s be segmented into dictionary words? <code>dp[i]</code> = true if <code>s[:i]</code> can. For each i, try word endings: if <code>dp[j]</code> and <code>s[j:i]</code> in the dict, <code>dp[i]=true</code>. <code>dp[0]=true</code>. O(n²) with a set, better with a trie. Word break II lists the sentences — backtrack with memo on the suffix, not a boolean table alone.</p>
+    </header>
+    <section class="stage">
+      <div class="stage-inner">
+        <div class="steps">
+          <div class="step step--hit"><span class="step-n">1</span><p class="step-copy">leetcode · {leet, code}<span><code>dp[0]=true</code>. i=4, <code>s[0:4]=leet</code> in dict → <code>dp[4]</code>. i=8, <code>s[4:8]=code</code> and <code>dp[4]</code> → <code>dp[8]</code>. Empty string is true. Words may be reused (unbounded).</span></p><span class="step-meta">LC 139</span></div>
+          <div class="step"><span class="step-n">2</span><p class="step-copy">applepenapple · {apple, pen}<span>apple | pen | apple. Prune the inner loop by max word length so you don’t slice n² blindly. Dict is a set (or a trie — plate 62).</span></p><span class="step-meta">reuse</span></div>
+          <div class="step"><span class="step-n">3</span><p class="step-copy">Greedy longest can fail<span><code>catsandog</code> with cats/dog/sand/and/cat fails. Greedy: <code>abab</code> with {aba, ab} takes aba, leftover b — but ab+ab works. II (LC 140): memo lists of sentences per index; output is exponential.</span></p><span class="step-meta">not greedy</span></div>
+        </div>
+        <div class="deck">
+          <div class="deck-row"><span class="deck-k">What</span><p>Prefix DP + dictionary lookup. <code>dp[i]</code> means the prefix of length i is breakable; then you start again. Unbounded reuse of words. Empty string true. Listing paths is a different problem — memoize the list, don’t only keep a boolean.</p></div>
+          <div class="deck-row"><span class="deck-k">Why</span><p>LeetCode 139 / 140. String DP. Follow-up lists sentences: backtrack from each true split, memo on the suffix so shared tails aren’t rebuilt. Say “prefix breakable” in the first sentence.</p></div>
+          <div class="deck-row deck-row--trap"><span class="deck-k">Trap</span><p>Greedy taking the longest word (fails on some dicts). Recursion without memo. Checking only whether <code>s[i:]</code> is in the dict as a whole. Word break II exponential output — memo still required, and you must copy sentences.</p></div>
+        </div>
+      </div>
+    </section>
+    <footer class="foot"><p class="one-liner"></p><p class="plate-id">Plate 195 / 200</p></footer>
+  </article>
+</body>
+</html>
