@@ -105,6 +105,8 @@ Wallpaper changes may ask for **Automation** (System Events). Allow it.
 
 The **Foundations** icon lives in the menu bar (layers symbol). Keep that process running; Quit stops rotation.
 
+Each macOS **Space** (Mission Control desktop) has its own wallpaper. Foundations re-applies the current plate when you switch to a Space, create a new one and land on it, connect a display, or wake the screens. Leave the tray running so a new desktop picks it up automatically.
+
 | Menu | What it does |
 |---|---|
 | **Next plate** (`⌘N` while the menu is open) | Next item in the **current playlist** |

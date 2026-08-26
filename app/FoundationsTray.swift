@@ -1,4 +1,5 @@
 import Cocoa
+import Darwin
 import ServiceManagement
 
 struct Plate: Decodable {
@@ -49,7 +50,10 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     private var playlists: [Playlist] = []
     private var state = TrayState()
     private var timer: Timer?
+    private var observers: [NSObjectProtocol] = []
+    private var spaceApplyWork: DispatchWorkItem?
     private let mixTracks = ["system", "backend", "database", "dsa", "frontend", "network", "genai", "lang", "os", "arch", "tools"]
+    private let launchAgentLabel = "local.foundations.plates"
 
     private var rootURL: URL { URL(fileURLWithPath: FoundationsRoot.path, isDirectory: true) }
     private var catalogURL: URL { rootURL.appendingPathComponent("catalog.json") }
@@ -68,6 +72,37 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         rebuildMenu()
         applyCurrent(write: false)
         scheduleAdvance()
+        watchSpacesAndScreens()
+    }
+
+    /// Each macOS Space keeps its own wallpaper. Re-apply when you switch to
+    /// (or create) a desktop, connect a display, or wake the screens.
+    private func watchSpacesAndScreens() {
+        let nc = NSWorkspace.shared.notificationCenter
+        observers.append(nc.addObserver(forName: NSWorkspace.activeSpaceDidChangeNotification, object: nil, queue: .main) { [weak self] _ in
+            self?.applyWallpaperSoon()
+        })
+        observers.append(nc.addObserver(forName: NSWorkspace.screensDidWakeNotification, object: nil, queue: .main) { [weak self] _ in
+            self?.applyWallpaperSoon()
+        })
+        observers.append(NotificationCenter.default.addObserver(forName: NSApplication.didChangeScreenParametersNotification, object: nil, queue: .main) { [weak self] _ in
+            self?.applyWallpaperSoon()
+        })
+    }
+
+    private func applyWallpaperSoon() {
+        spaceApplyWork?.cancel()
+        let work = DispatchWorkItem { [weak self] in
+            self?.applyWallpaper()
+        }
+        spaceApplyWork = work
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.3, execute: work)
+    }
+
+    private func applyWallpaper() {
+        if let p = plate(), let url = imageURL(for: p) {
+            setWallpaper(url)
+        }
     }
 
     private func loadCatalog() {
@@ -231,7 +266,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
 
         let login = NSMenuItem(title: "Open at login", action: #selector(toggleLoginItem), keyEquivalent: "")
         login.target = self
-        login.state = SMAppService.mainApp.status == .enabled ? .on : .off
+        login.state = isLoginEnabled() ? .on : .off
         menu.addItem(login)
 
         menu.addItem(.separator())
@@ -303,18 +338,63 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         rebuildMenu()
     }
 
+    private var launchAgentURL: URL {
+        FileManager.default.homeDirectoryForCurrentUser
+            .appendingPathComponent("Library/LaunchAgents/\(launchAgentLabel).plist")
+    }
+
+    private var appExecutablePath: String {
+        rootURL.appendingPathComponent("app/Foundations.app/Contents/MacOS/Foundations").path
+    }
+
+    private func isLoginEnabled() -> Bool {
+        FileManager.default.fileExists(atPath: launchAgentURL.path) || SMAppService.mainApp.status == .enabled
+    }
+
     @objc private func toggleLoginItem() {
-        let service = SMAppService.mainApp
-        do {
-            if service.status == .enabled {
-                try service.unregister()
-            } else {
-                try service.register()
+        if isLoginEnabled() {
+            unloadLaunchAgent()
+            try? SMAppService.mainApp.unregister()
+        } else {
+            do {
+                try writeLaunchAgent()
+            } catch {
+                NSLog("Foundations: launch agent \(error)")
             }
-        } catch {
-            NSLog("Foundations: login item \(error)")
+            try? SMAppService.mainApp.register()
         }
         rebuildMenu()
+    }
+
+    private func writeLaunchAgent() throws {
+        let plist: [String: Any] = [
+            "Label": launchAgentLabel,
+            "ProgramArguments": [appExecutablePath],
+            "RunAtLoad": true,
+            "KeepAlive": false,
+            "ProcessType": "Interactive",
+        ]
+        let data = try PropertyListSerialization.data(fromPropertyList: plist, format: .xml, options: 0)
+        let dir = launchAgentURL.deletingLastPathComponent()
+        try FileManager.default.createDirectory(at: dir, withIntermediateDirectories: true)
+        try data.write(to: launchAgentURL)
+        launchctl(["bootout", "gui/\(getuid())", launchAgentLabel])
+        launchctl(["bootstrap", "gui/\(getuid())", launchAgentURL.path])
+    }
+
+    private func unloadLaunchAgent() {
+        launchctl(["bootout", "gui/\(getuid())", launchAgentLabel])
+        try? FileManager.default.removeItem(at: launchAgentURL)
+    }
+
+    private func launchctl(_ args: [String]) {
+        let proc = Process()
+        proc.executableURL = URL(fileURLWithPath: "/bin/launchctl")
+        proc.arguments = args
+        proc.standardOutput = FileHandle.nullDevice
+        proc.standardError = FileHandle.nullDevice
+        try? proc.run()
+        proc.waitUntilExit()
     }
 
     private func cadenceMenuTitle() -> String {
@@ -344,9 +424,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
 
     private func applyCurrent(write: Bool) {
         if write { saveState() }
-        if let p = plate(), let url = imageURL(for: p) {
-            setWallpaper(url)
-        }
+        applyWallpaper()
         rebuildMenu()
     }
 
@@ -370,29 +448,30 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     }
 
     private func setWallpaper(_ url: URL) {
-        var lastError: NSError?
+        let options: [NSWorkspace.DesktopImageOptionKey: Any] = [
+            .allowClipping: true,
+            .imageScaling: NSNumber(value: NSImageScaling.scaleProportionallyUpOrDown.rawValue),
+        ]
         for screen in NSScreen.screens {
-            do {
-                try NSWorkspace.shared.setDesktopImageURL(url, for: screen, options: [:])
-            } catch let err as NSError {
-                lastError = err
-            }
+            try? NSWorkspace.shared.setDesktopImageURL(url, for: screen, options: options)
         }
-        if lastError != nil {
-            let posix = url.path
-            let script = """
-            tell application "System Events"
-              set posixFile to POSIX file "\(posix)"
-              repeat with d in desktops
-                tell d to set picture to posixFile
-              end repeat
-            end tell
-            """
-            let proc = Process()
-            proc.executableURL = URL(fileURLWithPath: "/usr/bin/osascript")
-            proc.arguments = ["-e", script]
-            try? proc.run()
-        }
+        // System Events "desktops" are displays. Spaces get the picture when we
+        // re-apply on NSWorkspace.activeSpaceDidChangeNotification.
+        let posix = url.path.replacingOccurrences(of: "\\", with: "\\\\").replacingOccurrences(of: "\"", with: "\\\"")
+        let script = """
+        tell application "System Events"
+          set posixFile to POSIX file "\(posix)"
+          repeat with d in desktops
+            try
+              set picture of d to posixFile
+            end try
+          end repeat
+        end tell
+        """
+        let proc = Process()
+        proc.executableURL = URL(fileURLWithPath: "/usr/bin/osascript")
+        proc.arguments = ["-e", script]
+        try? proc.run()
     }
 
     private func scheduleAdvance() {
