@@ -4,7 +4,7 @@ Glanceable **computer science and software-engineering** posters as macOS wallpa
 
 Each plate is HTML/CSS (not an image model), screenshotted at 14" Retina (`3024×1964`), then set as the desktop. A small menu-bar app walks the set in order, by playlist, on a timer.
 
-Repo: [naseebpanghal1434/foundations-wallpapers](https://github.com/naseebpanghal1434/foundations-wallpapers) (private).
+Repo: [naseebpanghal1434/foundations-wallpapers](https://github.com/naseebpanghal1434/foundations-wallpapers).
 
 ---
 
